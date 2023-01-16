@@ -25,29 +25,29 @@ jobs:
 
       - name: Build fate_client
         run: |
-          cd python/fate_client
+          cd python
           python3 setup.py sdist --formats=gztar
 
       - name: Twine check
         run: |
           pip install -U twine
-          twine check python/fate_client/dist/*
+          twine check python/dist/*
 
       - name: Upload to artifact
         uses: actions/upload-artifact@v2
         with:
           path: |
-            python/fate_client/dist/*
+            python/dist/*
 
       - name: Test Install
         run: |
           pip install -U pip
-          pip install --find-link=python/fate_client/dist/ fate_client
+          pip install --find-links=python/dist/ fate_client
 
       - name: Upload to PyPI Test
         if: ${{ github.event.inputs.type == 'test' }}
         run: |
-          twine upload --repository testpypi python/fate_client/dist/* --verbose
+          twine upload --repository testpypi python/dist/* --verbose
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.pypitest_token }}
@@ -55,7 +55,7 @@ jobs:
       - name: Upload to PyPI
         if: ${{ github.event.inputs.type == 'release' }}
         run: |
-          twine upload python/fate_client/dist/* --verbose
+          twine upload python/dist/* --verbose
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.pypi_token }}

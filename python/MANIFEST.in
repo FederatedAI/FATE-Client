@@ -1,0 +1,2 @@
+include fate_client/pipeline/component_define/fate/*.yaml
+include fate_client/pipeline/*.yaml

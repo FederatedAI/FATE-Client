@@ -13,19 +13,12 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 # -*- coding: utf-8 -*-
-import os
-import sys
 
 from setuptools import find_packages, setup
 
-fate_client_path = os.path.abspath(os.path.join(__file__, os.path.pardir, "python"))
-if fate_client_path not in sys.path:
-    sys.path.append(fate_client_path)
-
 import fate_client
 
-packages = find_packages("python", exclude=["fate_client", "fate_client.*"])
-package_dir = {"": "python"}
+packages = find_packages(".")
 package_data = {"": ["*"]}
 
 install_requires = [
@@ -58,7 +51,7 @@ setup_kwargs = {
     "maintainer_email": None,
     "url": "https://fate.fedai.org/",
     "packages": packages,
-    "package_dir": package_dir,
+    "include_package_data": True,
     "install_requires": install_requires,
     "extras_require": extras_require,
     "entry_points": entry_points,

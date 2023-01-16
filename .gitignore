@@ -18,6 +18,7 @@ venv
 .env
 .vscode/*
 Cargo.lock
+**/*.egg-info
 
 # excluded paths
 /data/
