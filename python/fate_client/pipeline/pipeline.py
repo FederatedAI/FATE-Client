@@ -16,6 +16,7 @@ import copy
 import yaml
 from .executor import StandaloneExecutor, FateFlowExecutor
 from .entity import DAG
+from .entity.dag_structures import JobConfSpec
 from .entity import FateFlowTaskInfo, StandaloneTaskInfo
 from .entity.runtime_entity import Roles
 from .conf.env_config import SiteInfo
@@ -222,6 +223,8 @@ class Pipeline(object):
         self._predict_dag = DagParser.deploy(task_name_list, self._dag.dag_spec, self.get_component_specs())
 
         if self._model_info:
+            if self._predict_dag.conf is None:
+                self._predict_dag.conf = JobConfSpec()
             self._predict_dag.conf.model_id = self._model_info.model_id
             self._predict_dag.conf.model_version = self._model_info.model_version
 
@@ -260,7 +263,7 @@ class FateFlowPipeline(Pipeline):
                meta: dict, partitions=4,
                destroy=True,
                storage_engine=None, **kwargs):
-        self._executor.upload(file, head, namespace, name, meta, partitions, storage_engine, destroy, **kwargs)
+        self._executor.upload(file, head, namespace, name, meta, partitions, destroy, storage_engine, **kwargs)
 
     def get_task_info(self, task):
         if isinstance(task, Component):

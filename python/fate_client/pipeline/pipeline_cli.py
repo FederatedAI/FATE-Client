@@ -53,7 +53,7 @@ def _init_flow_service(**kwargs):
         flow_config["port"] = port
 
     if flow_config:
-        config["fate_flow"] = flow_config
+        config["fate_flow"].update(flow_config)
 
     with default_config.open("w") as fout:
         yaml.dump(config, fout, Dumper=yaml.RoundTripDumper)
