@@ -13,7 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 import copy
-import yaml
+from ruamel import yaml
 from .executor import StandaloneExecutor, FateFlowExecutor
 from .entity import DAG
 from .entity.dag_structures import JobConfSpec
@@ -175,7 +175,7 @@ class Pipeline(object):
         return deploy_pipeline
 
     def get_dag(self):
-        return yaml.dump(self._dag.dag_spec.dict(exclude_defaults=True))
+        return yaml.safe_dump(self._dag.dag_spec.dict(exclude_defaults=True))
 
     def get_component_specs(self):
         component_specs = dict()

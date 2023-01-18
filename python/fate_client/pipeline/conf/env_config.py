@@ -14,8 +14,8 @@
 #  limitations under the License.
 #
 
-import yaml
 from pathlib import Path
+from ruamel import yaml
 
 
 __all__ = ["StatusCode", "FlowConfig", "StandaloneConfig", "SiteInfo"]

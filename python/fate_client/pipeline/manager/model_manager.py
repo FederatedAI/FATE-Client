@@ -16,7 +16,7 @@ import json
 import os
 import tarfile
 import tempfile
-import yaml
+from ruamel import yaml
 from ..utils.uri_tools import parse_uri, replace_uri_path, get_schema_from_uri
 from ..utils.file_utils import construct_local_dir
 from ..conf.types import UriTypes
