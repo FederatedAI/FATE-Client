@@ -26,13 +26,22 @@ class SQLiteStatusManager(object):
         return SQLiteStatusManager(status_uri)
 
     def monitor_finish_status(self, party_task_ids: list):
+        finish_task = 0
         for party_task_id in party_task_ids:
             task_run = self._meta_manager.get_or_create_task(party_task_id)
             state = task_run.properties["state"].string_value
-            if state in ["INIT", "running"]:
-                return False
+            if state == "exception":
+                return True
 
-        return True
+            if state in ["INIT", "running"]:
+                continue
+
+            finish_task += 1
+
+        if finish_task == len(party_task_ids):
+            return True
+
+        return False
 
     def record_task_status(self, party_task_id, status):
         self._meta_manager.update_task_state(party_task_id, status)

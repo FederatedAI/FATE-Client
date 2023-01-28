@@ -25,6 +25,7 @@ install_requires = [
     "click",
     "poetry",
     "pandas",
+    "psutil",
     "requests",
     "requests_toolbelt",
     "ruamel.yaml",
