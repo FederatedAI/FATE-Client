@@ -34,7 +34,7 @@ def init_group():
     pass
 
 
-@init_group.command(name="fateflow")
+@init_group.command(name="fate_flow")
 @click.option("--ip", type=click.STRING, help="Fate Flow server ip address.")
 @click.option("--port", type=click.INT, help="Fate Flow server port.")
 def _init_flow_service(**kwargs):
