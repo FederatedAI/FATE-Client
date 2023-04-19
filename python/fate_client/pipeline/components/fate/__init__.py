@@ -14,6 +14,9 @@
 #  limitations under the License.
 from .evaluation import Evaluation
 from .feature_scale import FeatureScale
+from .hetero_feature_binning import HeteroFeatureBinning
+from .hetero_feature_selection import HeteroFeatureSelection
+from .intersection import Intersection
 from .lr import HeteroLR
 from .reader import Reader
-from .intersection import Intersection
+from .statistics import Statistics

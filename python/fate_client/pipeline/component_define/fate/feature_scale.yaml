@@ -2,7 +2,7 @@ component:
   name: feature_scale
   description: ''
   provider: fate
-  version: 2.0.0.alpha
+  version: 2.0.0-alpha
   labels: []
   roles:
     - guest
@@ -10,9 +10,88 @@ component:
   input_definitions:
     parameters:
       method:
-        type: str
+        type: parameter_method
         default: standard
         optional: false
+        description: ''
+        type_meta:
+          title: parameter_method
+          type: object
+          properties:
+            data:
+              title: Data
+              default: standard
+              type: string
+      feature_range:
+        type: parameter_feature_range
+        default:
+          - 0
+          - 1
+        optional: true
+        description: 'Result feature value range for `min_max` method, take either
+          dict in format: {col_name: (min, max)} for specific columns or (min, max)
+          for all columns. Columns unspecified will be scaled to default range (0,1)'
+        type_meta:
+          title: parameter_feature_range
+          type: object
+          properties:
+            data:
+              title: Data
+              default:
+                - 0
+                - 1
+              anyOf:
+                - type: array
+                  items: { }
+                - type: object
+      scale_col:
+        type: parameter_scale_col
+        default:
+        optional: true
+        description: list of column names to be scaled, if None, all columns will
+          be scaled; only one of {scale_col, scale_idx} should be specified
+        type_meta:
+          title: parameter_scale_col
+          type: object
+          properties:
+            data:
+              title: Data
+              type: array
+              items:
+                type: string
+          required:
+            - data
+      scale_idx:
+        type: parameter_scale_idx
+        default:
+        optional: true
+        description: list of column index to be scaled, if None, all columns will
+          be scaled; only one of {scale_col, scale_idx} should be specified
+        type_meta:
+          title: parameter_scale_idx
+          type: object
+          properties:
+            data:
+              title: Data
+              type: array
+              items:
+                type: integer
+                minimum: 0
+          required:
+            - data
+      use_anonymous:
+        type: parameter_use_anonymous
+        default: false
+        optional: true
+        description: bool, whether interpret `scale_col` as anonymous column names
+        type_meta:
+          title: parameter_use_anonymous
+          type: object
+          properties:
+            data:
+              title: Data
+              default: false
+              type: boolean
     artifacts:
       train_data:
         type: dataset
@@ -22,14 +101,7 @@ component:
         roles:
           - guest
           - host
-      input_model:
-        type: model
-        optional: false
-        stages:
-          - predict
-        roles:
-          - guest
-          - host
+        description: ''
       test_data:
         type: dataset
         optional: false
@@ -38,6 +110,16 @@ component:
         roles:
           - guest
           - host
+        description: ''
+      input_model:
+        type: model
+        optional: false
+        stages:
+          - predict
+        roles:
+          - guest
+          - host
+        description: ''
   output_definitions:
     artifacts:
       train_output_data:
@@ -48,14 +130,7 @@ component:
         roles:
           - guest
           - host
-      output_model:
-        type: model
-        optional: false
-        stages:
-          - train
-        roles:
-          - guest
-          - host
+        description: ''
       test_output_data:
         type: dataset
         optional: false
@@ -64,4 +139,14 @@ component:
         roles:
           - guest
           - host
+        description: ''
+      output_model:
+        type: model
+        optional: false
+        stages:
+          - train
+        roles:
+          - guest
+          - host
+        description: ''
 schema_version: v1
