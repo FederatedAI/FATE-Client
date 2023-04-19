@@ -26,7 +26,7 @@ class HeteroFeatureSelection(Component):
     def __init__(self,
                  name: str,
                  runtime_roles: List[str] = None,
-                 method: str = PlaceHolder(),
+                 method: List[str] = PlaceHolder(),
                  select_col: List[str] = None,
                  iv_param: dict = None,
                  statistic_param: dict = None,
