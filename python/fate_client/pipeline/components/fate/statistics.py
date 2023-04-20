@@ -1,5 +1,5 @@
 #
-#  Copyright 2019 The FATE Authors. All Rights Reserved.
+#  Copyright 2023 The FATE Authors. All Rights Reserved.
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,38 +12,32 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-from typing import List, Union
+from typing import List
 
 from ..component_base import Component
 from ...conf.types import PlaceHolder
 from ...interface import ArtifactChannel
 
 
-class FeatureScale(Component):
-    yaml_define_path = "./component_define/fate/feature_scale.yaml"
+class Statistics(Component):
+    yaml_define_path = "./component_define/fate/statistics.yaml"
 
     def __init__(self,
                  name: str,
                  runtime_roles: List[str] = None,
-                 method: str = PlaceHolder(),
-                 feature_range: Union[tuple, dict] = (0, 1),
-                 scale_col: List[str] = None,
-                 scale_idx: List[int] = None,
+                 metrics: List[str] = None,
+                 bias: bool = True,
+                 skip_col: List[str] = PlaceHolder(),
                  use_anonymous: bool = False,
-                 train_data: ArtifactChannel = PlaceHolder(),
-                 test_data: ArtifactChannel = PlaceHolder(),
-                 input_model: ArtifactChannel = PlaceHolder()
+                 train_data: ArtifactChannel = PlaceHolder()
                  ):
         inputs = locals()
         self._process_init_inputs(inputs)
-        super(FeatureScale, self).__init__()
+        super(Statistics, self).__init__()
         self.name = name
         self.runtime_roles = runtime_roles
-        self.method = method
-        self.feature_range = feature_range
-        self.scale_col = scale_col
-        self.scale_idx = scale_idx
+        self.metrics = metrics
+        self.bias = bias
+        self.skip_col = skip_col
         self.use_anonymous = use_anonymous
         self.train_data = train_data
-        self.test_data = test_data
-        self.input_model = input_model
