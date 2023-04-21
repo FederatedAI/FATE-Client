@@ -298,7 +298,7 @@ component:
         description: ''
       input_binning_model:
         type: model
-        optional: false
+        optional: true
         stages:
           - train
         roles:
@@ -307,7 +307,7 @@ component:
         description: ''
       input_statistic_model:
         type: model
-        optional: false
+        optional: true
         stages:
           - train
         roles:
