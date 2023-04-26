@@ -49,5 +49,5 @@ def submit(ctx, **kwargs):
         flow job submit -c fate_flow/examples/lr/standalone/lr_train_dag.yaml
     """
     dag_schema = load_yaml(kwargs.get("config_path"))
-    client: FlowClient = ctx.obj[["client"]]
+    client: FlowClient = ctx.obj["client"]
     return client.job.submit(dag_schema=dag_schema)
