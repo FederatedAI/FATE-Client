@@ -13,8 +13,9 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 from typing import List
-from ...conf.types import PlaceHolder
+
 from ..component_base import Component
+from ...conf.types import PlaceHolder
 from ...interface import ArtifactChannel
 
 
@@ -24,9 +25,14 @@ class HeteroLR(Component):
     def __init__(self,
                  name: str,
                  runtime_roles: List[str] = None,
-                 learning_rate: float = PlaceHolder(),
-                 max_iter: int = PlaceHolder(),
-                 batch_size: int = PlaceHolder(),
+                 max_iter: int = 20,
+                 early_stop: str = "diff",
+                 tol: float = 1e-4,
+                 batch_size: int = -1,
+                 optimizer: dict = PlaceHolder(),
+                 learning_rate_scheduler: dict = PlaceHolder(),
+                 init_param: dict = PlaceHolder(),
+                 threshold: float = 0.5,
                  train_data: ArtifactChannel = PlaceHolder(),
                  validate_data: ArtifactChannel = PlaceHolder(),
                  test_data: ArtifactChannel = PlaceHolder(),
@@ -37,9 +43,14 @@ class HeteroLR(Component):
         super(HeteroLR, self).__init__()
         self.name = name
         self.runtime_roles = runtime_roles
-        self.learning_rate = learning_rate
         self.max_iter = max_iter
+        self.early_stop = early_stop
+        self.tol = tol
         self.batch_size = batch_size
+        self.optimizer = optimizer
+        self.learning_rate_scheduler = learning_rate_scheduler
+        self.init_param = init_param
+        self.threshold = threshold
         self.train_data = train_data
         self.validate_data = validate_data
         self.test_data = test_data
