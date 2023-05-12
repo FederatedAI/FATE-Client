@@ -29,6 +29,7 @@ class FeatureScale(Component):
                  feature_range: Union[tuple, dict] = (0, 1),
                  scale_col: List[str] = None,
                  scale_idx: List[int] = None,
+                 strict_range: bool = True,
                  use_anonymous: bool = False,
                  train_data: ArtifactChannel = PlaceHolder(),
                  test_data: ArtifactChannel = PlaceHolder(),
@@ -43,6 +44,7 @@ class FeatureScale(Component):
         self.feature_range = feature_range
         self.scale_col = scale_col
         self.scale_idx = scale_idx
+        self.strict_range = strict_range
         self.use_anonymous = use_anonymous
         self.train_data = train_data
         self.test_data = test_data

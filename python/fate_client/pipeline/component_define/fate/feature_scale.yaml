@@ -79,6 +79,20 @@ component:
                 minimum: 0
           required:
             - data
+      strict_range:
+        type: parameter_strict_range
+        default: true
+        optional: true
+        description: whether transformed value to be strictly restricted within given
+          range; effective for 'min_max' scale method only
+        type_meta:
+          title: parameter_strict_range
+          type: object
+          properties:
+            data:
+              title: Data
+              default: true
+              type: boolean
       use_anonymous:
         type: parameter_use_anonymous
         default: false
