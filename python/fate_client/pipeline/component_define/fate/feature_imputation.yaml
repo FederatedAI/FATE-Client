@@ -1,0 +1,186 @@
+component:
+  name: feature_imputation
+  description: ''
+  provider: fate
+  version: 2.0.0-alpha
+  labels: [ ]
+  roles:
+    - guest
+    - host
+  input_definitions:
+    parameters:
+      missing_fill_method:
+        type: parameter_missing_fill_method
+        default: designated
+        optional: true
+        description: NA's will be filled using given method
+        type_meta:
+          title: parameter_missing_fill_method
+          type: object
+          properties:
+            data:
+              title: Data
+              default: designated
+              type: string
+      col_missing_fill_method:
+        type: parameter_col_missing_fill_method
+        default:
+        optional: true
+        description: "NA's will be filled using given method for each column, take\
+          \ dict in format: {col_name: method}.Columns unspecified will take `missing_fill_method`."
+        type_meta:
+          title: parameter_col_missing_fill_method
+          type: object
+          properties:
+            data:
+              title: Data
+              anyOf:
+                - type: string
+                - type: object
+          required:
+            - data
+      missing_value:
+        type: parameter_missing_value
+        default:
+        optional: true
+        description: values to be treated as NA's, if None, will use default NA's
+        type_meta:
+          title: parameter_missing_value
+          type: object
+          properties:
+            data:
+              title: Data
+              anyOf:
+                - type: integer
+                - type: number
+                - type: array
+                  items:
+                    type: integer
+                - type: array
+                  items:
+                    type: number
+          required:
+            - data
+      designated_fill_value:
+        type: parameter_designated_fill_value
+        default: 0
+        optional: true
+        description: NA's will be filled using this value if missing_fill_method is
+          'designated'
+        type_meta:
+          title: parameter_designated_fill_value
+          type: object
+          properties:
+            data:
+              title: Data
+              default: 0
+              anyOf:
+                - type: integer
+                - type: number
+      imputation_col:
+        type: parameter_imputation_col
+        default:
+        optional: true
+        description: list of column names to be filled, if None, all columns will
+          be filled; only one of {imputation_col, imputation_idx} should be specified
+        type_meta:
+          title: parameter_imputation_col
+          type: object
+          properties:
+            data:
+              title: Data
+              type: array
+              items:
+                type: string
+          required:
+            - data
+      imputation_idx:
+        type: parameter_imputation_idx
+        default:
+        optional: true
+        description: list of column index to be filled, if None, all columns will
+          be filled; only one of {imputation_col, imputation_idx} should be specified
+        type_meta:
+          title: parameter_imputation_idx
+          type: object
+          properties:
+            data:
+              title: Data
+              type: array
+              items:
+                type: integer
+                minimum: 0
+          required:
+            - data
+      use_anonymous:
+        type: parameter_use_anonymous
+        default: false
+        optional: true
+        description: bool, whether interpret `imputation_col` as anonymous column
+          names
+        type_meta:
+          title: parameter_use_anonymous
+          type: object
+          properties:
+            data:
+              title: Data
+              default: false
+              type: boolean
+    artifacts:
+      train_data:
+        type: dataset
+        optional: false
+        stages:
+          - train
+        roles:
+          - guest
+          - host
+        description: ''
+      test_data:
+        type: dataset
+        optional: false
+        stages:
+          - predict
+        roles:
+          - guest
+          - host
+        description: ''
+      input_model:
+        type: model
+        optional: false
+        stages:
+          - predict
+        roles:
+          - guest
+          - host
+        description: ''
+  output_definitions:
+    artifacts:
+      train_output_data:
+        type: dataset
+        optional: false
+        stages:
+          - train
+        roles:
+          - guest
+          - host
+        description: ''
+      test_output_data:
+        type: dataset
+        optional: false
+        stages:
+          - predict
+        roles:
+          - guest
+          - host
+        description: ''
+      output_model:
+        type: model
+        optional: false
+        stages:
+          - train
+        roles:
+          - guest
+          - host
+        description: ''
+schema_version: v1
