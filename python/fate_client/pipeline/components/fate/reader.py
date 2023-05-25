@@ -25,7 +25,8 @@ class Reader(Component):
                  runtime_roles: List[str] = None,
                  path: str = PlaceHolder(),
                  format: str = PlaceHolder(),
-                 id_name: str = PlaceHolder(),
+                 sample_id_name: str = PlaceHolder(),
+                 match_id_name: str = PlaceHolder(),
                  delimiter: str = PlaceHolder(),
                  label_name: str = PlaceHolder(),
                  label_type: str = PlaceHolder(),
@@ -38,7 +39,8 @@ class Reader(Component):
         self.runtime_roles = runtime_roles
         self.path = path
         self.format = format
-        self.id_name = id_name
+        self.sample_id_name = sample_id_name
+        self.match_id_name = match_id_name
         self.delimiter = delimiter
         self.label_name = label_name
         self.label_type = label_type
