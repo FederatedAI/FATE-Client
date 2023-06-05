@@ -1,0 +1,127 @@
+component:
+  name: homo_nn
+  description: ''
+  provider: fate
+  version: 2.0.0-alpha
+  labels: []
+  roles:
+    - guest
+    - host
+    - arbiter
+  input_definitions:
+    parameters:
+      setup_module:
+        type: parameter_setup_module
+        default: fate_setup
+        optional: true
+        description: name of your setup script
+        type_meta:
+          title: parameter_setup_module
+          type: object
+          properties:
+            data:
+              title: Data
+              default: fate_setup
+              type: string
+      setup_class:
+        type: parameter_setup_class
+        default: FateSetup
+        optional: true
+        description: class name of your setup class
+        type_meta:
+          title: parameter_setup_class
+          type: object
+          properties:
+            data:
+              title: Data
+              default: FateSetup
+              type: string
+      setup_conf:
+        type: parameter_setup_conf
+        default: {}
+        optional: true
+        description: the parameter dict of the NN setup class
+        type_meta:
+          title: parameter_setup_conf
+          type: object
+          properties:
+            data:
+              title: Data
+              default: {}
+              type: object
+    artifacts:
+      validate_data:
+        type: dataset
+        optional: true
+        stages:
+          - train
+        roles:
+          - guest
+          - host
+        description: validation data
+      train_data:
+        type: dataset
+        optional: false
+        stages:
+          - train
+        roles:
+          - guest
+          - host
+        description: training data
+      test_data:
+        type: dataset
+        optional: false
+        stages:
+          - predict
+        roles:
+          - guest
+          - host
+        description: ''
+      input_model:
+        type: model
+        optional: false
+        stages:
+          - predict
+        roles:
+          - guest
+          - host
+        description: ''
+  output_definitions:
+    artifacts:
+      train_output_data:
+        type: dataset
+        optional: false
+        stages:
+          - train
+        roles:
+          - guest
+          - host
+        description: ''
+      test_output_data:
+        type: dataset
+        optional: false
+        stages:
+          - predict
+        roles:
+          - guest
+          - host
+        description: ''
+      output_model:
+        type: model
+        optional: false
+        stages:
+          - train
+        roles:
+          - guest
+          - host
+        description: ''
+      train_output_metric:
+        type: loss
+        optional: false
+        stages:
+          - train
+        roles:
+          - arbiter
+        description: ''
+schema_version: v1
+
