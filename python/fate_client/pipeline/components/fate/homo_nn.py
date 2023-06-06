@@ -13,12 +13,15 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 from typing import List
+
+from fate_client.pipeline.conf.types import PlaceHolder
+from fate_client.pipeline.interface import ArtifactChannel
 from ...conf.types import PlaceHolder
 from ..component_base import Component
 from ...interface import ArtifactChannel
 
 
-class HomoNN(Component):
+class _HomoNN(Component):
     yaml_define_path = "./component_define/fate/homo_nn.yaml"
 
     def __init__(self,
@@ -27,17 +30,54 @@ class HomoNN(Component):
                  setup_module: str = PlaceHolder(),
                  setup_class: str = PlaceHolder(),
                  setup_conf: dict = PlaceHolder(),
+                 source: str = PlaceHolder(),
                  train_data: ArtifactChannel = PlaceHolder(),
                  validate_data: ArtifactChannel = PlaceHolder(),
                  ):
         
         inputs = locals()
         self._process_init_inputs(inputs)
-        super(HomoNN, self).__init__()
+        super(_HomoNN, self).__init__()
         self.name = name
         self.runtime_roles = runtime_roles
         self.setup_module = setup_module
         self.setup_class = setup_class
         self.setup_conf = setup_conf
+        self.source = source
         self.train_data = train_data
         self.validate_data = validate_data
+
+
+class HomoNN(_HomoNN):
+    
+    def __init__(self, 
+                 name: str,
+                 runtime_roles: List[str] = None,
+                 algo: str = 'fedavg',
+                #  model: None,
+                #  optimizer,
+                #  loss,
+                #  training_args,
+                #  fed_args,
+                #  dataset,
+                #  data_collator,
+                 ):
+        
+        pass
+
+
+class CustomSetupHomoNN(_HomoNN):
+
+    def __init__(self,
+        name: str,
+        runtime_roles: List[str] = None,
+        setup_module: str = PlaceHolder(),
+        setup_class: str = PlaceHolder(),
+        setup_conf: dict = PlaceHolder(),
+        source: str = PlaceHolder(),
+        train_data: ArtifactChannel = PlaceHolder(),
+        validate_data: ArtifactChannel = PlaceHolder(),
+        ):
+
+        super(CustomSetupHomoNN, self).__init__(name, runtime_roles, setup_module, 
+                                                setup_class, setup_conf, source, train_data, validate_data)

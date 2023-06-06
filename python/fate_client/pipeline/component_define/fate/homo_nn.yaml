@@ -36,6 +36,19 @@ component:
               title: Data
               default: FateSetup
               type: string
+      source:
+        type: parameter_source
+        default: ''
+        optional: true
+        description: path to your setup script folder
+        type_meta:
+          title: parameter_source
+          type: object
+          properties:
+            data:
+              title: Data
+              default: ''
+              type: string
       setup_conf:
         type: parameter_setup_conf
         default: {}
