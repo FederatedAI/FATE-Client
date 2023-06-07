@@ -1,5 +1,5 @@
 from torch import optim
-from fate.components.components.nn.fate_torch.base import FateTorchOptimizer
+from fate_client.pipeline.components.fate.nn.fate_torch.base import FateTorchOptimizer
 
 
 class ASGD(optim.ASGD, FateTorchOptimizer):

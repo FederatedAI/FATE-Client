@@ -1,5 +1,5 @@
 from torch import nn
-from fate.components.components.nn.fate_torch.base import FateTorch
+from fate_client.pipeline.components.fate.nn.fate_torch.base import FateTorch
 
 
 class Bilinear(nn.modules.linear.Bilinear, FateTorch):

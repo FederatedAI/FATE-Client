@@ -1,10 +1,10 @@
-from transformers import TrainingArguments as hf_TrainingArguments
+from transformers import TrainingArguments as _hf_TrainingArguments
 from dataclasses import dataclass, field, fields
 from enum import Enum
 
 
 @dataclass
-class TrainingArguments(hf_TrainingArguments):
+class TrainingArguments(_hf_TrainingArguments):
     
     # By default, we disable tqdm progress bar for logging conerns.
     output_dir: str = field(default="./")

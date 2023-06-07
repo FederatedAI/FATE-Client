@@ -25,6 +25,7 @@ from ...interface import ArtifactChannel
 
 
 class _HomoNN(Component):
+    
     yaml_define_path = "./component_define/fate/homo_nn.yaml"
 
     def __init__(self,
@@ -64,9 +65,10 @@ class HomoNN(_HomoNN):
                  fed_args: FedArguments = None,
                  dataset: DatasetLoader = None,
                  data_collator: CustFuncLoader = None,
+                 train_data: ArtifactChannel = PlaceHolder(),
+                 validate_data: ArtifactChannel = PlaceHolder(),
                  ):
         
-        # Type Checking
         if model is not None and not isinstance(model, (FateTorch, Sequential, ModelLoader)):
             raise ValueError(f'The model is of type {type(model)}, not FateTorch, Sequential, or ModelLoader. Remember to use fate_torch_hook for passing NN Modules or Optimizers.')
         
@@ -87,19 +89,26 @@ class HomoNN(_HomoNN):
         
         if data_collator is not None and not isinstance(data_collator, CustFuncLoader):
             raise ValueError(f'The data collator is of type {type(data_collator)}, not CustFuncLoader.')
-        
+
+        setup_conf = {
+            'algo': algo,
+            'model_conf': model.to_dict() if model is not None else None,
+            'optimizer_conf': optimizer.to_dict() if optimizer is not None else None,
+            'loss_conf': loss.to_dict() if loss is not None else None,
+            'training_args_conf': training_args.to_dict() if training_args is not None else None,
+            'fed_args_conf': fed_args.to_dict() if fed_args is not None else None,
+            'dataset_conf': dataset.to_dict() if dataset is not None else None,
+            'data_collator_conf': data_collator.to_dict() if data_collator is not None else None,
+        }
+
         super(HomoNN, self).__init__(name=name, 
                                      runtime_roles=runtime_roles,
-                                     algo=algo,
-                                     model=model,
-                                     optimizer=optimizer,
-                                     loss=loss,
-                                     training_args=training_args,
-                                     fed_args=fed_args,
-                                     dataset=dataset,
-                                     data_collator=data_collator)
-
-
+                                     train_data=train_data,
+                                     validate_data=validate_data,
+                                     setup_conf=setup_conf,
+                                     setup_module='fate_setup',
+                                     setup_class='FateSetup'
+                                     )
 
 
 class CustomSetupHomoNN(_HomoNN):
