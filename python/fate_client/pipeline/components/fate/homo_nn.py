@@ -37,6 +37,8 @@ class _HomoNN(Component):
                  source: str = PlaceHolder(),
                  train_data: ArtifactChannel = PlaceHolder(),
                  validate_data: ArtifactChannel = PlaceHolder(),
+                 test_data: ArtifactChannel = PlaceHolder(),
+                 input_model: ArtifactChannel = PlaceHolder(),
                  ):
         
         inputs = locals()
@@ -50,6 +52,7 @@ class _HomoNN(Component):
         self.source = source
         self.train_data = train_data
         self.validate_data = validate_data
+        self.test_data = test_data
 
 
 class HomoNN(_HomoNN):
@@ -65,8 +68,11 @@ class HomoNN(_HomoNN):
                  fed_args: FedArguments = None,
                  dataset: DatasetLoader = None,
                  data_collator: CustFuncLoader = None,
+                 tokenizer: CustFuncLoader = None,
                  train_data: ArtifactChannel = PlaceHolder(),
                  validate_data: ArtifactChannel = PlaceHolder(),
+                 test_data: ArtifactChannel = PlaceHolder(),
+                 input_model: ArtifactChannel = PlaceHolder()
                  ):
         
         if model is not None and not isinstance(model, (FateTorch, Sequential, ModelLoader)):
@@ -90,6 +96,9 @@ class HomoNN(_HomoNN):
         if data_collator is not None and not isinstance(data_collator, CustFuncLoader):
             raise ValueError(f'The data collator is of type {type(data_collator)}, not CustFuncLoader.')
 
+        if tokenizer is not None and not isinstance(tokenizer, CustFuncLoader):
+            raise ValueError(f'The tokenizer is of type {type(tokenizer)}, not CustFuncLoader.')
+
         setup_conf = {
             'algo': algo,
             'model_conf': model.to_dict() if model is not None else None,
@@ -99,6 +108,7 @@ class HomoNN(_HomoNN):
             'fed_args_conf': fed_args.to_dict() if fed_args is not None else None,
             'dataset_conf': dataset.to_dict() if dataset is not None else None,
             'data_collator_conf': data_collator.to_dict() if data_collator is not None else None,
+            'tokenizer_conf': tokenizer.to_dict() if tokenizer is not None else None
         }
 
         super(HomoNN, self).__init__(name=name, 
@@ -107,7 +117,9 @@ class HomoNN(_HomoNN):
                                      validate_data=validate_data,
                                      setup_conf=setup_conf,
                                      setup_module='fate_setup',
-                                     setup_class='FateSetup'
+                                     setup_class='FateSetup',
+                                     test_data=test_data,
+                                     input_model=input_model
                                      )
 
 
@@ -122,7 +134,9 @@ class CustomSetupHomoNN(_HomoNN):
         source: str = PlaceHolder(),
         train_data: ArtifactChannel = PlaceHolder(),
         validate_data: ArtifactChannel = PlaceHolder(),
+        test_data: ArtifactChannel = PlaceHolder(),
+        input_model: ArtifactChannel = PlaceHolder()
         ):
 
         super(CustomSetupHomoNN, self).__init__(name, runtime_roles, setup_module, 
-                                                setup_class, setup_conf, source, train_data, validate_data)
+                                                setup_class, setup_conf, source, train_data, validate_data, test_data, input_model)

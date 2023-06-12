@@ -38,7 +38,7 @@ component:
               type: string
       source:
         type: parameter_source
-        default: ''
+        default:
         optional: true
         description: path to your setup script folder
         type_meta:
@@ -47,8 +47,9 @@ component:
           properties:
             data:
               title: Data
-              default: ''
               type: string
+          required:
+            - data
       setup_conf:
         type: parameter_setup_conf
         default: {}
