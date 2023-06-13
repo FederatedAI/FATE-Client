@@ -26,7 +26,7 @@ class FeatureScale(Component):
                  name: str,
                  runtime_roles: List[str] = None,
                  method: str = PlaceHolder(),
-                 feature_range: Union[tuple, dict] = (0, 1),
+                 feature_range: Union[list, dict] = None,
                  scale_col: List[str] = None,
                  scale_idx: List[int] = None,
                  strict_range: bool = True,

@@ -29,8 +29,8 @@ component:
           - 1
         optional: true
         description: 'Result feature value range for `min_max` method, take either
-          dict in format: {col_name: (min, max)} for specific columns or (min, max)
-          for all columns. Columns unspecified will be scaled to default range (0,1)'
+          dict in format: {col_name: [min, max]} for specific columns or [min, max]
+          for all columns. Columns unspecified will be scaled to default range [0,1]'
         type_meta:
           title: parameter_feature_range
           type: object
