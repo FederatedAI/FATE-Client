@@ -31,9 +31,9 @@ class _HomoNN(Component):
     def __init__(self,
                  name: str,
                  runtime_roles: List[str] = None,
-                 setup_module: str = PlaceHolder(),
-                 setup_class: str = PlaceHolder(),
-                 setup_conf: dict = PlaceHolder(),
+                 runner_module: str = PlaceHolder(),
+                 runner_class: str = PlaceHolder(),
+                 runner_conf: dict = PlaceHolder(),
                  source: str = PlaceHolder(),
                  train_data: ArtifactChannel = PlaceHolder(),
                  validate_data: ArtifactChannel = PlaceHolder(),
@@ -46,14 +46,15 @@ class _HomoNN(Component):
         super(_HomoNN, self).__init__()
         self.name = name
         self.runtime_roles = runtime_roles
-        self.setup_module = setup_module
-        self.setup_class = setup_class
-        self.setup_conf = setup_conf
+        self.runner_module = runner_module
+        self.runner_class = runner_class
+        self.runner_conf = runner_conf
         self.source = source
         self.train_data = train_data
         self.validate_data = validate_data
         self.test_data = test_data
-
+        self.input_model = input_model
+        
 
 class HomoNN(_HomoNN):
     
@@ -99,7 +100,7 @@ class HomoNN(_HomoNN):
         if tokenizer is not None and not isinstance(tokenizer, CustFuncLoader):
             raise ValueError(f'The tokenizer is of type {type(tokenizer)}, not CustFuncLoader.')
 
-        setup_conf = {
+        runner_conf = {
             'algo': algo,
             'model_conf': model.to_dict() if model is not None else None,
             'optimizer_conf': optimizer.to_dict() if optimizer is not None else None,
@@ -115,22 +116,22 @@ class HomoNN(_HomoNN):
                                      runtime_roles=runtime_roles,
                                      train_data=train_data,
                                      validate_data=validate_data,
-                                     setup_conf=setup_conf,
-                                     setup_module='fate_setup',
-                                     setup_class='FateSetup',
+                                     runner_conf=runner_conf,
+                                     runner_module='fate_runner',
+                                     runner_class='Faterunner',
                                      test_data=test_data,
                                      input_model=input_model
                                      )
 
 
-class CustomSetupHomoNN(_HomoNN):
+class CustomrunnerHomoNN(_HomoNN):
 
     def __init__(self,
         name: str,
         runtime_roles: List[str] = None,
-        setup_module: str = PlaceHolder(),
-        setup_class: str = PlaceHolder(),
-        setup_conf: dict = PlaceHolder(),
+        runner_module: str = PlaceHolder(),
+        runner_class: str = PlaceHolder(),
+        runner_conf: dict = PlaceHolder(),
         source: str = PlaceHolder(),
         train_data: ArtifactChannel = PlaceHolder(),
         validate_data: ArtifactChannel = PlaceHolder(),
@@ -138,5 +139,5 @@ class CustomSetupHomoNN(_HomoNN):
         input_model: ArtifactChannel = PlaceHolder()
         ):
 
-        super(CustomSetupHomoNN, self).__init__(name, runtime_roles, setup_module, 
-                                                setup_class, setup_conf, source, train_data, validate_data, test_data, input_model)
+        super(CustomrunnerHomoNN, self).__init__(name, runtime_roles, runner_module, 
+                                                runner_class, runner_conf, source, train_data, validate_data, test_data, input_model)

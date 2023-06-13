@@ -10,37 +10,37 @@ component:
     - arbiter
   input_definitions:
     parameters:
-      setup_module:
-        type: parameter_setup_module
-        default: fate_setup
+      runner_module:
+        type: parameter_runner_module
+        default: fate_runner
         optional: true
-        description: name of your setup script
+        description: name of your runner script
         type_meta:
-          title: parameter_setup_module
+          title: parameter_runner_module
           type: object
           properties:
             data:
               title: Data
-              default: fate_setup
+              default: fate_runner
               type: string
-      setup_class:
-        type: parameter_setup_class
-        default: FateSetup
+      runner_class:
+        type: parameter_runner_class
+        default: FateRunner
         optional: true
-        description: class name of your setup class
+        description: class name of your runner class
         type_meta:
-          title: parameter_setup_class
+          title: parameter_runner_class
           type: object
           properties:
             data:
               title: Data
-              default: FateSetup
+              default: FateRunner
               type: string
       source:
         type: parameter_source
         default:
         optional: true
-        description: path to your setup script folder
+        description: path to your runner script folder
         type_meta:
           title: parameter_source
           type: object
@@ -50,13 +50,13 @@ component:
               type: string
           required:
             - data
-      setup_conf:
-        type: parameter_setup_conf
+      runner_conf:
+        type: parameter_runner_conf
         default: {}
         optional: true
-        description: the parameter dict of the NN setup class
+        description: the parameter dict of the NN runner class
         type_meta:
-          title: parameter_setup_conf
+          title: parameter_runner_conf
           type: object
           properties:
             data:

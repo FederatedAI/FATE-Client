@@ -1,5 +1,5 @@
 import torch as t
-from fate.components.components.nn.loader import Loader
+from fate_client.pipeline.components.fate.nn.loader import Loader
 from torch.nn import Sequential as tSequential
 import json
 
