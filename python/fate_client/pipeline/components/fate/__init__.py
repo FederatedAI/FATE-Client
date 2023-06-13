@@ -14,6 +14,7 @@
 #  limitations under the License.
 from .evaluation import Evaluation
 from .feature_scale import FeatureScale
+from .intersection import Intersection
 from .lr import HeteroLR
 from .reader import Reader
-from .intersection import Intersection
+from .statistics import Statistics
