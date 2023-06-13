@@ -12,9 +12,10 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-from typing import List
-from ...conf.types import PlaceHolder
+from typing import List, Union
+
 from ..component_base import Component
+from ...conf.types import PlaceHolder
 from ...interface import ArtifactChannel
 
 
@@ -25,6 +26,11 @@ class FeatureScale(Component):
                  name: str,
                  runtime_roles: List[str] = None,
                  method: str = PlaceHolder(),
+                 feature_range: Union[list, dict] = None,
+                 scale_col: List[str] = None,
+                 scale_idx: List[int] = None,
+                 strict_range: bool = True,
+                 use_anonymous: bool = False,
                  train_data: ArtifactChannel = PlaceHolder(),
                  test_data: ArtifactChannel = PlaceHolder(),
                  input_model: ArtifactChannel = PlaceHolder()
@@ -35,6 +41,11 @@ class FeatureScale(Component):
         self.name = name
         self.runtime_roles = runtime_roles
         self.method = method
+        self.feature_range = feature_range
+        self.scale_col = scale_col
+        self.scale_idx = scale_idx
+        self.strict_range = strict_range
+        self.use_anonymous = use_anonymous
         self.train_data = train_data
         self.test_data = test_data
         self.input_model = input_model
