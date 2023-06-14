@@ -12,7 +12,7 @@ component:
     parameters:
       runner_module:
         type: parameter_runner_module
-        default: fate_runner
+        default: default_runner
         optional: true
         description: name of your runner script
         type_meta:
@@ -21,11 +21,11 @@ component:
           properties:
             data:
               title: Data
-              default: fate_runner
+              default: default_runner
               type: string
       runner_class:
         type: parameter_runner_class
-        default: FateRunner
+        default: DefaultRunner
         optional: true
         description: class name of your runner class
         type_meta:
@@ -34,7 +34,7 @@ component:
           properties:
             data:
               title: Data
-              default: FateRunner
+              default: DefaultRunner
               type: string
       source:
         type: parameter_source
