@@ -46,7 +46,7 @@ class DagParser(object):
             if not task_spec.conf:
                 task_conf = copy.deepcopy(job_conf)
             else:
-                task_conf = copy.deepcopy(task_spec.conf).update(job_conf)
+                task_conf = copy.deepcopy(job_conf).update(task_spec.conf)
             if task_spec.stage:
                 task_stage = task_spec.stage
 
@@ -71,14 +71,16 @@ class DagParser(object):
                             for channel in channel_spec_list:
                                 model_warehouse_channel = ModelWarehouseChannelSpec(**channel.dict(exclude_defaults=True))
                                 if model_warehouse_channel.model_id is None:
-                                    model_warehouse_channel.model_id = self._conf.get("model_id", None)
-                                    model_warehouse_channel.model_version = self._conf.get("model_version", None)
+                                    model_warehouse_channel.model_id = \
+                                        self._conf.get("model_warehouse", {}).get("model_id", None)
+                                    model_warehouse_channel.model_version = \
+                                        self._conf.get("model_warehouse", {}).get("model_version", None)
                                 inputs.append(model_warehouse_channel)
                         else:
                             inputs = ModelWarehouseChannelSpec(**channel_spec_list.dict(exclude_defaults=True))
                             if inputs.model_id is None:
-                                inputs.model_id = self._conf.get("model_id", None)
-                                inputs.model_version = self._conf.get("model_version", None)
+                                inputs.model_id = self._conf.get("model_warehouse", {}).get("model_id", None)
+                                inputs.model_version = self._conf.get("model_warehouse", {}).get("model_version", None)
 
                         upstream_inputs[input_key] = inputs
                         continue

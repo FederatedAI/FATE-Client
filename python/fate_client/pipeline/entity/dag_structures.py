@@ -54,6 +54,11 @@ class RuntimeInputDefinition(BaseModel):
     artifacts: Optional[Dict[str, Dict[str, Union[InputChannelSpec, List[InputChannelSpec]]]]]
 
 
+class ModelWarehouseConfSpec(BaseModel):
+    model_id: Optional[str]
+    model_version: Optional[str]
+
+
 class TaskSpec(BaseModel):
     component_ref: str
     dependent_tasks: Optional[List[str]]
@@ -84,6 +89,7 @@ class JobConfSpec(BaseModel):
     task_parallelism: Optional[int]
     federated_status_collect_type: Optional[str]
     auto_retries: Optional[int]
+    model_warehouse: Optional[ModelWarehouseConfSpec]
     model_id: Optional[str]
     model_version: Optional[int]
     task: Optional[TaskConfSpec]
