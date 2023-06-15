@@ -19,6 +19,7 @@ from fate_client.pipeline.components.fate.nn.loader import Loader, ModelLoader, 
 from fate_client.pipeline.components.fate.nn.fate_torch.base import FateTorch, FateTorchOptimizer, Sequential
 from typing import Union
 from fate_client.pipeline.components.fate.nn.algo_params import TrainingArguments, FedArguments
+from typing import Literal
 from ...conf.types import PlaceHolder
 from ..component_base import Component
 from ...interface import ArtifactChannel
@@ -34,6 +35,7 @@ def get_config_of_default_runner(
         dataset: DatasetLoader = None,
         data_collator: CustFuncLoader = None,
         tokenizer: CustFuncLoader = None,
+        task_type: Literal['classification', 'regression'] = 'classification'
     ):
         
     if model is not None and not isinstance(model, (FateTorch, Sequential, ModelLoader)):
@@ -59,6 +61,9 @@ def get_config_of_default_runner(
 
     if tokenizer is not None and not isinstance(tokenizer, CustFuncLoader):
         raise ValueError(f'The tokenizer is of type {type(tokenizer)}, not CustFuncLoader.')
+    
+    if task_type not in ['classification', 'regression']:
+        raise ValueError(f'The task type is {task_type}, not classification or regression.')
 
     runner_conf = {
         'algo': algo,
@@ -69,7 +74,8 @@ def get_config_of_default_runner(
         'fed_args_conf': fed_args.to_dict() if fed_args is not None else None,
         'dataset_conf': dataset.to_dict() if dataset is not None else None,
         'data_collator_conf': data_collator.to_dict() if data_collator is not None else None,
-        'tokenizer_conf': tokenizer.to_dict() if tokenizer is not None else None
+        'tokenizer_conf': tokenizer.to_dict() if tokenizer is not None else None,
+        'task_type': task_type
     }
 
     return runner_conf

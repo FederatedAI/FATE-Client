@@ -2,14 +2,27 @@ component:
   name: evaluation
   description: ''
   provider: fate
-  version: 2.0.0.alpha
+  version: 2.0.0-alpha
   labels: []
   roles:
     - guest
     - host
     - arbiter
   input_definitions:
-    parameters: {}
+    parameters:
+      eval_type:
+        type: parameter_eval_type
+        default: binary
+        optional: true
+        description: ''
+        type_meta:
+          title: parameter_eval_type
+          type: object
+          properties:
+            data:
+              title: Data
+              default: binary
+              type: string
     artifacts:
       input_data:
         type: dataset
@@ -20,6 +33,7 @@ component:
           - guest
           - host
           - arbiter
+        description: ''
   output_definitions:
     artifacts:
       output_metric:
@@ -31,4 +45,6 @@ component:
           - guest
           - host
           - arbiter
+        description: ''
 schema_version: v1
+

@@ -12,7 +12,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-from typing import List
+from typing import List, Literal
 from ...conf.types import PlaceHolder
 from ..component_base import Component
 from ...interface import ArtifactChannel
@@ -24,8 +24,8 @@ class Evaluation(Component):
     def __init__(self,
                  name: str,
                  runtime_roles: List[str] = None,
+                 eval_type: Literal['binary', 'multi', 'regression'] = PlaceHolder(),
                  input_data: ArtifactChannel = PlaceHolder(),
-                 eval_type: str = PlaceHolder(),
                  ):
         inputs = locals()
         self._process_init_inputs(inputs)

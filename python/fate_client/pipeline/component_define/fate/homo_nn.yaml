@@ -110,6 +110,7 @@ component:
         roles:
           - guest
           - host
+          - arbiter
         description: ''
       test_output_data:
         type: dataset
@@ -128,6 +129,7 @@ component:
         roles:
           - guest
           - host
+          - arbiter
         description: ''
       train_output_metric:
         type: loss
@@ -135,6 +137,8 @@ component:
         stages:
           - train
         roles:
+          - guest
+          - host
           - arbiter
         description: ''
 schema_version: v1
