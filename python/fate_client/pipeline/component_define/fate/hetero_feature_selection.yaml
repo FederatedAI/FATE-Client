@@ -1,0 +1,355 @@
+component:
+  name: hetero_feature_selection
+  description: ''
+  provider: fate
+  version: 2.0.0-alpha
+  labels: [ ]
+  roles:
+    - guest
+    - host
+  input_definitions:
+    parameters:
+      method:
+        type: parameter_method
+        default:
+          - manual
+        optional: false
+        description: 'selection method, options: {manual, binning, statistic}'
+        type_meta:
+          title: parameter_method
+          type: object
+          properties:
+            data:
+              title: Data
+              default:
+                - manual
+              type: array
+              items:
+                type: string
+      select_col:
+        type: parameter_select_col
+        default:
+        optional: true
+        description: list of column names to be selected, if None, all columns will
+          be considered
+        type_meta:
+          title: parameter_select_col
+          type: object
+          properties:
+            data:
+              title: Data
+              type: array
+              items:
+                type: string
+          required:
+            - data
+      iv_param:
+        type: parameter_iv_param
+        default:
+          metrics:
+            - iv
+          filter_type:
+            - threshold
+          threshold:
+            - 1
+          take_high:
+            - true
+          host_filter_type:
+            - threshold
+          host_threshold:
+            - 1.0
+          host_take_high:
+            - true
+          select_federated: true
+        optional: true
+        description: binning filter param
+        type_meta:
+          title: parameter_iv_param
+          type: object
+          properties:
+            data:
+              title: Data
+              default:
+                metrics:
+                  - iv
+                filter_type:
+                  - threshold
+                threshold:
+                  - 1
+                take_high:
+                  - true
+                host_filter_type:
+                  - threshold
+                host_threshold:
+                  - 1.0
+                host_take_high:
+                  - true
+                select_federated: true
+              allOf:
+                - $ref: '#/definitions/IVFilterParam'
+          definitions:
+            IVFilterParam:
+              title: IVFilterParam
+              type: object
+              properties:
+                metrics:
+                  title: Metrics
+                  default:
+                    - iv
+                  type: array
+                  items:
+                    type: string
+                filter_type:
+                  title: Filter Type
+                  default:
+                    - threshold
+                  type: array
+                  items:
+                    type: string
+                threshold:
+                  title: Threshold
+                  default:
+                    - 1.0
+                  type: array
+                  items:
+                    anyOf:
+                      - type: integer
+                      - type: number
+                take_high:
+                  title: Take High
+                  default:
+                    - true
+                  type: array
+                  items:
+                    type: boolean
+                host_filter_type:
+                  title: Host Filter Type
+                  default:
+                    - threshold
+                  type: array
+                  items:
+                    type: string
+                host_threshold:
+                  title: Host Threshold
+                  default:
+                    - 1.0
+                  type: array
+                  items:
+                    anyOf:
+                      - type: integer
+                      - type: number
+                host_take_high:
+                  title: Host Take High
+                  default:
+                    - true
+                  type: array
+                  items:
+                    type: boolean
+                select_federated:
+                  title: Select Federated
+                  default: true
+                  type: boolean
+      statistic_param:
+        type: parameter_statistic_param
+        default:
+          metrics:
+            - mean
+          filter_type:
+            - threshold
+          threshold:
+            - 1
+          take_high:
+            - true
+        optional: true
+        description: statistic filter param
+        type_meta:
+          title: parameter_statistic_param
+          type: object
+          properties:
+            data:
+              title: Data
+              default:
+                metrics:
+                  - mean
+                filter_type:
+                  - threshold
+                threshold:
+                  - 1
+                take_high:
+                  - true
+              allOf:
+                - $ref: '#/definitions/StatisticFilterParam'
+          definitions:
+            StatisticFilterParam:
+              title: StatisticFilterParam
+              type: object
+              properties:
+                metrics:
+                  title: Metrics
+                  default:
+                    - mean
+                  type: array
+                  items:
+                    type: string
+                filter_type:
+                  title: Filter Type
+                  default:
+                    - threshold
+                  type: array
+                  items:
+                    type: string
+                threshold:
+                  title: Threshold
+                  default:
+                    - 1.0
+                  type: array
+                  items:
+                    anyOf:
+                      - type: integer
+                      - type: number
+                take_high:
+                  title: Take High
+                  default:
+                    - true
+                  type: array
+                  items:
+                    type: boolean
+      manual_param:
+        type: parameter_manual_param
+        default:
+          keep_col: [ ]
+          left_out_col: [ ]
+        optional: true
+        description: note that manual filter will always be processed as the last
+          filter
+        type_meta:
+          title: parameter_manual_param
+          type: object
+          properties:
+            data:
+              title: Data
+              default:
+                keep_col: [ ]
+                left_out_col: [ ]
+              allOf:
+                - $ref: '#/definitions/ManualFilterParam'
+          definitions:
+            ManualFilterParam:
+              title: ManualFilterParam
+              type: object
+              properties:
+                keep_col:
+                  title: Keep Col
+                  default: [ ]
+                  type: array
+                  items:
+                    type: string
+                left_out_col:
+                  title: Left Out Col
+                  default: [ ]
+                  type: array
+                  items:
+                    type: string
+      keep_one:
+        type: parameter_keep_one
+        default: true
+        optional: true
+        description: whether to keep at least one feature among `select_col`
+        type_meta:
+          title: parameter_keep_one
+          type: object
+          properties:
+            data:
+              title: Data
+              default: true
+              type: boolean
+      use_anonymous:
+        type: parameter_use_anonymous
+        default: false
+        optional: true
+        description: bool, whether interpret `select_col` & `filter_out_col` & `keep_col`
+          as anonymous column names
+        type_meta:
+          title: parameter_use_anonymous
+          type: object
+          properties:
+            data:
+              title: Data
+              default: false
+              type: boolean
+    artifacts:
+      train_data:
+        type: dataset
+        optional: false
+        stages:
+          - train
+        roles:
+          - guest
+          - host
+        description: ''
+      test_data:
+        type: dataset
+        optional: false
+        stages:
+          - predict
+        roles:
+          - guest
+          - host
+        description: ''
+      input_binning_model:
+        type: model
+        optional: true
+        stages:
+          - train
+        roles:
+          - guest
+          - host
+        description: ''
+      input_statistic_model:
+        type: model
+        optional: true
+        stages:
+          - train
+        roles:
+          - guest
+          - host
+        description: ''
+      input_model:
+        type: model
+        optional: false
+        stages:
+          - predict
+        roles:
+          - guest
+          - host
+        description: ''
+  output_definitions:
+    artifacts:
+      train_output_data:
+        type: dataset
+        optional: false
+        stages:
+          - train
+        roles:
+          - guest
+          - host
+        description: ''
+      test_output_data:
+        type: dataset
+        optional: false
+        stages:
+          - predict
+        roles:
+          - guest
+          - host
+        description: ''
+      output_model:
+        type: model
+        optional: false
+        stages:
+          - train
+        roles:
+          - guest
+          - host
+        description: ''
+schema_version: v1
