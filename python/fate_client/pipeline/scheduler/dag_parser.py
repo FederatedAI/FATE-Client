@@ -472,8 +472,6 @@ class DagParser(object):
         candidate_default_set = set()
         candidate_training_set = set()
         for input_key, input_spec in artifact_definitions.items():
-            if input_spec.type in [ArtifactType.MODEL, ArtifactType.MODELS, ArtifactType.METRIC]:
-                continue
             if Stage.DEFAULT in input_spec.stages or Stage.PREDICT in input_spec.stages:
                 if train_input_keys and input_key in train_input_keys:
                     candidate_training_set.add(input_key)
@@ -505,9 +503,15 @@ class DagParser(object):
                              output_artifacts: OutputArtifactsSpec):
         model_input_artifact_key, model_output_artifact_key = None, None
         if output_artifacts and output_artifacts.model:
+            model_output_artifact_key_candidate = None
             for artifact_name, artifact_spec in output_artifacts.model.items():
                 if Stage.TRAIN in artifact_spec.stages:
                     model_output_artifact_key = artifact_name
+                elif Stage.DEFAULT in artifact_spec.stages:
+                    model_output_artifact_key_candidate = artifact_name
+
+            if not model_output_artifact_key:
+                model_output_artifact_key = model_output_artifact_key_candidate
 
         if input_artifacts and input_artifacts.model:
             for artifact_name, artifact_spec in input_artifacts.model.items():
@@ -552,11 +556,14 @@ class DagParser(object):
         if train_artifact_definition.type != test_artifact_definition.type:
             raise ValueError(f"train_artifact_definition's type is {train_artifact_definition.type}, "
                              f"can not be changed to {test_artifact_definition.type}")
-        if isinstance(output_channel, RuntimeTaskOutputChannelSpec):
+        if not isinstance(output_channel, list):
             output_channel = [output_channel]
 
         ret_output_channel = []
         for channel in output_channel:
+            if isinstance(channel, DataWarehouseChannelSpec):
+                continue
+
             upstream_task = data_tracer[channel.producer_task]
             if upstream_task is None:
                 continue
