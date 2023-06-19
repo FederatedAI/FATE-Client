@@ -216,8 +216,6 @@ class DagParser(object):
                         for party_id in party.party_id:
                             task_conf[party.role][party_id].update(party_task_conf)
 
-                if not party_task_spec.inputs:
-                    continue
                 parameters = party_task_spec.parameters
 
                 if parameters:
