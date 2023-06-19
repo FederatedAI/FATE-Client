@@ -22,7 +22,7 @@ class DataFrameTransformer(Component):
     yaml_define_path = "./component_define/fate/dataframe_transformer.yaml"
 
     def __init__(self,
-                 __name: str,
+                 _name: str,
                  table: DataWarehouseChannel = PlaceHolder(),
                  name: str = PlaceHolder(),
                  namespace: str = PlaceHolder(),
@@ -32,7 +32,7 @@ class DataFrameTransformer(Component):
         inputs = locals()
         self._process_init_inputs(inputs)
         super(DataFrameTransformer, self).__init__()
-        self.__name = name
+        self._name = _name
         self.table = table
         self.name = name
         self.namespace = namespace
