@@ -12,7 +12,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-from .channel import ArtifactChannel
+from .channel import TaskOutputArtifactChannel, ModelWarehouseChannel, DataWarehouseChannel, ArtifactType
 
 
-__all__ = ["ArtifactChannel"]
+__all__ = [TaskOutputArtifactChannel, ModelWarehouseChannel, DataWarehouseChannel, ArtifactType]
