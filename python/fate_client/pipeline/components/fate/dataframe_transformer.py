@@ -15,7 +15,7 @@
 from typing import List, Union
 from ...conf.types import PlaceHolder
 from ..component_base import Component
-from ...interface import DataWarehouseChannel
+from ...interface import ArtifactType
 
 
 class DataFrameTransformer(Component):
@@ -23,7 +23,7 @@ class DataFrameTransformer(Component):
 
     def __init__(self,
                  _name: str,
-                 table: DataWarehouseChannel = PlaceHolder(),
+                 table: ArtifactType = PlaceHolder(),
                  name: str = PlaceHolder(),
                  namespace: str = PlaceHolder(),
                  anonymous_role: str = PlaceHolder(),

@@ -450,7 +450,7 @@ class DagParser(object):
     @classmethod
     def infer_dependent_tasks(cls, artifacts):
         if not artifacts:
-            return None
+            return []
 
         dependent_task_list = list()
         for artifact_name, artifact_channel in artifacts.items():

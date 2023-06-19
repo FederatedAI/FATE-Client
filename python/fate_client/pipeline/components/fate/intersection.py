@@ -15,7 +15,7 @@
 from typing import List
 from ...conf.types import PlaceHolder
 from ..component_base import Component
-from ...interface import DataWarehouseChannel
+from ...interface import ArtifactType
 
 
 class Intersection(Component):
@@ -24,7 +24,7 @@ class Intersection(Component):
     def __init__(self,
                  _name: str,
                  runtime_roles: List[str] = None,
-                 input_data: DataWarehouseChannel = PlaceHolder(),
+                 input_data: ArtifactType = PlaceHolder(),
                  method: str = PlaceHolder(),
                  ):
         inputs = locals()
