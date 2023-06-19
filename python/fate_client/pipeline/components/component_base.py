@@ -27,7 +27,7 @@ class Component(object):
     yaml_define_path = None
 
     def __init__(self, *args, **kwargs):
-        self.name = None
+        self.__name = None
         self.runtime_roles = None
         self.__party_instance = {}
         self._module = None
@@ -55,7 +55,7 @@ class Component(object):
         return new_cls
 
     def set_name(self, idx):
-        self.name = self.__class__.__name__.lower() + "_" + str(idx)
+        self.__name = self.__class__.__name__.lower() + "_" + str(idx)
 
     def _set_role(self, role):
         self._role = role
@@ -143,7 +143,7 @@ class Component(object):
 
     @property
     def get_name(self):
-        return self.name
+        return self.__name
 
     @property
     def component_ref(self):
@@ -322,7 +322,7 @@ class Component(object):
 
                 for channel in channels:
                     if not isinstance(channel, (TaskOutputArtifactChannel, DataWarehouseChannel, ModelWarehouseChannel)):
-                        raise ValueError(f"Component {self.name}'s {artifact_key} "
+                        raise ValueError(f"Component {self.__name}'s {artifact_key} "
                                          f"should be ArtifactChannel, {channel} find")
 
                     if channel.source == ArtifactSourceType.TASK_OUTPUT_ARTIFACT:
