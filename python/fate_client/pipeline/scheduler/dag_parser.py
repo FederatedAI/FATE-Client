@@ -414,15 +414,17 @@ class DagParser(object):
                 component_spec.input_artifacts, component_spec.output_artifacts)
             if model_input_artifact_key and model_output_artifact_key:
                 deduced_dag.tasks[task_name].inputs.model = {
-                    ArtifactSourceType.MODEL_WAREHOUSE: ModelWarehouseChannelSpec(
-                        producer_task=task_name,
-                        output_artifact_key=model_output_artifact_key
-                    )
+                    model_input_artifact_key: {
+                        ArtifactSourceType.MODEL_WAREHOUSE: ModelWarehouseChannelSpec(
+                            producer_task=task_name,
+                            output_artifact_key=model_output_artifact_key
+                        )
+                    }
                 }
 
             if deduced_dag.tasks[task_name].inputs:
                 deduced_dag.tasks[task_name].dependent_tasks = cls.infer_dependent_tasks(
-                    deduced_dag.tasks[task_name].inputs.data
+                    deduced_dag.tasks[task_name].inputs
                 )
 
         return deduced_dag
@@ -446,20 +448,25 @@ class DagParser(object):
         return ret_dag
 
     @classmethod
-    def infer_dependent_tasks(cls, artifacts):
-        if not artifacts:
+    def infer_dependent_tasks(cls, input_artifacts):
+        print (input_artifacts)
+        if not input_artifacts:
             return []
 
         dependent_task_list = list()
-        for artifact_name, artifact_channel in artifacts.items():
-            for artifact_source_type, channels in artifact_channel.items():
-                if artifact_source_type in [ArtifactSourceType.MODEL_WAREHOUSE, ArtifactSourceType.DATA_WAREHOUSE]:
-                    continue
+        for input_type in InputArtifactType.types():
+            artifacts = getattr(input_artifacts, input_type)
+            if not artifacts:
+                continue
+            for artifact_name, artifact_channel in artifacts.items():
+                for artifact_source_type, channels in artifact_channel.items():
+                    if artifact_source_type in [ArtifactSourceType.MODEL_WAREHOUSE, ArtifactSourceType.DATA_WAREHOUSE]:
+                        continue
 
-                if not isinstance(channels, list):
-                    channels = [channels]
-                for channel in channels:
-                    dependent_task_list.append(channel.producer_task)
+                    if not isinstance(channels, list):
+                        channels = [channels]
+                    for channel in channels:
+                        dependent_task_list.append(channel.producer_task)
 
         return dependent_task_list
 
