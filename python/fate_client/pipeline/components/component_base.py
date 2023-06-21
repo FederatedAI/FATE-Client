@@ -277,12 +277,12 @@ class Component(object):
         if self._outputs:
             return self._outputs
 
+        self._outputs = dict()
         for output_artifact_type in OutputArtifactType.types():
             artifacts = getattr(self._component_spec.output_artifacts, output_artifact_type)
             if not artifacts:
                 continue
 
-            self._outputs = dict()
             for artifact_name, artifact in artifacts.items():
                 channel = TaskOutputArtifactChannel(
                     name=artifact_name,
