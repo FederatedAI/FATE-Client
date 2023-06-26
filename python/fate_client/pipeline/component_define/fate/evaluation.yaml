@@ -10,19 +10,34 @@ component:
     - arbiter
   input_definitions:
     parameters:
-      eval_type:
-        type: parameter_eval_type
+      default_eval_metrics:
+        type: parameter_default_eval_metrics
         default: binary
         optional: true
         description: ''
         type_meta:
-          title: parameter_eval_type
+          title: parameter_default_eval_metrics
           type: object
           properties:
             data:
               title: Data
               default: binary
               type: string
+      metrics:
+        type: parameter_metrics
+        default:
+        optional: true
+        description: ''
+        type_meta:
+          title: parameter_metrics
+          type: object
+          properties:
+            data:
+              title: Data
+              type: array
+              items: {}
+          required:
+            - data
     artifacts:
       input_data:
         type: dataset

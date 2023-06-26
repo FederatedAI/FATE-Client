@@ -24,7 +24,8 @@ class Evaluation(Component):
     def __init__(self,
                  name: str,
                  runtime_roles: List[str] = None,
-                 eval_type: Literal['binary', 'multi', 'regression'] = PlaceHolder(),
+                 default_eval_metrics: Literal['binary', 'multi', 'regression'] = PlaceHolder(),
+                 metrics: List[str] = None,
                  input_data: ArtifactChannel = PlaceHolder(),
                  ):
         inputs = locals()
@@ -33,4 +34,5 @@ class Evaluation(Component):
         self.name = name
         self.runtime_roles = runtime_roles
         self.input_data = input_data
-        self.eval_type = eval_type
+        self.default_eval_metrics = default_eval_metrics
+        self.metrics = metrics
