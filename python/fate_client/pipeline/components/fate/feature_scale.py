@@ -16,14 +16,14 @@ from typing import List, Union
 
 from ..component_base import Component
 from ...conf.types import PlaceHolder
-from ...interface import ArtifactChannel
+from ...interface import ArtifactType
 
 
 class FeatureScale(Component):
     yaml_define_path = "./component_define/fate/feature_scale.yaml"
 
     def __init__(self,
-                 name: str,
+                 _name: str,
                  runtime_roles: List[str] = None,
                  method: str = PlaceHolder(),
                  feature_range: Union[list, dict] = None,
@@ -31,14 +31,14 @@ class FeatureScale(Component):
                  scale_idx: List[int] = None,
                  strict_range: bool = True,
                  use_anonymous: bool = False,
-                 train_data: ArtifactChannel = PlaceHolder(),
-                 test_data: ArtifactChannel = PlaceHolder(),
-                 input_model: ArtifactChannel = PlaceHolder()
+                 train_data: ArtifactType = PlaceHolder(),
+                 test_data: ArtifactType = PlaceHolder(),
+                 input_model: ArtifactType = PlaceHolder()
                  ):
         inputs = locals()
         self._process_init_inputs(inputs)
         super(FeatureScale, self).__init__()
-        self.name = name
+        self._name = _name
         self.runtime_roles = runtime_roles
         self.method = method
         self.feature_range = feature_range

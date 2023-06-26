@@ -15,6 +15,7 @@
 from .evaluation import Evaluation
 from .feature_scale import FeatureScale
 from .intersection import Intersection
-from .lr import HeteroLR
+# from .lr import HeteroLR
 from .reader import Reader
-from .statistics import Statistics
+# from .statistics import Statistics
+from .dataframe_transformer import DataFrameTransformer

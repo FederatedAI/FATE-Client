@@ -12,15 +12,17 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+from enum import Enum
 from typing import Dict
+from ..conf.types import InputArtifactType, Stage
 from ..entity.component_structures import ArtifactSpec
+from ..entity.dag_structures import DataWarehouseChannelSpec, ModelWarehouseChannelSpec
 
 
 class ComponentStageSchedule(object):
     @classmethod
-    def get_stage(cls, input_artifacts: Dict[str, ArtifactSpec]):
+    def get_stage(cls, input_artifacts: Dict[str, Dict[str, ArtifactSpec]], default_stage=None):
         """
-        stage in [train, predict, default]
         possible:
             train_data, validate_data: stage = train
             test_data: stage = predict
@@ -28,33 +30,42 @@ class ComponentStageSchedule(object):
             train_data & input_model: stage = train
             test_data & input_model: stage = train
         """
-        stage = set()
+        task_stage = None
+        for input_artifact_type in InputArtifactType.types():
+            if input_artifact_type not in input_artifacts:
+                continue
+            artifacts = input_artifacts[input_artifact_type]
+            for input_key, artifact in artifacts.items():
+                stage = set(artifact.stages)
+                if task_stage is None:
+                    task_stage = stage
+                else:
+                    task_stage &= stage
+
+        if not task_stage:
+            return default_stage
+
+        if len(task_stage) == 1:
+            return list(task_stage)[0]
+
+        """
+        multiple stage, try to infer from data input artifacts
+        """
+        data_artifacts = input_artifacts[InputArtifactType.DATA]
         data_type = 0
-        for input_key, artifact in input_artifacts.items():
-            if input_key == "train_data":
+        for data_key, artifact in data_artifacts.items():
+            if data_key.find("train") != -1:
                 data_type |= 1
-            elif input_key == "validate_data":
+            elif data_key.find("validate") != -1:
                 data_type |= 2
-            elif input_key == "test_data":
+            elif data_key.find("test") != -1:
                 data_type |= 4
             else:
                 data_type |= 8
 
-            if not artifact.stages:
-                continue
-
-            stage_list = artifact.stages
-            if len(stage_list) == 1:
-                stage.add(stage_list[0])
-
-        if len(stage):
-            return list(stage)[0]
-
-        """the following is warm_start"""
         if data_type & 1:
-            return "train"
-        if data_type & 4:
-            return "predict"
-
-        """the following is component which only has data key"""
-        return "default"
+            return Stage.TRAIN
+        elif data_type & 4:
+            return Stage.PREDICT
+        else:
+            return Stage.DEFAULT

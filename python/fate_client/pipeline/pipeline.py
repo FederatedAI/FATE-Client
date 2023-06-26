@@ -115,10 +115,10 @@ class Pipeline(object):
 
     def add_task(self, task) -> "Pipeline":
         if isinstance(task, Component):
-            if task.name in self._tasks:
-                raise ValueError(f"Task {task.name} has been added before")
+            if task.task_name in self._tasks:
+                raise ValueError(f"Task {task.task_name} has been added before")
 
-            self._tasks[task.name] = task
+            self._tasks[task.task_name] = task
         elif isinstance(task, Pipeline):
             if task.stage != "deployed":
                 raise ValueError("Deploy training pipeline first and use get_deployed_pipeline to get the inst")
@@ -214,7 +214,7 @@ class Pipeline(object):
             task_name_list = []
             for task in task_list:
                 if isinstance(task, Component):
-                    task_name_list.append(task.name)
+                    task_name_list.append(task.task_name)
                 else:
                     task_name_list.append(task)
         else:
