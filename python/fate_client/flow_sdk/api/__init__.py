@@ -12,10 +12,15 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-# import click
-# from fate_client.pipeline.pipeline_cli import pipeline_group
-# 
-# 
-# @click.group()
-# def cli():
-#     pass
+#
+from .job import Job
+from .task import Task
+from .data import Data
+from .log import Log
+from .model import Model
+from .output import Output
+from .permission import Permission
+from .provider import Provider
+from .service import Service
+from .site import Site
+from .table import Table
