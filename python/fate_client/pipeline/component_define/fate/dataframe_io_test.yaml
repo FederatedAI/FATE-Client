@@ -1,0 +1,63 @@
+component:
+  name: dataframe_io_test
+  description: ''
+  provider: fate
+  version: 2.0.0-alpha
+  labels: []
+  roles:
+    - local
+  parameters: {}
+  input_artifacts:
+    data:
+      dataframe_inputs:
+        type: dataframe
+        optional: false
+        stages:
+          - default
+        roles:
+          - local
+        description: ''
+        is_multi: true
+      dataframe_input:
+        type: dataframe
+        optional: false
+        stages:
+          - default
+        roles:
+          - local
+        description: ''
+        is_multi: false
+    model: {}
+  output_artifacts:
+    data:
+      dataframe_outputs:
+        type: dataframe
+        optional: false
+        stages:
+          - default
+        roles:
+          - local
+        description: ''
+        is_multi: true
+      dataframe_output:
+        type: dataframe
+        optional: false
+        stages:
+          - default
+        roles:
+          - local
+        description: ''
+        is_multi: false
+    model:
+      json_model_output:
+        type: json_model
+        optional: false
+        stages:
+          - default
+        roles:
+          - local
+        description: ''
+        is_multi: false
+    metric: {}
+schema_version: v1
+
