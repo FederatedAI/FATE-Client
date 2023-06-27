@@ -8,121 +8,90 @@ component:
     - guest
     - host
     - arbiter
-  input_definitions:
-    parameters:
-      runner_module:
-        type: parameter_runner_module
-        default: default_runner
-        optional: true
-        description: name of your runner script
-        type_meta:
-          title: parameter_runner_module
-          type: object
-          properties:
-            data:
-              title: Data
-              default: default_runner
-              type: string
-      runner_class:
-        type: parameter_runner_class
-        default: DefaultRunner
-        optional: true
-        description: class name of your runner class
-        type_meta:
-          title: parameter_runner_class
-          type: object
-          properties:
-            data:
-              title: Data
-              default: DefaultRunner
-              type: string
-      source:
-        type: parameter_source
-        default:
-        optional: true
-        description: path to your runner script folder
-        type_meta:
-          title: parameter_source
-          type: object
-          properties:
-            data:
-              title: Data
-              type: string
-          required:
-            - data
-      runner_conf:
-        type: parameter_runner_conf
-        default: {}
-        optional: true
-        description: the parameter dict of the NN runner class
-        type_meta:
-          title: parameter_runner_conf
-          type: object
-          properties:
-            data:
-              title: Data
-              default: {}
-              type: object
-    artifacts:
-      validate_data:
-        type: dataset
-        optional: true
-        stages:
-          - train
-        roles:
-          - guest
-          - host
-        description: validation data
+  parameters:
+    runner_module:
+      type: parameter_runner_module
+      default: default_runner
+      optional: true
+      description: name of your runner script
+      type_meta:
+        title: parameter_runner_module
+        type: object
+        properties:
+          data:
+            title: Data
+            default: default_runner
+            type: string
+    runner_class:
+      type: parameter_runner_class
+      default: DefaultRunner
+      optional: true
+      description: class name of your runner class
+      type_meta:
+        title: parameter_runner_class
+        type: object
+        properties:
+          data:
+            title: Data
+            default: DefaultRunner
+            type: string
+    runner_conf:
+      type: parameter_runner_conf
+      default: {}
+      optional: true
+      description: the parameter dict of the NN runner class
+      type_meta:
+        title: parameter_runner_conf
+        type: object
+        properties:
+          data:
+            title: Data
+            default: {}
+            type: object
+    source:
+      type: parameter_source
+      default:
+      optional: true
+      description: path to your runner script folder
+      type_meta:
+        title: parameter_source
+        type: object
+        properties:
+          data:
+            title: Data
+            type: string
+        required:
+          - data
+  input_artifacts:
+    data:
       train_data:
-        type: dataset
+        types:
+          - dataframe
         optional: false
         stages:
           - train
         roles:
           - guest
           - host
-        description: training data
-      test_data:
-        type: dataset
-        optional: false
-        stages:
-          - predict
-        roles:
-          - guest
-          - host
         description: ''
-      input_model:
-        type: model
-        optional: false
-        stages:
-          - predict
-        roles:
-          - guest
-          - host
-        description: ''
-  output_definitions:
-    artifacts:
-      train_output_data:
-        type: dataset
+        is_multi: true
+      validate_data:
+        types:
+          - dataframe
         optional: false
         stages:
           - train
         roles:
           - guest
           - host
-          - arbiter
         description: ''
-      test_output_data:
-        type: dataset
-        optional: false
-        stages:
-          - predict
-        roles:
-          - guest
-          - host
-        description: ''
-      output_model:
-        type: model
+        is_multi: true
+    model: {}
+  output_artifacts:
+    data:
+      dataframe_output:
+        types:
+          - dataframe
         optional: false
         stages:
           - train
@@ -131,8 +100,11 @@ component:
           - host
           - arbiter
         description: ''
-      train_output_metric:
-        type: loss
+        is_multi: false
+    model:
+      model_directory_output:
+        types:
+          - model_directory
         optional: false
         stages:
           - train
@@ -141,5 +113,19 @@ component:
           - host
           - arbiter
         description: ''
+        is_multi: false
+    metric:
+      json_metric_output:
+        types:
+          - json_metric
+        optional: false
+        stages:
+          - train
+        roles:
+          - guest
+          - host
+          - arbiter
+        description: ''
+        is_multi: false
 schema_version: v1
 

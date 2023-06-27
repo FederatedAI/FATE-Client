@@ -15,7 +15,7 @@
 from typing import List, Literal
 from ...conf.types import PlaceHolder
 from ..component_base import Component
-from ...interface import DataWarehouseChannel
+from ...interface import ArtifactType
 
 
 class Evaluation(Component):
@@ -26,8 +26,7 @@ class Evaluation(Component):
                  runtime_roles: List[str] = None,
                  default_eval_metrics: Literal['binary', 'multi', 'regression'] = PlaceHolder(),
                  metrics: List[str] = None,
-                 input_data: DataWarehouseChannel = PlaceHolder(),
-
+                 input_data: ArtifactType = PlaceHolder(),
                  ):
         inputs = locals()
         self._process_init_inputs(inputs)

@@ -14,7 +14,6 @@
 #  limitations under the License.
 from typing import List
 from fate_client.pipeline.conf.types import PlaceHolder
-from fate_client.pipeline.interface import ArtifactChannel
 from fate_client.pipeline.components.fate.nn.loader import Loader, ModelLoader, CustFuncLoader, DatasetLoader
 from fate_client.pipeline.components.fate.nn.fate_torch.base import FateTorch, FateTorchOptimizer, Sequential
 from typing import Union
@@ -22,7 +21,7 @@ from fate_client.pipeline.components.fate.nn.algo_params import TrainingArgument
 from typing import Literal
 from ...conf.types import PlaceHolder
 from ..component_base import Component
-from ...interface import ArtifactChannel
+from ...interface import ArtifactType
 
 
 def get_config_of_default_runner(
@@ -86,22 +85,22 @@ class HomoNN(Component):
     yaml_define_path = "./component_define/fate/homo_nn.yaml"
 
     def __init__(self,
-                 name: str,
+                 _name: str,
                  runtime_roles: List[str] = None,
                  runner_module: str = PlaceHolder(),
                  runner_class: str = PlaceHolder(),
                  runner_conf: dict = PlaceHolder(),
                  source: str = PlaceHolder(),
-                 train_data: ArtifactChannel = PlaceHolder(),
-                 validate_data: ArtifactChannel = PlaceHolder(),
-                 test_data: ArtifactChannel = PlaceHolder(),
-                 input_model: ArtifactChannel = PlaceHolder(),
+                 train_data: ArtifactType = PlaceHolder(),
+                 validate_data: ArtifactType = PlaceHolder(),
+                 test_data: ArtifactType = PlaceHolder(),
+                 input_model: ArtifactType = PlaceHolder(),
                  ):
         
         inputs = locals()
         self._process_init_inputs(inputs)
         super(HomoNN, self).__init__()
-        self.name = name
+        self._name = _name
         self.runtime_roles = runtime_roles
         self.runner_module = runner_module
         self.runner_class = runner_class
