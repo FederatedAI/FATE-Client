@@ -1,0 +1,97 @@
+component:
+  name: statistics
+  description: ''
+  provider: fate
+  version: 2.0.0-alpha
+  labels: [ ]
+  roles:
+    - guest
+    - host
+  input_definitions:
+    parameters:
+      metrics:
+        type: parameter_metrics
+        default: describe
+        optional: true
+        description: "metrics to be computed, default 'describe', which computes:\
+          \ {'count', 'mean', 'std', 'min', '25%', '50%', '75%', 'max'},note that\
+          \ if 'describe' is specified, it's best not to be provide other metrics\
+          \ simultaneously"
+        type_meta:
+          title: parameter_metrics
+          type: object
+          properties:
+            data:
+              title: Data
+              default: describe
+              anyOf:
+                - type: array
+                  items:
+                    type: string
+                - type: string
+      bias:
+        type: parameter_bias
+        default: true
+        optional: true
+        description: If False, the calculations of skewness and kurtosis are corrected
+          for statistical bias.
+        type_meta:
+          title: parameter_bias
+          type: object
+          properties:
+            data:
+              title: Data
+              default: true
+              type: boolean
+      skip_col:
+        type: parameter_skip_col
+        default:
+        optional: true
+        description: columns to be skipped, default None; if None, statistics will
+          be computed over all columns
+        type_meta:
+          title: parameter_skip_col
+          type: object
+          properties:
+            data:
+              title: Data
+              type: array
+              items:
+                type: string
+          required:
+            - data
+      use_anonymous:
+        type: parameter_use_anonymous
+        default: false
+        optional: true
+        description: bool, whether interpret `skip_col` as anonymous column names
+        type_meta:
+          title: parameter_use_anonymous
+          type: object
+          properties:
+            data:
+              title: Data
+              default: false
+              type: boolean
+    artifacts:
+      train_data:
+        type: dataset
+        optional: false
+        stages:
+          - train
+        roles:
+          - guest
+          - host
+        description: ''
+  output_definitions:
+    artifacts:
+      output_model:
+        type: model
+        optional: false
+        stages:
+          - train
+        roles:
+          - guest
+          - host
+        description: ''
+schema_version: v1

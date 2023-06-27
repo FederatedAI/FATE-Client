@@ -18,9 +18,23 @@ import networkx as nx
 from pydantic import BaseModel
 from typing import Dict, List, Union
 
-from ..conf.types import ArtifactType, JobStage, InputDataKeyType, ArtifactSourceType
-from ..entity.dag_structures import DAGSchema, DAGSpec, RuntimeTaskOutputChannelSpec, ModelWarehouseChannelSpec
-from ..entity.component_structures import ArtifactSpec, ComponentSpec
+from ..conf.types import (
+    ArtifactType,
+    Stage,
+    InputDataKeyType,
+    ArtifactSourceType,
+    InputArtifactType,
+    OutputArtifactType
+)
+
+from ..entity.dag_structures import (
+    DAGSchema,
+    DAGSpec,
+    RuntimeTaskOutputChannelSpec,
+    ModelWarehouseChannelSpec,
+    DataWarehouseChannelSpec,
+)
+from ..entity.component_structures import ArtifactSpec, ComponentSpec, InputArtifactsSpec, OutputArtifactsSpec
 
 
 class DagParser(object):
@@ -46,7 +60,7 @@ class DagParser(object):
             if not task_spec.conf:
                 task_conf = copy.deepcopy(job_conf)
             else:
-                task_conf = copy.deepcopy(task_spec.conf).update(job_conf)
+                task_conf = copy.deepcopy(job_conf).update(task_spec.conf)
             if task_spec.stage:
                 task_stage = task_spec.stage
 
@@ -57,13 +71,55 @@ class DagParser(object):
                 self._tasks[name].component_spec = component_specs[name]
             self._init_task_runtime_parameters_and_conf(name, dag_schema, task_conf)
 
-            if not task_spec.inputs or not task_spec.inputs.artifacts:
+            self._init_upstream_inputs(name, dag_schema.dag)
+
+    def _init_upstream_inputs(self, name, dag: DAGSpec):
+        task_spec = dag.tasks[name]
+        common_upstream_inputs = dict()
+        if task_spec.inputs:
+            common_upstream_inputs = self._get_upstream_inputs(name, task_spec)
+
+        upstream_inputs = dict()
+        role_keys = set([party.role for party in dag.parties])
+        for party in dag.parties:
+            if party.role not in role_keys:
+                continue
+            upstream_inputs[party.role] = dict()
+            for party_id in party.party_id:
+                upstream_inputs[party.role][party_id] = copy.deepcopy(common_upstream_inputs)
+
+        party_tasks = dag.party_tasks
+        if not party_tasks:
+            self._tasks[name].upstream_inputs = upstream_inputs
+            return
+
+        for site_name, party_tasks_spec in party_tasks.items():
+            if name not in party_tasks_spec.tasks:
+                continue
+            party_task_spec = party_tasks_spec.tasks[name]
+            if not party_task_spec.inputs:
+                continue
+            party_upstream_inputs = self._get_upstream_inputs(name, party_task_spec)
+            for party in party_tasks_spec.parties:
+                for party_id in party.party_id:
+                    upstream_inputs[party.role][party_id].update(party_upstream_inputs)
+
+        self._tasks[name].upstream_inputs = upstream_inputs
+
+    def _get_upstream_inputs(self, name, task_spec):
+        upstream_inputs = dict()
+        runtime_roles = self._tasks[name].runtime_roles
+        input_artifacts = task_spec.inputs
+
+        for input_type in InputArtifactType.types():
+            artifacts = getattr(input_artifacts, input_type)
+            if not artifacts:
                 continue
 
-            upstream_inputs = dict()
-            runtime_roles = self._tasks[name].runtime_roles
-            for input_key, output_specs_dict in task_spec.inputs.artifacts.items():
-                upstream_inputs[input_key] = dict()
+            upstream_inputs[input_type] = dict()
+
+            for input_key, output_specs_dict in artifacts.items():
+                upstream_inputs[input_type][input_key] = dict()
                 for artifact_source, channel_spec_list in output_specs_dict.items():
                     if artifact_source == ArtifactSourceType.MODEL_WAREHOUSE:
                         if isinstance(channel_spec_list, list):
@@ -71,35 +127,42 @@ class DagParser(object):
                             for channel in channel_spec_list:
                                 model_warehouse_channel = ModelWarehouseChannelSpec(**channel.dict(exclude_defaults=True))
                                 if model_warehouse_channel.model_id is None:
-                                    model_warehouse_channel.model_id = self._conf.get("model_id", None)
-                                    model_warehouse_channel.model_version = self._conf.get("model_version", None)
+                                    model_warehouse_channel.model_id = \
+                                        self._conf.get("model_warehouse", {}).get("model_id", None)
+                                    model_warehouse_channel.model_version = \
+                                        self._conf.get("model_warehouse", {}).get("model_version", None)
                                 inputs.append(model_warehouse_channel)
                         else:
                             inputs = ModelWarehouseChannelSpec(**channel_spec_list.dict(exclude_defaults=True))
                             if inputs.model_id is None:
-                                inputs.model_id = self._conf.get("model_id", None)
-                                inputs.model_version = self._conf.get("model_version", None)
+                                inputs.model_id = self._conf.get("model_warehouse", {}).get("model_id", None)
+                                inputs.model_version = self._conf.get("model_warehouse", {}).get("model_version", None)
 
-                        upstream_inputs[input_key] = inputs
+                        upstream_inputs[input_type][input_key] = inputs
                         continue
                     else:
+                        if artifact_source == ArtifactSourceType.DATA_WAREHOUSE:
+                            channel_spec = DataWarehouseChannelSpec
+                        else:
+                            channel_spec = RuntimeTaskOutputChannelSpec
                         if isinstance(channel_spec_list, list):
-                            inputs = [RuntimeTaskOutputChannelSpec(**channel.dict(exclude_defaults=True))
+                            inputs = [channel_spec(**channel.dict(exclude_defaults=True))
                                       for channel in channel_spec_list]
                         else:
-                            inputs = RuntimeTaskOutputChannelSpec(**channel_spec_list.dict(exclude_defaults=True))
+                            inputs = channel_spec(**channel_spec_list.dict(exclude_defaults=True))
 
-                        upstream_inputs[input_key] = inputs
+                        upstream_inputs[input_type][input_key] = inputs
 
                     if not isinstance(channel_spec_list, list):
                         channel_spec_list = [channel_spec_list]
 
                     for channel_spec in channel_spec_list:
-                        dependent_task = channel_spec.producer_task
-                        self._add_edge(dependent_task, name)
+                        if isinstance(channel_spec, RuntimeTaskOutputChannelSpec):
+                            dependent_task = channel_spec.producer_task
+                            self._add_edge(dependent_task, name)
 
-            upstream_inputs = self.check_and_add_runtime_roles(upstream_inputs, runtime_roles)
-            self._tasks[name].upstream_inputs = upstream_inputs
+        upstream_inputs = self.check_and_add_runtime_roles(upstream_inputs, runtime_roles)
+        return upstream_inputs
 
     def _add_edge(self, src, dst, attrs=None):
         if not attrs:
@@ -116,8 +179,8 @@ class DagParser(object):
             role_keys = role_keys & task_role_keys
 
         common_parameters = dict()
-        if task_spec.inputs and task_spec.inputs.parameters:
-            common_parameters = task_spec.inputs.parameters
+        if task_spec.parameters:
+            common_parameters = task_spec.parameters
 
         task_parameters = dict()
         task_conf = dict()
@@ -153,9 +216,7 @@ class DagParser(object):
                         for party_id in party.party_id:
                             task_conf[party.role][party_id].update(party_task_conf)
 
-                if not party_task_spec.inputs:
-                    continue
-                parameters = party_task_spec.inputs.parameters
+                parameters = party_task_spec.parameters
 
                 if parameters:
                     for party in party_parties:
@@ -227,14 +288,17 @@ class DagParser(object):
     @staticmethod
     def check_and_add_runtime_roles(upstream_inputs, runtime_roles):
         correct_inputs = copy.deepcopy(upstream_inputs)
-        for input_key, channel_list in upstream_inputs.items():
-            if isinstance(channel_list, list):
-                for idx, channel in enumerate(channel_list):
-                    if channel.roles is None:
-                        correct_inputs[input_key][idx].roles = runtime_roles
-            else:
-                if channel_list.roles is None:
-                    correct_inputs[input_key].roles = runtime_roles
+        for input_type in InputArtifactType.types():
+            if input_type not in upstream_inputs:
+                continue
+            for input_key, channel_list in upstream_inputs[input_type].items():
+                if isinstance(channel_list, list):
+                    for idx, channel in enumerate(channel_list):
+                        if channel.roles is None:
+                            correct_inputs[input_type][input_key][idx].roles = runtime_roles
+                else:
+                    if channel_list.roles is None:
+                        correct_inputs[input_type][input_key].roles = runtime_roles
 
         return correct_inputs
 
@@ -272,13 +336,13 @@ class DagParser(object):
                    component_specs: Dict[str, ComponentSpec], data_tracer: dict):
         stage = dag_spec.stage
         deduced_dag = copy.deepcopy(dag_spec)
-        deduced_dag.stage = JobStage.PREDICT
+        deduced_dag.stage = Stage.PREDICT
 
         """
         linkage messages only occur in tasks field
         """
         task_name_set = set(task_name_list)
-        topological_task_list = set(dag_parser.topological_sort())
+        topological_task_list = list(dag_parser.topological_sort())
         for task_name in topological_task_list:
             if task_name not in task_name_set:
                 continue
@@ -287,7 +351,7 @@ class DagParser(object):
             """
             job stage should be "train", so task.stage is default/predict/None, if stage is predict, erase it
             """
-            if task.stage == JobStage.PREDICT:
+            if task.stage == Stage.PREDICT:
                 deduced_dag.tasks[task_name].stage = None
 
             task_stage = task.stage if task.stage else stage
@@ -295,66 +359,72 @@ class DagParser(object):
             default stage should not distinguish fit & transform or fit & transform. 
             """
             component_spec = component_specs[task_name]
-            if task.inputs and task.inputs.artifacts:
-                for artifact_name, artifact_channel in task.inputs.artifacts.items():
-                    artifact_definition = component_spec.input_definitions.artifacts[artifact_name]
-                    if artifact_definition.type in [ArtifactType.DATASET, ArtifactType.DATASETS]:
-                        deduced_dag.tasks[task_name].inputs.artifacts.pop(artifact_name)
-                        if artifact_name == InputDataKeyType.VALIDATE_DATA:
-                            continue
-                        elif artifact_name == InputDataKeyType.TRAIN_DATA:
-                            """
-                            change train_data to test_data, try to infer a test data key in input definition
-                            """
-                            test_input_key = cls.infer_test_input_data_key(artifact_name,
-                                                                           task.inputs.artifacts.keys(),
-                                                                           component_spec.input_definitions.artifacts)
-                        else:
-                            """
-                            test_data/input_data or other data type, it won't be changed if stage is default or predict,
-                            else also infer first
-                            """
-                            if JobStage.DEFAULT in artifact_definition.stages or \
-                                    JobStage.PREDICT in artifact_definition.stages:
-                                test_input_key = artifact_name
-                            else:
-                                test_input_key = cls.infer_test_input_data_key(artifact_name,
-                                                                               task.inputs.artifacts.keys(),
-                                                                               component_spec.input_definitions.artifacts)
+            if task.inputs and (data_input_artifacts := task.inputs.data):
+                for artifact_name, artifact_channel in data_input_artifacts.items():
+                    if isinstance(artifact_channel, DataWarehouseChannelSpec):
+                        continue
 
-                        test_input_artifact_definition = component_spec.input_definitions.artifacts[test_input_key]
-                        artifact_source_type = list(artifact_channel.items())[0][0]
-                        runtime_output_channel = list(artifact_channel.items())[0][1]
-                        test_input_data = cls.infer_test_input_data(
-                            task_name_set,
-                            artifact_definition,
-                            test_input_artifact_definition,
-                            runtime_output_channel,
-                            dag_spec,
-                            component_specs,
-                            data_tracer
-                        )
-                        if test_input_data:
-                            if test_input_key not in deduced_dag.tasks[task_name].inputs.artifacts:
-                                deduced_dag.tasks[task_name].inputs.artifacts[test_input_key] = dict()
-                            deduced_dag.tasks[task_name].inputs.artifacts[test_input_key][artifact_source_type] = \
-                                test_input_data
-                    elif artifact_definition.type in [ArtifactType.MODEL, ArtifactType.MODELS]:
-                        deduced_dag.tasks[task_name].inputs.artifacts.pop(artifact_name)
+                    artifact_definition = component_spec.input_artifacts.data[artifact_name]
+
+                    deduced_dag.tasks[task_name].inputs.data.pop(artifact_name)
+                    if artifact_name == InputDataKeyType.VALIDATE_DATA:
+                        continue
+                    elif artifact_name == InputDataKeyType.TRAIN_DATA:
+                        """
+                        change train_data to test_data, try to infer a test data key in input definition
+                        """
+                        test_input_key = cls.infer_test_input_data_key(artifact_name,
+                                                                       task.inputs.data.keys(),
+                                                                       component_spec.input_artifacts.data)
+                    else:
+                        """
+                        test_data/input_data or other data type, it won't be changed if stage is default or predict,
+                        else also infer first
+                        """
+                        if Stage.DEFAULT in artifact_definition.stages or \
+                                Stage.PREDICT in artifact_definition.stages:
+                            test_input_key = artifact_name
+                        else:
+                            test_input_key = cls.infer_test_input_data_key(artifact_name,
+                                                                           task.inputs.data.keys(),
+                                                                           component_spec.input_artifacts.data)
+
+                    test_input_artifact_definition = component_spec.input_artifacts.data[test_input_key]
+                    artifact_source_type = list(artifact_channel.items())[0][0]
+                    runtime_output_channel = list(artifact_channel.items())[0][1]
+                    test_input_data = cls.infer_test_input_data(
+                        task_name_set,
+                        artifact_definition,
+                        test_input_artifact_definition,
+                        runtime_output_channel,
+                        dag_spec,
+                        component_specs,
+                        data_tracer
+                    )
+                    if test_input_data:
+                        if test_input_key not in deduced_dag.tasks[task_name].inputs.data:
+                            deduced_dag.tasks[task_name].inputs.data[test_input_key] = dict()
+                        deduced_dag.tasks[task_name].inputs.data[test_input_key][artifact_source_type] = \
+                            test_input_data
+            if task.inputs and (model_input_artifacts := task.inputs.model):
+                for artifact_name in model_input_artifacts:
+                    deduced_dag.tasks[task_name].inputs.model.pop(artifact_name)
 
             model_input_artifact_key, model_output_artifact_key = cls.infer_model_artifact(
-                component_spec.input_definitions.artifacts, component_spec.output_definitions.artifacts)
+                component_spec.input_artifacts, component_spec.output_artifacts)
             if model_input_artifact_key and model_output_artifact_key:
-                deduced_dag.tasks[task_name].inputs.artifacts[model_input_artifact_key] = {
-                    ArtifactSourceType.MODEL_WAREHOUSE: ModelWarehouseChannelSpec(
-                        producer_task=task_name,
-                        output_artifact_key=model_output_artifact_key
-                    )
+                deduced_dag.tasks[task_name].inputs.model = {
+                    model_input_artifact_key: {
+                        ArtifactSourceType.MODEL_WAREHOUSE: ModelWarehouseChannelSpec(
+                            producer_task=task_name,
+                            output_artifact_key=model_output_artifact_key
+                        )
+                    }
                 }
 
             if deduced_dag.tasks[task_name].inputs:
                 deduced_dag.tasks[task_name].dependent_tasks = cls.infer_dependent_tasks(
-                    deduced_dag.tasks[task_name].inputs.artifacts
+                    deduced_dag.tasks[task_name].inputs
                 )
 
         return deduced_dag
@@ -378,20 +448,25 @@ class DagParser(object):
         return ret_dag
 
     @classmethod
-    def infer_dependent_tasks(cls, artifacts):
-        if not artifacts:
-            return None
+    def infer_dependent_tasks(cls, input_artifacts):
+        print (input_artifacts)
+        if not input_artifacts:
+            return []
 
         dependent_task_list = list()
-        for artifact_name, artifact_channel in artifacts.items():
-            for artifact_source_type, channels in artifact_channel.items():
-                if artifact_source_type == ArtifactSourceType.MODEL_WAREHOUSE:
-                    continue
+        for input_type in InputArtifactType.types():
+            artifacts = getattr(input_artifacts, input_type)
+            if not artifacts:
+                continue
+            for artifact_name, artifact_channel in artifacts.items():
+                for artifact_source_type, channels in artifact_channel.items():
+                    if artifact_source_type in [ArtifactSourceType.MODEL_WAREHOUSE, ArtifactSourceType.DATA_WAREHOUSE]:
+                        continue
 
-                if not isinstance(channels, list):
-                    channels = [channels]
-                for channel in channels:
-                    dependent_task_list.append(channel.producer_task)
+                    if not isinstance(channels, list):
+                        channels = [channels]
+                    for channel in channels:
+                        dependent_task_list.append(channel.producer_task)
 
         return dependent_task_list
 
@@ -404,12 +479,10 @@ class DagParser(object):
         candidate_default_set = set()
         candidate_training_set = set()
         for input_key, input_spec in artifact_definitions.items():
-            if input_spec.type in [ArtifactType.MODEL, ArtifactType.MODELS, ArtifactType.METRIC]:
-                continue
-            if JobStage.DEFAULT in input_spec.stages or JobStage.PREDICT in input_spec.stages:
+            if Stage.DEFAULT in input_spec.stages or Stage.PREDICT in input_spec.stages:
                 if train_input_keys and input_key in train_input_keys:
                     candidate_training_set.add(input_key)
-                elif JobStage.DEFAULT in input_spec.stages:
+                elif Stage.DEFAULT in input_spec.stages:
                     candidate_default_set.add(input_key)
                 else:
                     candidate_predict_set.add(input_key)
@@ -433,22 +506,23 @@ class DagParser(object):
         return list(candidate_training_set)[0]
 
     @classmethod
-    def infer_model_artifact(cls, input_artifacts: Dict[str, ArtifactSpec], output_artifacts: Dict[str, ArtifactSpec]):
+    def infer_model_artifact(cls, input_artifacts: InputArtifactsSpec,
+                             output_artifacts: OutputArtifactsSpec):
         model_input_artifact_key, model_output_artifact_key = None, None
-        if output_artifacts:
-            for artifact_name, artifact_spec in output_artifacts.items():
-                if artifact_spec.type not in [ArtifactType.MODEL, ArtifactType.MODELS]:
-                    continue
-
-                if JobStage.TRAIN in artifact_spec.stages:
+        if output_artifacts and output_artifacts.model:
+            model_output_artifact_key_candidate = None
+            for artifact_name, artifact_spec in output_artifacts.model.items():
+                if Stage.TRAIN in artifact_spec.stages:
                     model_output_artifact_key = artifact_name
+                elif Stage.DEFAULT in artifact_spec.stages:
+                    model_output_artifact_key_candidate = artifact_name
 
-        if input_artifacts:
-            for artifact_name, artifact_spec in input_artifacts.items():
-                if artifact_spec.type not in [ArtifactType.MODEL, ArtifactType.MODELS]:
-                    continue
+            if not model_output_artifact_key:
+                model_output_artifact_key = model_output_artifact_key_candidate
 
-                if JobStage.PREDICT in artifact_spec.stages or JobStage.DEFAULT in artifact_spec.stages:
+        if input_artifacts and input_artifacts.model:
+            for artifact_name, artifact_spec in input_artifacts.model.items():
+                if Stage.PREDICT in artifact_spec.stages or Stage.DEFAULT in artifact_spec.stages:
                     model_input_artifact_key = artifact_name
 
         return model_input_artifact_key, model_output_artifact_key
@@ -458,13 +532,10 @@ class DagParser(object):
         candidate_artifact_name = None
         candidate_count = 0
         for artifact_name, artifact_spec in output_artifacts.items():
-            if artifact_spec.type not in [ArtifactType.DATASET, ArtifactType.DATASETS]:
+            if Stage.DEFAULT not in artifact_spec.stages and Stage.PREDICT not in artifact_spec.stages:
                 continue
 
-            if JobStage.DEFAULT not in artifact_spec.stages and JobStage.PREDICT not in artifact_spec.stages:
-                continue
-
-            if JobStage.PREDICT in artifact_spec.stages:
+            if Stage.PREDICT in artifact_spec.stages:
                 return artifact_name
 
             """
@@ -490,22 +561,22 @@ class DagParser(object):
                               component_specs,
                               data_tracer: dict):
         if train_artifact_definition.type != test_artifact_definition.type:
-            """
-            e.g.: datasets->dataset or dataset->datasets
-            """
             raise ValueError(f"train_artifact_definition's type is {train_artifact_definition.type}, "
                              f"can not be changed to {test_artifact_definition.type}")
-        if isinstance(output_channel, RuntimeTaskOutputChannelSpec):
+        if not isinstance(output_channel, list):
             output_channel = [output_channel]
 
         ret_output_channel = []
         for channel in output_channel:
+            if isinstance(channel, DataWarehouseChannelSpec):
+                continue
+
             upstream_task = data_tracer[channel.producer_task]
             if upstream_task is None:
                 continue
 
             test_artifact_data_key = cls.infer_test_output_data_key(
-                component_specs[upstream_task].output_definitions.artifacts
+                component_specs[upstream_task].output_artifacts.data
             )
             ret_output_channel.append(
                 RuntimeTaskOutputChannelSpec(
@@ -531,14 +602,12 @@ class DagParser(object):
 
         task_spec = dag_spec.tasks[task_name]
         component_spec = component_specs[task_name]
-        if task_spec.inputs is None or task_spec.inputs.artifacts is None:
+        if task_spec.inputs is None or task_spec.inputs.data is None:
             return None
 
         upstream_task = set()
-        for artifact_name, artifact_channel in task_spec.inputs.artifacts.items():
-            artifact_definition = component_spec.input_definitions.artifacts[artifact_name]
-            if artifact_definition.type not in [ArtifactType.DATASET, ArtifactType.DATASETS]:
-                continue
+        for artifact_name, artifact_channel in task_spec.inputs.data.items():
+            artifact_definition = component_spec.input_artifacts.data[artifact_name]
 
             if not task_spec.stage:
                 """
@@ -547,7 +616,7 @@ class DagParser(object):
                 if artifact_name == InputDataKeyType.VALIDATE_DATA:
                     continue
 
-            if artifact_definition.type == ArtifactType.DATASETS:
+            if artifact_definition.is_multi:
                 channels = list(artifact_channel.items())[0][1]
                 for channel in channels:
                     upstream_task.add(

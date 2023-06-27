@@ -14,6 +14,11 @@
 #  limitations under the License.
 from .evaluation import Evaluation
 from .feature_scale import FeatureScale
-from .lr import HeteroLR
-from .reader import Reader
 from .intersection import Intersection
+# from .lr import HeteroLR
+from .reader import Reader
+# from .statistics import Statistics
+from .dataframe_transformer import DataFrameTransformer
+# from .multi_input import MultiInput
+from .dataframe_io_test import DataFrameIOTest
+# from .multi_model_test import MultiModelTest
