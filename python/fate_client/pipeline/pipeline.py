@@ -249,7 +249,7 @@ class StandalonePipeline(Pipeline):
 
     def get_task_info(self, task):
         if isinstance(task, Component):
-            task = task.name
+            task = task.task_name
 
         return StandaloneTaskInfo(task_name=task, model_info=self._model_info)
 
@@ -258,15 +258,27 @@ class FateFlowPipeline(Pipeline):
     def __init__(self, *args):
         super(FateFlowPipeline, self).__init__(FateFlowExecutor(), *args)
 
-    def upload(self, file: str, head: int,
-               namespace: str, name: str,
-               meta: dict, partitions=4,
-               destroy=True,
-               storage_engine=None, **kwargs):
-        self._executor.upload(file, head, namespace, name, meta, partitions, destroy, storage_engine, **kwargs)
+    def transform_local_file_to_dataframe(self,
+                                          file: str,
+                                          head: str,
+                                          namespace: str,
+                                          name: str,
+                                          meta: dict,
+                                          extend_sid=True,
+                                          partitions=4,
+                                          **kwargs):
+        data_warehouse = self._executor.upload(file=file,
+                                               head=head,
+                                               meta=meta,
+                                               partitions=partitions,
+                                               extend_sid=extend_sid,
+                                               role=self._local_role,
+                                               party_id=self._local_party_id,
+                                               **kwargs)
+        self._executor.transform_to_dataframe(namespace, name, data_warehouse, self._local_role, self._local_party_id)
 
     def get_task_info(self, task):
         if isinstance(task, Component):
-            task = task.name
+            task = task.task_name
 
         return FateFlowTaskInfo(task_name=task, model_info=self._model_info)

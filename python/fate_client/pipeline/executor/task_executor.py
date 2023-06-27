@@ -193,21 +193,43 @@ class FateFlowExecutor(object):
         raise ValueError(f"Can not retrieval site's party_id from site's role {role}")
 
     @staticmethod
-    def upload(file: str, head: int,
-               namespace: str, name: str, meta: dict,
-               partitions=4, destroy=True, storage_engine=None, **kwargs):
+    def upload(file: str,
+               head: bool,
+               meta: dict,
+               role,
+               party_id,
+               extend_sid=True,
+               partitions=4,
+               **kwargs):
         flow_job_invoker = FATEFlowJobInvoker()
-        post_data = dict(file=file,
-                         head=head,
-                         namespace=namespace,
-                         name=name,
-                         meta=meta,
-                         partitions=partitions,
-                         destroy=destroy)
-        if storage_engine:
-            post_data["storage_engine"] = storage_engine
+        site_party_id = flow_job_invoker.query_site_info()
+        if site_party_id:
+            local_party_id = site_party_id
 
-        if kwargs:
-            post_data.update(kwargs)
+        return flow_job_invoker.upload_data(file=file,
+                                            head=head,
+                                            meta=meta,
+                                            extend_sid=extend_sid,
+                                            partitions=partitions,
+                                            role=role,
+                                            party_id=party_id,
+                                            **kwargs)
 
-        flow_job_invoker.upload_data(post_data)
+    @staticmethod
+    def transform_to_dataframe(namespace: str,
+                               name: str,
+                               data_warehouse: dict,
+                               role: str,
+                               party_id: str):
+        flow_job_invoker = FATEFlowJobInvoker()
+
+        site_party_id = flow_job_invoker.query_site_info()
+        if site_party_id:
+            local_party_id = site_party_id
+
+        flow_job_invoker.transform_to_dataframe(namespace=namespace,
+                                                name=name,
+                                                data_warehouse=data_warehouse,
+                                                role=role,
+                                                party_id=party_id
+                                                )

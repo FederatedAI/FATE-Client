@@ -14,7 +14,7 @@
 #  limitations under the License.
 import time
 from datetime import timedelta
-from .flow_client import FlowClient
+from fate_client.flow_sdk import FlowClient
 from ...conf.env_config import FlowConfig
 
 
@@ -66,7 +66,7 @@ class FATEFlowJobInvoker(object):
             time.sleep(1)
 
     def submit_job(self, dag_schema):
-        response = self._client.submit_job(dag_schema=dag_schema)
+        response = self._client.job.submit(dag_schema=dag_schema)
         try:
             code = response["code"]
             if code != 0:
@@ -80,7 +80,7 @@ class FATEFlowJobInvoker(object):
             raise ValueError(f"submit job is failed, response={response}")
 
     def query_job(self, job_id, role, party_id):
-        response = self._client.query_job(job_id, role, party_id)
+        response = self._client.job.query(job_id, role, party_id)
         try:
             code = response["code"]
             if code != 0:
@@ -92,7 +92,7 @@ class FATEFlowJobInvoker(object):
             raise ValueError(f"query job is failed, response={response}")
 
     def query_task(self, job_id, role, party_id, status):
-        response = self._client.query_task(job_id, role, party_id, status)
+        response = self._client.task.query(job_id=job_id, role=role, party_id=party_id, status=status)
         try:
             code = response["code"]
             data = response.get("data", [])
@@ -101,7 +101,7 @@ class FATEFlowJobInvoker(object):
             raise ValueError(f"query task is failed, response={response}")
 
     def query_site_info(self):
-        response = self._client.query_site_info()
+        response = self._client.site.info()
         try:
             code = response["code"]
             if code != 0:
@@ -112,8 +112,14 @@ class FATEFlowJobInvoker(object):
         except ValueError:
             return None
 
-    def upload_data(self, upload_conf):
-        response = self._client.upload_data(upload_conf)
+    def upload_data(self, file, meta, head, extend_sid, role=None, party_id=None, **kwargs):
+        response = self._client.data.upload(file=file,
+                                            head=head,
+                                            meta=meta,
+                                            extend_sid=extend_sid,
+                                            role=role,
+                                            party_id=party_id,
+                                            **kwargs)
         try:
             code = response["code"]
             if code != 0:
@@ -121,9 +127,32 @@ class FATEFlowJobInvoker(object):
 
             namespace = response["data"]["namespace"]
             name = response["data"]["name"]
-            print(f"Upload data successfully, please use eggroll:///{namespace}/{name} as input uri")
+            job_id = response["job_id"]
         except BaseException:
             raise ValueError(f"Upload data fails, response={response}")
+
+        self.monitor_status(job_id, role=role, party_id=party_id)
+        return dict(namespace=namespace, name=name)
+
+    def transform_to_dataframe(self, name, namespace, data_warehouse, role, party_id):
+        response = self._client.data.dataframe_transformer(namespace=namespace,
+                                                           name=name,
+                                                           data_warehouse=data_warehouse,
+                                                           role=role,
+                                                           party_id=party_id)
+
+        try:
+            code = response["code"]
+            if code != 0:
+                raise ValueError(f"Return code {code}!=0")
+
+            job_id = response["job_id"]
+        except BaseException:
+            raise ValueError(f"Upload data fails, response={response}")
+
+        self.monitor_status(job_id, role=role, party_id=party_id)
+
+        return code
 
     def get_output_data(self, ):
         ...

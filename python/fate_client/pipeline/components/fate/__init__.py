@@ -19,3 +19,6 @@ from .intersection import Intersection
 from .reader import Reader
 # from .statistics import Statistics
 from .dataframe_transformer import DataFrameTransformer
+# from .multi_input import MultiInput
+from .dataframe_io_test import DataFrameIOTest
+# from .multi_model_test import MultiModelTest
