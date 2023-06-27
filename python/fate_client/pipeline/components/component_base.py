@@ -217,6 +217,11 @@ class Component(object):
                 if not artifact_spec:
                     raise ValueError(f"attr={attr} does not exist in component spec")
 
+                if isinstance(value, list) and not artifact_spec.is_multi:
+                    raise ValueError(f"Artifact={attr}'s input is list, it should be a single input")
+                if not isinstance(value, list) and artifact_spec.is_multi:
+                    value = [value]
+
                 if isinstance(value, list):
                     artifact_list = [v.get_spec(roles=[role]) for v in value]
                     inputs[type_key][attr] = {value[0].source: artifact_list}
