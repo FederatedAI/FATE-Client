@@ -9,17 +9,9 @@ component:
   parameters: {}
   input_artifacts:
     data:
-      dataframe_inputs:
-        type: dataframe
-        optional: false
-        stages:
-          - default
-        roles:
-          - local
-        description: ''
-        is_multi: true
       dataframe_input:
-        type: dataframe
+        types:
+          - dataframe
         optional: false
         stages:
           - default
@@ -27,11 +19,32 @@ component:
           - local
         description: ''
         is_multi: false
+      dataframe_inputs:
+        types:
+          - dataframe
+        optional: false
+        stages:
+          - default
+        roles:
+          - local
+        description: ''
+        is_multi: true
     model: {}
   output_artifacts:
     data:
+      dataframe_output:
+        types:
+          - dataframe
+        optional: false
+        stages:
+          - default
+        roles:
+          - local
+        description: ''
+        is_multi: false
       dataframe_outputs:
-        type: dataframe
+        types:
+          - dataframe
         optional: false
         stages:
           - default
@@ -39,18 +52,10 @@ component:
           - local
         description: ''
         is_multi: true
-      dataframe_output:
-        type: dataframe
-        optional: false
-        stages:
-          - default
-        roles:
-          - local
-        description: ''
-        is_multi: false
     model:
       json_model_output:
-        type: json_model
+        types:
+          - json_model
         optional: false
         stages:
           - default
@@ -58,6 +63,35 @@ component:
           - local
         description: ''
         is_multi: false
+      json_model_outputs:
+        types:
+          - json_model
+        optional: false
+        stages:
+          - default
+        roles:
+          - local
+        description: ''
+        is_multi: true
+      model_directory_output:
+        types:
+          - model_directory
+        optional: false
+        stages:
+          - default
+        roles:
+          - local
+        description: ''
+        is_multi: false
+      model_directory_outputs:
+        types:
+          - model_directory
+        optional: false
+        stages:
+          - default
+        roles:
+          - local
+        description: ''
+        is_multi: true
     metric: {}
 schema_version: v1
-
