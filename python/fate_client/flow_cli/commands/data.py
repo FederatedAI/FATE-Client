@@ -81,5 +81,20 @@ def download(ctx, **kwargs):
     prettify(response)
 
 
+@data.command("transformer", short_help="dataframe transformer")
+@cli_args.CONF_PATH
+def dataframe_transformer(ctx, **kwargs):
+    """
+    - DESCRIPTION:
 
+    \b
+        Download Data Table.
 
+    \b
+    - USAGE:
+        flow data download -c fateflow/examples/download/download_table.json
+    """
+    config_data, dsl_data = preprocess(**kwargs)
+    client: FlowClient = ctx.obj["data"]
+    response = client.data.dataframe_transformer(**config_data)
+    prettify(response)

@@ -40,6 +40,22 @@ class Data(BaseFlowAPI):
         params = filter_invalid_params(**kwargs)
         return self._post(url='/data/upload', json=params)
 
+    def dataframe_transformer(self, namespace: str = None, name: str = None, data_warehouse: dict = None):
+        """
+        upload file
+
+        Args:
+            namespace:
+            name:
+            data_warehouse:
+
+        Returns:
+        {'code': 0, 'message': 'success','data':{...}]}
+        """
+        kwargs = locals()
+        params = filter_invalid_params(**kwargs)
+        return self._post(url='/data/dataframe/transformer', json=params)
+
     def download(self, namespace: str = None, name: str = None):
         """
         download
