@@ -19,7 +19,7 @@ from ..utils.params_utils import filter_invalid_params
 
 class Data(BaseFlowAPI):
     def upload(self, file: str = None, head: bool = None, namespace: str = None, name: str = None,
-              partitions: int = None, storage_engine: str = None, destroy: bool = None, meta: dict = None):
+               partitions: int = None, extend_sid: bool = None, meta: dict = None):
         """
         upload file
 
@@ -29,9 +29,9 @@ class Data(BaseFlowAPI):
             namespace:
             name:
             partitions:
-            storage_engine:
-            destroy:
+            extend_sid:
             meta:
+
 
         Returns:
         {'code': 0, 'message': 'success','data':{...}]}
