@@ -18,8 +18,8 @@ from ..utils.params_utils import filter_invalid_params
 
 
 class Data(BaseFlowAPI):
-    def upload(self, file: str = None, head: bool = None, namespace: str = None, name: str = None,
-               partitions: int = None, extend_sid: bool = None, meta: dict = None):
+    def upload(self, file: str, head: bool, partitions: int, meta: dict, namespace: str = None, name: str = None,
+               extend_sid: bool = None):
         """
         upload file
 
@@ -33,6 +33,7 @@ class Data(BaseFlowAPI):
             meta:
 
 
+
         Returns:
         {'code': 0, 'message': 'success','data':{...}]}
         """
@@ -40,14 +41,14 @@ class Data(BaseFlowAPI):
         params = filter_invalid_params(**kwargs)
         return self._post(url='/data/upload', json=params)
 
-    def dataframe_transformer(self, namespace: str = None, name: str = None, data_warehouse: dict = None):
+    def dataframe_transformer(self, namespace: str, name: str, data_warehouse: dict):
         """
         upload file
 
         Args:
             namespace:
             name:
-            data_warehouse:
+            data_warehouse: {"namespace": xxx, "name": xxx}
 
         Returns:
         {'code': 0, 'message': 'success','data':{...}]}
