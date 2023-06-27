@@ -7,13 +7,27 @@ component:
   roles:
     - local
   parameters:
-    anonymous_party_id:
-      type: parameter_anonymous_party_id
+    namespace:
+      type: parameter_namespace
       default:
       optional: true
       description: ''
       type_meta:
-        title: parameter_anonymous_party_id
+        title: parameter_namespace
+        type: object
+        properties:
+          data:
+            title: Data
+            type: string
+        required:
+          - data
+    name:
+      type: parameter_name
+      default:
+      optional: true
+      description: ''
+      type_meta:
+        title: parameter_name
         type: object
         properties:
           data:
@@ -35,36 +49,25 @@ component:
             type: string
         required:
           - data
-    name:
-      type: parameter_name
-      default: dense
+    anonymous_party_id:
+      type: parameter_anonymous_party_id
+      default:
       optional: true
       description: ''
       type_meta:
-        title: parameter_name
+        title: parameter_anonymous_party_id
         type: object
         properties:
           data:
             title: Data
-            default: dense
             type: string
-    namespace:
-      type: parameter_namespace
-      default: ','
-      optional: true
-      description: ''
-      type_meta:
-        title: parameter_namespace
-        type: object
-        properties:
-          data:
-            title: Data
-            default: ','
-            type: string
+        required:
+          - data
   input_artifacts:
     data:
       table:
-        type: table
+        types:
+          - table
         optional: false
         stages:
           - default
@@ -76,7 +79,8 @@ component:
   output_artifacts:
     data:
       dataframe_output:
-        type: dataframe
+        types:
+          - dataframe
         optional: false
         stages:
           - default
@@ -87,4 +91,3 @@ component:
     model: {}
     metric: {}
 schema_version: v1
-

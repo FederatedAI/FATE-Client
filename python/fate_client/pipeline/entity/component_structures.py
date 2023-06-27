@@ -29,7 +29,7 @@ class ParameterSpec(BaseModel):
 
 
 class ArtifactSpec(BaseModel):
-    type: str
+    types: List[str]
     optional: bool
     stages: Optional[List[str]]
     roles: Optional[List[str]]
