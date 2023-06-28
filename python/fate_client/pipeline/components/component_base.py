@@ -291,7 +291,7 @@ class Component(object):
             for artifact_name, artifact in artifacts.items():
                 channel = TaskOutputArtifactChannel(
                     name=artifact_name,
-                    channel_type=artifact.type,
+                    channel_type=artifact.types[0],
                     task_name=self._name
                 )
 
