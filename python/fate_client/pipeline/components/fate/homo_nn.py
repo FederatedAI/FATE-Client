@@ -34,7 +34,7 @@ def get_config_of_default_runner(
         dataset: DatasetLoader = None,
         data_collator: CustFuncLoader = None,
         tokenizer: CustFuncLoader = None,
-        task_type: Literal['classification', 'regression'] = 'classification'
+        task_type: Literal['binary', 'multi', 'regression'] = 'binary'
     ):
         
     if model is not None and not isinstance(model, (FateTorch, Sequential, ModelLoader)):
@@ -61,8 +61,8 @@ def get_config_of_default_runner(
     if tokenizer is not None and not isinstance(tokenizer, CustFuncLoader):
         raise ValueError(f'The tokenizer is of type {type(tokenizer)}, not CustFuncLoader.')
     
-    if task_type not in ['classification', 'regression']:
-        raise ValueError(f'The task type is {task_type}, not classification or regression.')
+    if task_type not in ['binary', 'multi', 'regression']:
+        raise ValueError(f"The task type is {task_type}, not 'binary', 'multi', 'regression'.")
 
     runner_conf = {
         'algo': algo,

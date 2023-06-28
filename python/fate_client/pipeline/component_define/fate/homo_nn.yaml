@@ -67,25 +67,25 @@ component:
       train_data:
         types:
           - dataframe
-        optional: false
+        optional: true
         stages:
           - train
         roles:
           - guest
           - host
         description: ''
-        is_multi: true
+        is_multi: false
       validate_data:
         types:
           - dataframe
-        optional: false
+        optional: true
         stages:
           - train
         roles:
           - guest
           - host
         description: ''
-        is_multi: true
+        is_multi: false
     model: {}
   output_artifacts:
     data:
@@ -98,7 +98,6 @@ component:
         roles:
           - guest
           - host
-          - arbiter
         description: ''
         is_multi: false
     model:
@@ -111,7 +110,6 @@ component:
         roles:
           - guest
           - host
-          - arbiter
         description: ''
         is_multi: false
     metric:
@@ -124,7 +122,6 @@ component:
         roles:
           - guest
           - host
-          - arbiter
         description: ''
         is_multi: false
 schema_version: v1
