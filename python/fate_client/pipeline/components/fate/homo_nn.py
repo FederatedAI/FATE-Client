@@ -94,7 +94,7 @@ class HomoNN(Component):
                  train_data: ArtifactType = PlaceHolder(),
                  validate_data: ArtifactType = PlaceHolder(),
                  test_data: ArtifactType = PlaceHolder(),
-                 input_model: ArtifactType = PlaceHolder(),
+                 model_input: ArtifactType = PlaceHolder(),
                  ):
         
         inputs = locals()
@@ -109,4 +109,5 @@ class HomoNN(Component):
         self.train_data = train_data
         self.validate_data = validate_data
         self.test_data = test_data
-        self.input_model = input_model
+        self.model_input = model_input
+
