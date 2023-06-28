@@ -10,58 +10,45 @@ component:
     - arbiter
   parameters:
     runner_module:
-      type: parameter_runner_module
+      type: str
       default: default_runner
       optional: true
       description: name of your runner script
       type_meta:
-        title: parameter_runner_module
-        type: object
-        properties:
-          data:
-            title: Data
-            default: default_runner
-            type: string
+        title: str
+        type: string
+        default:
+        description: path to your runner script folder
     runner_class:
-      type: parameter_runner_class
+      type: str
       default: DefaultRunner
       optional: true
       description: class name of your runner class
       type_meta:
-        title: parameter_runner_class
-        type: object
-        properties:
-          data:
-            title: Data
-            default: DefaultRunner
-            type: string
+        title: str
+        type: string
+        default:
+        description: path to your runner script folder
     runner_conf:
-      type: parameter_runner_conf
+      type: dict
       default: {}
       optional: true
       description: the parameter dict of the NN runner class
       type_meta:
-        title: parameter_runner_conf
+        title: dict
         type: object
-        properties:
-          data:
-            title: Data
-            default: {}
-            type: object
+        default: {}
+        description: the parameter dict of the NN runner class
     source:
-      type: parameter_source
+      type: str
       default:
       optional: true
       description: path to your runner script folder
       type_meta:
-        title: parameter_source
-        type: object
-        properties:
-          data:
-            title: Data
-            type: string
-        required:
-          - data
+        title: str
+        type: string
+        default:
+        description: path to your runner script folder
   input_artifacts:
     data:
       train_data:
@@ -136,16 +123,13 @@ component:
         description: ''
         is_multi: false
     metric:
-      metric_output:
+      metric:
         types:
           - json_metric
         optional: false
-        stages:
-          - train
-        roles:
-          - guest
-          - host
-        description: ''
+        stages: []
+        roles: []
+        description: metric, invisible for user
         is_multi: false
 schema_version: v1
 

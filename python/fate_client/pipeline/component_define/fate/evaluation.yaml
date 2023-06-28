@@ -7,36 +7,26 @@ component:
   roles:
     - guest
     - host
-    - arbiter
   parameters:
     default_eval_metrics:
-      type: parameter_default_eval_metrics
+      type: type
       default: binary
       optional: true
       description: ''
       type_meta:
-        title: parameter_default_eval_metrics
-        type: object
-        properties:
-          data:
-            title: Data
-            default: binary
-            type: string
+        title: type
+        type: string
     metrics:
-      type: parameter_metrics
+      type: list
       default:
       optional: true
       description: ''
       type_meta:
-        title: parameter_metrics
-        type: object
-        properties:
-          data:
-            title: Data
-            type: array
-            items: {}
-        required:
-          - data
+        title: list
+        type: array
+        items: {}
+        default:
+        description: ''
   input_artifacts:
     data:
       input_data:
@@ -48,7 +38,6 @@ component:
         roles:
           - guest
           - host
-          - arbiter
         description: ''
         is_multi: true
     model: {}
@@ -56,7 +45,7 @@ component:
     data: {}
     model: {}
     metric:
-      json_metric_output:
+      metric:
         types:
           - json_metric
         optional: false
@@ -65,7 +54,7 @@ component:
         roles:
           - guest
           - host
-        description: ''
+        description: metric, invisible for user
         is_multi: false
 schema_version: v1
 
