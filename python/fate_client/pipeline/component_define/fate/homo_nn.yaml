@@ -86,14 +86,37 @@ component:
           - host
         description: ''
         is_multi: false
-    model: {}
+      test_data:
+        types:
+          - dataframe
+        optional: true
+        stages:
+          - predict
+        roles:
+          - guest
+          - host
+        description: ''
+        is_multi: false
+    model:
+      model_input:
+        types:
+          - model_directory
+        optional: false
+        stages:
+          - predict
+        roles:
+          - guest
+          - host
+        description: ''
+        is_multi: false
   output_artifacts:
     data:
-      dataframe_output:
+      data_output:
         types:
           - dataframe
         optional: false
         stages:
+          - predict
           - train
         roles:
           - guest
@@ -101,7 +124,7 @@ component:
         description: ''
         is_multi: false
     model:
-      model_directory_output:
+      model_output:
         types:
           - model_directory
         optional: false
@@ -113,7 +136,7 @@ component:
         description: ''
         is_multi: false
     metric:
-      json_metric_output:
+      metric_output:
         types:
           - json_metric
         optional: false
