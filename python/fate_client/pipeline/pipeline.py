@@ -20,7 +20,7 @@ from .entity.dag_structures import JobConfSpec
 from .entity import FateFlowTaskInfo, StandaloneTaskInfo
 from .entity.runtime_entity import Roles
 from .conf.env_config import SiteInfo
-from .conf.types import SupportRole, PlaceHolder
+from .conf.types import SupportRole, PlaceHolder, InputArtifactType
 from .conf.job_configuration import JobConf
 from .components.component_base import Component
 from .scheduler.dag_parser import DagParser
@@ -157,12 +157,18 @@ class Pipeline(object):
                 continue
             deploy_task = copy.deepcopy(task)
             predict_task_spec = self._predict_dag.tasks[task_name]
-            input_artifact_keys = task.component_spec.input_definitions.artifacts.keys()
-            for input_artifact_key in input_artifact_keys:
-                setattr(deploy_task, input_artifact_key, PlaceHolder())
+            for artifact_type in InputArtifactType.types():
+                if not getattr(task.component_spec.input_artifacts, artifact_type):
+                    continue
+                artifacts = getattr(task.component_spec.input_artifacts, artifact_type)
+                input_artifact_keys = artifacts.keys()
+                for input_artifact_key in input_artifact_keys:
+                    setattr(deploy_task, input_artifact_key, PlaceHolder())
 
-            if predict_task_spec.inputs and predict_task_spec.inputs.artifacts:
-                for input_artifact_key, input_channel in predict_task_spec.inputs.artifacts.items():
+                if not predict_task_spec.inputs or not getattr(predict_task_spec.inputs, artifact_type):
+                    continue
+                artifacts = getattr(predict_task_spec.inputs, artifact_type)
+                for input_artifact_key, input_channel in artifacts.items():
                     for artifact_source_type, channel in input_channel.items():
                         producer_task = channel.producer_task
                         output_artifact_key = channel.output_artifact_key
