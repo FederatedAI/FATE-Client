@@ -54,7 +54,7 @@ component:
       train_data:
         types:
           - dataframe
-        optional: true
+        optional: false
         stages:
           - train
         roles:
@@ -76,7 +76,7 @@ component:
       test_data:
         types:
           - dataframe
-        optional: true
+        optional: false
         stages:
           - predict
         roles:
@@ -85,7 +85,18 @@ component:
         description: ''
         is_multi: false
     model:
-      model_input:
+      train_model_input:
+        types:
+          - model_directory
+        optional: true
+        stages:
+          - train
+        roles:
+          - guest
+          - host
+        description: ''
+        is_multi: false
+      predict_model_input:
         types:
           - model_directory
         optional: false
@@ -98,20 +109,30 @@ component:
         is_multi: false
   output_artifacts:
     data:
-      data_output:
+      train_data_output:
         types:
           - dataframe
         optional: false
         stages:
-          - predict
           - train
         roles:
           - guest
           - host
         description: ''
         is_multi: false
+      predict_data_output:
+        types:
+          - dataframe
+        optional: false
+        stages:
+          - predict
+        roles:
+          - guest
+          - host
+        description: ''
+        is_multi: false
     model:
-      model_output:
+      train_model_output:
         types:
           - model_directory
         optional: false

@@ -34,7 +34,7 @@ def get_config_of_default_runner(
         dataset: DatasetLoader = None,
         data_collator: CustFuncLoader = None,
         tokenizer: CustFuncLoader = None,
-        task_type: Literal['binary', 'multi', 'regression'] = 'binary'
+        task_type: Literal['binary', 'multi', 'regression', 'others'] = 'binary'
     ):
         
     if model is not None and not isinstance(model, (FateTorch, Sequential, ModelLoader)):
@@ -61,8 +61,8 @@ def get_config_of_default_runner(
     if tokenizer is not None and not isinstance(tokenizer, CustFuncLoader):
         raise ValueError(f'The tokenizer is of type {type(tokenizer)}, not CustFuncLoader.')
     
-    if task_type not in ['binary', 'multi', 'regression']:
-        raise ValueError(f"The task type is {task_type}, not 'binary', 'multi', 'regression'.")
+    if task_type not in ['binary', 'multi', 'regression', 'others']:
+        raise ValueError(f"The task type is {task_type}, not 'binary', 'multi', 'regression', 'others'.")
 
     runner_conf = {
         'algo': algo,
@@ -94,7 +94,8 @@ class HomoNN(Component):
                  train_data: ArtifactType = PlaceHolder(),
                  validate_data: ArtifactType = PlaceHolder(),
                  test_data: ArtifactType = PlaceHolder(),
-                 model_input: ArtifactType = PlaceHolder(),
+                 train_model_input: ArtifactType = PlaceHolder(),
+                 predict_model_input: ArtifactType = PlaceHolder()
                  ):
         
         inputs = locals()
@@ -109,5 +110,7 @@ class HomoNN(Component):
         self.train_data = train_data
         self.validate_data = validate_data
         self.test_data = test_data
-        self.model_input = model_input
+        self.train_model_input = train_model_input
+        self.predict_model_input = predict_model_input
+        
 
