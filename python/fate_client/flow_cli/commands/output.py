@@ -31,6 +31,17 @@ def output(ctx):
     pass
 
 
+@click.group(short_help="Output Operations")
+@click.pass_context
+def data(ctx):
+    """
+    \b
+    Provides numbers of data operational commands, including upload, download and etc.
+    For more details, please check out the help text.
+    """
+    pass
+
+
 @output.command("key", short_help="Key metric query")
 @cli_args.JOBID
 @cli_args.ROLE
@@ -47,7 +58,7 @@ def query_key(ctx, **kwargs):
     """
     # config_data, dsl_data = preprocess(**kwargs)
     client: FlowClient = ctx.obj["client"]
-    response = client.output.metric_key_query(**kwargs)
+    response = client.output.query_metric_key(**kwargs)
     prettify(response)
 
 
@@ -68,7 +79,7 @@ def query(ctx, **kwargs):
 
     """
     client: FlowClient = ctx.obj["client"]
-    response = client.output.metric_query(**kwargs)
+    response = client.output.query_metric(**kwargs)
     prettify(response)
 
 
@@ -88,7 +99,7 @@ def delete(ctx, **kwargs):
         flow output delete -j $JOB_ID -r guest -p 9999  -cpn reader_0
     """
     client: FlowClient = ctx.obj["client"]
-    response = client.output.metric_delete(**kwargs)
+    response = client.output.delete_metric(**kwargs)
     prettify(response)
 
 
@@ -108,7 +119,7 @@ def query(ctx, **kwargs):
         flow output m_query -j $JOB_ID -r guest -p 9999  -cpn reader_0
     """
     client: FlowClient = ctx.obj["client"]
-    response = client.output.model_query(**kwargs)
+    response = client.output.query_model(**kwargs)
     prettify(response)
 
 
@@ -128,5 +139,25 @@ def delete(ctx, **kwargs):
         flow output m_qdelete -j $JOB_ID -r guest -p 9999  -cpn reader_0
     """
     client: FlowClient = ctx.obj["client"]
-    response = client.output.model_delete(**kwargs)
+    response = client.output.delete_model(**kwargs)
+    prettify(response)
+
+
+@data.command("download", short_help="Download data")
+@cli_args.JOBID
+@cli_args.ROLE
+@cli_args.PARTYID
+@cli_args.TASK_NAME
+@click.pass_context
+def download_data(ctx, **kwargs):
+    """
+    - DESCRIPTION:
+
+
+    \b
+    - USAGE:
+        flow output m_qdelete -j $JOB_ID -r guest -p 9999  -cpn reader_0
+    """
+    client: FlowClient = ctx.obj["client"]
+    response = client.output.download_data(**kwargs)
     prettify(response)

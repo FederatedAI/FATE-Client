@@ -15,10 +15,11 @@
 #
 from ..utils.base_utils import BaseFlowAPI
 from ..utils.params_utils import filter_invalid_params
+from ..utils.io_utils import download_from_request
 
 
 class Output(BaseFlowAPI):
-    def metric_key_query(self, job_id: str = None, role: str = None, party_id: str = None, task_name: str = None):
+    def query_metric_key(self, job_id: str, role: str, party_id: str, task_name: str):
         """
 
         Args:
@@ -35,8 +36,7 @@ class Output(BaseFlowAPI):
         params = filter_invalid_params(**kwargs)
         return self._get(url='/output/metric/key/query', params=params)
 
-    def metric_query(self, job_id: str = None, role: str = None, party_id: str = None, task_name: str = None,
-                     filters: dict = None):
+    def query_metric(self, job_id: str, role: str, party_id: str, task_name: str, filters: dict = None):
         """
 
         Args:
@@ -54,7 +54,7 @@ class Output(BaseFlowAPI):
         params = filter_invalid_params(**kwargs)
         return self._get(url='/output/metric/query', params=params)
 
-    def metric_delete(self, job_id: str = None, role: str = None, party_id: str = None, task_name: str = None):
+    def delete_metric(self, job_id: str, role: str, party_id: str, task_name: str):
         """
 
         Args:
@@ -71,7 +71,7 @@ class Output(BaseFlowAPI):
         params = filter_invalid_params(**kwargs)
         return self._post(url='/output/metric/delete', json=params)
 
-    def model_query(self, job_id: str = None, role: str = None, party_id: str = None, task_name: str = None):
+    def query_model(self, job_id: str, role: str, party_id: str, task_name: str):
         """
 
         Args:
@@ -88,7 +88,7 @@ class Output(BaseFlowAPI):
         params = filter_invalid_params(**kwargs)
         return self._get(url='/output/model/query', params=params)
 
-    def model_delete(self, job_id: str = None, role: str = None, party_id: str = None, task_name: str = None):
+    def delete_model(self, job_id: str, role: str, party_id: str, task_name: str):
         """
 
         Args:
@@ -105,3 +105,27 @@ class Output(BaseFlowAPI):
         params = filter_invalid_params(**kwargs)
         return self._post(url='/output/model/delete', json=params)
 
+    def download_data(self, job_id: str, role: str, party_id: str, task_name: str, output_key: str = None,
+                      download_dir: str = None):
+        """
+
+        Args:
+            job_id:
+            role:
+            party_id:
+            task_name:
+            output_key:
+            download_dir: download path
+
+
+        Returns:
+            If "download_dir" is passed, json will be returned, eg: {'code': 0, 'message': 'download success, please check the path'}
+            else return tar.gz stream
+        """
+        kwargs = locals()
+        params = filter_invalid_params(**kwargs)
+        resp = self._get(url='/output/data/download', params=params, handle_result=False)
+        if download_dir:
+            return download_from_request(resp, download_dir)
+        else:
+            return resp

@@ -31,10 +31,10 @@ def download_from_request(http_response, download_path):
             for file_name in file_names:
                 tar.extract(file_name, download_path)
             tar.close()
-            return f"download success, please check the path: {download_path}"
+            return {"code": 0, "message": f"download success, please check the path: {download_path}"}
     except:
         try:
-            return f"download failed, {http_response.json()}"
+            return {"code": 100, "message": f"download failed, {http_response.json()}"}
         except:
-            return f"download failed, {http_response.text}"
+            return {"code": 100, "message": f"download failed, {http_response.text}"}
 
