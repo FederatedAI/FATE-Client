@@ -13,12 +13,12 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 import copy
-from ..conf.types import SupportRole, PlaceHolder, ArtifactSourceType
+from ..conf.types import SupportRole, PlaceHolder, ArtifactSourceType, InputArtifactType, OutputArtifactType
 from ..conf.job_configuration import TaskConf
 from ..utils.standalone.id_gen import get_uuid
 from ..entity.component_structures import load_component_spec
-from ..interface import ArtifactChannel
-from ..entity.dag_structures import RuntimeTaskOutputChannelSpec, ModelWarehouseChannelSpec
+from ..interface import TaskOutputArtifactChannel, DataWarehouseChannel, ModelWarehouseChannel
+from ..entity.dag_structures import RuntimeTaskOutputChannelSpec, DataWarehouseChannelSpec, ModelWarehouseChannelSpec
 
 
 class Component(object):
@@ -27,7 +27,7 @@ class Component(object):
     yaml_define_path = None
 
     def __init__(self, *args, **kwargs):
-        self.name = None
+        self._name = None
         self.runtime_roles = None
         self.__party_instance = {}
         self._module = None
@@ -35,14 +35,14 @@ class Component(object):
         self._index = None
         self._callable = True
         self._outputs = None
-        self._component_param = dict()
+        self._component_setting = dict()
         self._task_conf = TaskConf()
 
         if self.yaml_define_path is None:
             raise ValueError("Component should have yaml define file, set yaml_define_path first please!")
 
         self._component_spec = load_component_spec(self.yaml_define_path)
-        self._init_component_param()
+        self._init_component_setting()
 
     def __new__(cls, *args, **kwargs):
         if cls.__name__.lower() not in cls.__instance:
@@ -55,7 +55,7 @@ class Component(object):
         return new_cls
 
     def set_name(self, idx):
-        self.name = self.__class__.__name__.lower() + "_" + str(idx)
+        self._name = self.__class__.__name__.lower() + "_" + str(idx)
 
     def _set_role(self, role):
         self._role = role
@@ -142,8 +142,8 @@ class Component(object):
         self.__party_instance = party_instance
 
     @property
-    def get_name(self):
-        return self.name
+    def task_name(self):
+        return self._name
 
     @property
     def component_ref(self):
@@ -162,17 +162,17 @@ class Component(object):
                 self.runtime_roles = [self.runtime_roles]
             return list(set(self._component_spec.roles) & set(self.runtime_roles))
 
-    def component_param(self, **kwargs):
+    def component_setting(self, **kwargs):
         for attr, val in kwargs.items():
-            self._component_param[attr] = val
+            self._component_setting[attr] = val
 
-    def get_component_param(self):
-        return self._component_param
+    def get_component_setting(self):
+        return self._component_setting
 
-    def get_role_param(self, role, index):
-        component_param = dict()
+    def get_role_setting(self, role, index):
+        component_setting = dict()
         if role not in self.__party_instance:
-            return component_param
+            return component_setting
 
         index = str(index)
 
@@ -184,9 +184,57 @@ class Component(object):
                 if index not in party_index:
                     continue
 
-                component_param.update(party_inst.get_component_param())
+                component_setting.update(party_inst.get_component_setting())
 
-        return component_param
+        if not component_setting:
+            return component_setting
+
+        parameters = {}
+        inputs = {}
+        for attr, value in component_setting.items():
+            if attr in self._component_spec.parameters:
+                parameters[attr] = value
+            else:
+                """
+                artifact
+                """
+                if not isinstance(value, (DataWarehouseChannel, ModelWarehouseChannel)) or \
+                        (isinstance(value, list) and
+                         not isinstance(value[0], (DataWarehouseChannelSpec, ModelWarehouseChannelSpec))):
+                    raise ValueError(f"attr={attr} should be data_warehouse or model_warehouse artifact")
+
+                if not isinstance(value, list):
+                    type_key = InputArtifactType.DATA if isinstance(value, DataWarehouseChannel) \
+                        else InputArtifactType.MODEL
+                else:
+                    type_key = InputArtifactType.DATA if isinstance(value[0], DataWarehouseChannel) \
+                        else InputArtifactType.MODEL
+
+                if type_key not in inputs:
+                    inputs[type_key] = dict()
+
+                artifact_spec = getattr(self._component_spec.input_artifacts, type_key).get(attr, None)
+                if not artifact_spec:
+                    raise ValueError(f"attr={attr} does not exist in component spec")
+
+                if isinstance(value, list) and not artifact_spec.is_multi:
+                    raise ValueError(f"Artifact={attr}'s input is list, it should be a single input")
+                if not isinstance(value, list) and artifact_spec.is_multi:
+                    value = [value]
+
+                if isinstance(value, list):
+                    artifact_list = [v.get_spec(roles=[role]) for v in value]
+                    inputs[type_key][attr] = {value[0].source: artifact_list}
+                else:
+                    inputs[type_key][attr] = {value.source: value.get_spec(roles=[role])}
+
+        component_setting = dict()
+        if parameters:
+            component_setting["parameters"] = parameters
+        if inputs:
+            component_setting["inputs"] = inputs
+
+        return component_setting
 
     def get_role_conf(self, role, index):
         conf = dict()
@@ -228,110 +276,112 @@ class Component(object):
 
     @property
     def outputs(self):
-        if self._component_spec.output_definitions is None:
+        if self._component_spec.output_artifacts is None:
             raise ValueError("Output Definitions is None")
 
         if self._outputs:
             return self._outputs
 
-        artifacts = self._component_spec.output_definitions.artifacts
         self._outputs = dict()
-        for artifact_name, artifact in artifacts.items():
-            channel = ArtifactChannel(
-                name=artifact_name,
-                channel_type=artifact.type,
-                task_name=self.name
-            )
+        for output_artifact_type in OutputArtifactType.types():
+            artifacts = getattr(self._component_spec.output_artifacts, output_artifact_type)
+            if not artifacts:
+                continue
 
-            self._outputs[artifact_name] = channel
+            for artifact_name, artifact in artifacts.items():
+                channel = TaskOutputArtifactChannel(
+                    name=artifact_name,
+                    channel_type=artifact.types[0],
+                    task_name=self._name
+                )
+
+                self._outputs[artifact_name] = channel
 
         return self._outputs
 
     def _process_init_inputs(self, inputs):
         self._init_inputs = {}
         for key, value in inputs.items():
-            if key == "self" or key.startswith("_"):
+            if key == "self" or (key.startswith("_") and key != "_name"):
                 continue
 
             self._init_inputs[key] = value
 
     def get_dependent_tasks(self):
-        if not hasattr(self._component_spec.input_definitions, "artifacts"):
+        if not hasattr(self._component_spec, "input_artifacts"):
             return []
-        input_artifacts = self._component_spec.input_definitions.artifacts
+        input_artifacts = self._component_spec.input_artifacts
         dependencies = set()
-        for artifact_key in input_artifacts:
-            if not hasattr(self, artifact_key) or isinstance(getattr(self, artifact_key), PlaceHolder):
-                continue
 
-            channels = getattr(self, artifact_key)
-            if not channels:
-                continue
+        for artifact_type in InputArtifactType.types():
+            for artifact_key in getattr(input_artifacts, artifact_type):
+                if not hasattr(self, artifact_key) or isinstance(getattr(self, artifact_key), PlaceHolder):
+                    continue
 
-            if not isinstance(channels, list):
-                channels = [channels]
+                channels = getattr(self, artifact_key)
+                if not channels:
+                    continue
 
-            for channel in channels:
-                if not isinstance(channel, ArtifactChannel):
-                    raise ValueError(f"Component {self.name}'s {artifact_key} "
-                                     f"should be ArtifactChannel, {channel} find")
+                if not isinstance(channels, list):
+                    channels = [channels]
 
-                if channel.source == ArtifactSourceType.TASK_OUTPUT_ARTIFACT:
-                    dependencies.add(channel.task_name)
+                for channel in channels:
+                    if not isinstance(channel, (TaskOutputArtifactChannel, DataWarehouseChannel, ModelWarehouseChannel)):
+                        raise ValueError(f"Component {self._name}'s {artifact_key} "
+                                         f"should be ArtifactChannel, {channel} find")
+
+                    if channel.source == ArtifactSourceType.TASK_OUTPUT_ARTIFACT:
+                        dependencies.add(channel.task_name)
 
         return list(dependencies)
 
     def get_runtime_input_artifacts(self, runtime_roles):
-        input_definition_artifacts = self._component_spec.input_definitions.artifacts
+        input_artifacts_dict = dict()
+        for input_artifact_type in InputArtifactType.types():
+            input_artifacts_dict[input_artifact_type] = getattr(self._component_spec.input_artifacts,
+                                                                input_artifact_type)
+
         runtime_input_channels = dict()
         input_artifacts = dict()
 
-        def __get_artifact_spec_by_source_type(source_type):
-            if source_type == ArtifactSourceType.TASK_OUTPUT_ARTIFACT:
-                return RuntimeTaskOutputChannelSpec
-            else:
-                return ModelWarehouseChannelSpec
-
-        for artifact_key, artifact_spec in input_definition_artifacts.items():
-            if not hasattr(self, artifact_key) or isinstance(getattr(self, artifact_key), PlaceHolder):
+        for input_artifact_type, artifacts in input_artifacts_dict.items():
+            if not artifacts:
                 continue
 
-            channels = getattr(self, artifact_key)
+            input_artifacts[input_artifact_type] = dict()
+            runtime_input_channels[input_artifact_type] = dict()
+            for artifact_key, artifact_spec in artifacts.items():
+                if not hasattr(self, artifact_key) or isinstance(getattr(self, artifact_key), PlaceHolder):
+                    continue
 
-            roles = list(set(runtime_roles) & set(artifact_spec.roles)) \
-                if set(runtime_roles) != set(artifact_spec.roles) else None
+                channels = getattr(self, artifact_key)
 
-            if isinstance(channels, list):
-                output_artifact = []
-                for channel in channels:
-                    artifact_spec_source = __get_artifact_spec_by_source_type(channel.source)
-                    output_artifact.append(artifact_spec_source(
-                        producer_task=channel.task_name,
-                        output_artifact_key=channel.name,
-                        roles=roles
-                    ))
+                roles = list(set(runtime_roles) & set(artifact_spec.roles)) \
+                    if set(runtime_roles) != set(artifact_spec.roles) else None
 
-                runtime_input_channels[artifact_key] = {channels[0].source: output_artifact}
-                input_artifacts[artifact_key] = artifact_spec
-            else:
-                artifact_spec_source = __get_artifact_spec_by_source_type(channels.source)
-                runtime_input_channels[artifact_key] = {
-                    channels.source: artifact_spec_source(
-                        producer_task=channels.task_name,
-                        output_artifact_key=channels.name,
-                        roles=roles
-                    )
-                }
-                input_artifacts[artifact_key] = artifact_spec
+                if isinstance(channels, list) and not artifact_spec.is_multi:
+                    raise ValueError(f"Artifact={artifact_key}'s input is list, it should be a single input")
+                if not isinstance(channels, list) and artifact_spec.is_multi:
+                    channels = [channels]
+
+                if isinstance(channels, list):
+                    artifact_list = []
+                    for channel in channels:
+                        artifact = channel.get_spec(roles=roles)
+                        artifact_list.append(artifact)
+
+                    runtime_input_channels[input_artifact_type][artifact_key] = {channels[0].source: artifact_list}
+                    input_artifacts[input_artifact_type][artifact_key] = artifact_spec
+                else:
+                    artifact = channels.get_spec(roles=roles)
+                    runtime_input_channels[input_artifact_type][artifact_key] = {channels.source: artifact}
+                    input_artifacts[input_artifact_type][artifact_key] = artifact_spec
 
         return runtime_input_channels, input_artifacts
 
-    def _init_component_param(self):
-        if not hasattr(self._component_spec.input_definitions, "parameters"):
-            return
-
-        parameters = self._component_spec.input_definitions.parameters
+    def _init_component_setting(self):
+        parameters = self._component_spec.parameters
         for param in parameters:
             if isinstance(self._init_inputs.get(param, PlaceHolder()), PlaceHolder):
                 continue
-            self._component_param[param] = self._init_inputs[param]
+            self._component_setting[param] = self._init_inputs[param]
