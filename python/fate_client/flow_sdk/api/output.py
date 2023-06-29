@@ -18,7 +18,7 @@ from ..utils.params_utils import filter_invalid_params
 
 
 class Output(BaseFlowAPI):
-    def metric_key_query(self, job_id: str = None, role: str = None, party_id: str = None, task_name: str = None):
+    def query_metric_key(self, job_id: str, role: str, party_id: str, task_name: str):
         """
 
         Args:
@@ -35,8 +35,7 @@ class Output(BaseFlowAPI):
         params = filter_invalid_params(**kwargs)
         return self._get(url='/output/metric/key/query', params=params)
 
-    def metric_query(self, job_id: str = None, role: str = None, party_id: str = None, task_name: str = None,
-                     filters: dict = None):
+    def query_metric(self, job_id: str, role: str, party_id: str, task_name: str, filters: dict = None):
         """
 
         Args:
@@ -54,7 +53,7 @@ class Output(BaseFlowAPI):
         params = filter_invalid_params(**kwargs)
         return self._get(url='/output/metric/query', params=params)
 
-    def metric_delete(self, job_id: str = None, role: str = None, party_id: str = None, task_name: str = None):
+    def delete_metric(self, job_id: str, role: str, party_id: str, task_name: str):
         """
 
         Args:
@@ -71,7 +70,7 @@ class Output(BaseFlowAPI):
         params = filter_invalid_params(**kwargs)
         return self._post(url='/output/metric/delete', json=params)
 
-    def model_query(self, job_id: str = None, role: str = None, party_id: str = None, task_name: str = None):
+    def query_model(self, job_id: str, role: str, party_id: str, task_name: str):
         """
 
         Args:
@@ -88,7 +87,7 @@ class Output(BaseFlowAPI):
         params = filter_invalid_params(**kwargs)
         return self._get(url='/output/model/query', params=params)
 
-    def model_delete(self, job_id: str = None, role: str = None, party_id: str = None, task_name: str = None):
+    def delete_model(self, job_id: str, role: str, party_id: str, task_name: str):
         """
 
         Args:
@@ -105,3 +104,20 @@ class Output(BaseFlowAPI):
         params = filter_invalid_params(**kwargs)
         return self._post(url='/output/model/delete', json=params)
 
+    def download_data(self, job_id: str, role: str, party_id: str, task_name: str, output_key: str = None):
+        """
+
+        Args:
+            job_id:
+            role:
+            party_id:
+            task_name:
+            output_key:
+
+
+        Returns:
+        {'code': 0, 'message': 'success','data':dict}
+        """
+        kwargs = locals()
+        params = filter_invalid_params(**kwargs)
+        return self._get(url='/output/data/download', json=params)
