@@ -272,8 +272,8 @@ class FateFlowPipeline(Pipeline):
                                                meta=meta,
                                                partitions=partitions,
                                                extend_sid=extend_sid,
-                                               role=self._local_role,
-                                               party_id=self._local_party_id,
+                                               role="local",
+                                               party_id="0",
                                                **kwargs)
         self._executor.transform_to_dataframe(namespace, name, data_warehouse, self._local_role, self._local_party_id)
 
