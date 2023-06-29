@@ -12,8 +12,12 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+#
+import os
+import tempfile
 import time
 from datetime import timedelta
+from pathlib import Path
 from fate_client.flow_sdk import FlowClient
 from ...conf.env_config import FlowConfig
 
@@ -154,11 +158,44 @@ class FATEFlowJobInvoker(object):
 
         return code
 
-    def get_output_data(self, ):
-        ...
+    def get_output_data(self, job_id, role, party_id, task_name):
+        with tempfile.TemporaryDirectory() as data_dir:
+            data_dir = "/Users/maguoqiang/mgq/workspace/examples/data/test"
+            response = self._client.output.download_data(job_id=job_id, role=role, party_id=party_id,
+                                                         task_name=task_name, download_dir=data_dir)
+            try:
+                code = response["code"]
+                if code != 0:
+                    raise ValueError(f"Return code {code}!=0")
+            except BaseException:
+                raise ValueError(f"query task={job_id}, role={role}, "
+                                 f"party_id={party_id}'s output data is failed, response={response}")
+
+            output_keys = os.listdir(data_dir)
+            if not output_keys:
+                return None
+
+            output_data_dict = {}
+            import pandas as pd
+            for output_key in output_keys:
+                path = Path(data_dir).joinpath(output_key)
+                files = os.listdir(path)
+                file_names = []
+                for file in files:
+                    if file.endswith("csv"):
+                        file_names.append(file)
+
+                if len(file_names) == 1:
+                    output_data_dict[output_key] = pd.read_csv(path.joinpath(file_names[0]))
+                else:
+                    output_data_dict[output_key] = dict()
+                    for file_name in file_names:
+                        output_data_dict[output_key][file_name] = pd.read_csv(path.joinpath(file_name))
+
+            return output_data_dict
 
     def get_output_model(self, job_id, role, party_id, task_name):
-        response = self._client.output.model_query(job_id=job_id, role=role, party_id=party_id, task_name=task_name)
+        response = self._client.output.query_model(job_id=job_id, role=role, party_id=party_id, task_name=task_name)
         try:
             code = response["code"]
             if code != 0:
@@ -170,7 +207,7 @@ class FATEFlowJobInvoker(object):
                              f"party_id={party_id}'s output model is failed, response={response}")
 
     def get_output_metric(self, job_id, role, party_id, task_name):
-        response = self._client.output.metric_query(job_id=job_id, role=role, party_id=party_id, task_name=task_name)
+        response = self._client.output.query_metric(job_id=job_id, role=role, party_id=party_id, task_name=task_name)
         try:
             code = response["code"]
             if code != 0:
