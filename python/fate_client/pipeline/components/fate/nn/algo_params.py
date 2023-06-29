@@ -6,12 +6,39 @@ from enum import Enum
 @dataclass
 class TrainingArguments(_hf_TrainingArguments):
     
-    # By default, we disable tqdm progress bar for logging conerns.
-    output_dir: str = field(default="./")
+    output_dir: str = field(default='./')
     disable_tqdm: bool = field(default=True)
     save_strategy: str = field(default="no")
     logging_strategy: str = field(default="epoch")
     evaluation_strategy: str = field(default="no")
+    logging_dir: str = field(default=None)
+    checkpoint_idx: int = field(default=None)
+
+    def __post_init__(self):
+        
+        # Always use default values for hub-related attributes
+        self.push_to_hub = False
+        self.hub_model_id = None
+        self.hub_strategy = 'every_save'
+        self.hub_token = None
+        self.hub_private_repo = False
+        self.push_to_hub_model_id = None
+        self.push_to_hub_organization = None
+        self.push_to_hub_token = None
+        super().__post_init__()
+
+    def to_dict(self):
+        # Call the superclass's to_dict method
+        # print(self.logging_dir)
+        all_args = super().to_dict()
+
+        # Get a dict with default values for all fields
+        default_args = _hf_TrainingArguments(output_dir='./').to_dict()
+
+        # Filter out args that are equal to their default values
+        set_args = {name: value for name, value in all_args.items() if value != default_args.get(name)}
+
+        return set_args
 
 
 
