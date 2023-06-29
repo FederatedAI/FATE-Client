@@ -158,19 +158,19 @@ class FATEFlowJobInvoker(object):
         ...
 
     def get_output_model(self, job_id, role, party_id, task_name):
-        response = self._client.query_model(job_id, role, party_id, task_name)
+        response = self._client.output.model_query(job_id=job_id, role=role, party_id=party_id, task_name=task_name)
         try:
             code = response["code"]
             if code != 0:
                 raise ValueError(f"Return code {code}!=0")
-            model = response["data"]["output_model"]
+            model = response["data"]
             return model
         except BaseException:
             raise ValueError(f"query task={job_id}, role={role}, "
                              f"party_id={party_id}'s output model is failed, response={response}")
 
-    def get_output_metrics(self, job_id, role, party_id, task_name):
-        response = self._client.query_metrics(job_id, role, party_id, task_name)
+    def get_output_metric(self, job_id, role, party_id, task_name):
+        response = self._client.output.metric_query(job_id=job_id, role=role, party_id=party_id, task_name=task_name)
         try:
             code = response["code"]
             if code != 0:
