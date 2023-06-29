@@ -15,6 +15,7 @@
 #
 from ..utils.base_utils import BaseFlowAPI
 from ..utils.params_utils import filter_invalid_params
+from ..utils.io_utils import download_from_request
 
 
 class Output(BaseFlowAPI):
@@ -104,7 +105,8 @@ class Output(BaseFlowAPI):
         params = filter_invalid_params(**kwargs)
         return self._post(url='/output/model/delete', json=params)
 
-    def download_data(self, job_id: str, role: str, party_id: str, task_name: str, output_key: str = None):
+    def download_data(self, job_id: str, role: str, party_id: str, task_name: str, output_key: str = None,
+                      download_dir: str = None):
         """
 
         Args:
@@ -113,11 +115,17 @@ class Output(BaseFlowAPI):
             party_id:
             task_name:
             output_key:
+            download_dir: download path
 
 
         Returns:
-        {'code': 0, 'message': 'success','data':dict}
+            If "download_dir" is passed, json will be returned, eg: {'code': 0, 'message': 'download success, please check the path'}
+            else return tar.gz stream
         """
         kwargs = locals()
         params = filter_invalid_params(**kwargs)
-        return self._get(url='/output/data/download', params=params, handle_result=False)
+        resp = self._get(url='/output/data/download', params=params, handle_result=False)
+        if download_dir:
+            return download_from_request(resp, download_dir)
+        else:
+            return resp
