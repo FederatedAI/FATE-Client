@@ -120,4 +120,4 @@ class Output(BaseFlowAPI):
         """
         kwargs = locals()
         params = filter_invalid_params(**kwargs)
-        return self._get(url='/output/data/download', json=params)
+        return self._get(url='/output/data/download', params=params)
