@@ -20,7 +20,7 @@ from ...interface import ArtifactType
 
 
 class CoordinatedLR(Component):
-    yaml_define_path = "./component_define/fate/hetero_lr.yaml"
+    yaml_define_path = "./component_define/fate/coordinated_lr.yaml"
 
     def __init__(self,
                  _name: str,
