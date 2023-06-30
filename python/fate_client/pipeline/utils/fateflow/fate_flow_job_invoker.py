@@ -160,7 +160,6 @@ class FATEFlowJobInvoker(object):
 
     def get_output_data(self, job_id, role, party_id, task_name):
         with tempfile.TemporaryDirectory() as data_dir:
-            data_dir = "/Users/maguoqiang/mgq/workspace/examples/data/test"
             response = self._client.output.download_data(job_id=job_id, role=role, party_id=party_id,
                                                          task_name=task_name, download_dir=data_dir)
             try:

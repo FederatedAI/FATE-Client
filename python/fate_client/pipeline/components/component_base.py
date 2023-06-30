@@ -190,7 +190,8 @@ class Component(object):
             return component_setting
 
         parameters = {}
-        inputs = {}
+        input_channels = {}
+        input_artifacts = {}
         for attr, value in component_setting.items():
             if attr in self._component_spec.parameters:
                 parameters[attr] = value
@@ -210,8 +211,9 @@ class Component(object):
                     type_key = InputArtifactType.DATA if isinstance(value[0], DataWarehouseChannel) \
                         else InputArtifactType.MODEL
 
-                if type_key not in inputs:
-                    inputs[type_key] = dict()
+                if type_key not in input_channels:
+                    input_channels[type_key] = dict()
+                    input_artifacts[type_key] = dict()
 
                 artifact_spec = getattr(self._component_spec.input_artifacts, type_key).get(attr, None)
                 if not artifact_spec:
@@ -224,15 +226,18 @@ class Component(object):
 
                 if isinstance(value, list):
                     artifact_list = [v.get_spec(roles=[role]) for v in value]
-                    inputs[type_key][attr] = {value[0].source: artifact_list}
+                    input_channels[type_key][attr] = {value[0].source: artifact_list}
                 else:
-                    inputs[type_key][attr] = {value.source: value.get_spec(roles=[role])}
+                    input_channels[type_key][attr] = {value.source: value.get_spec(roles=[role])}
+
+                input_artifacts[type_key][attr] = artifact_spec
 
         component_setting = dict()
         if parameters:
             component_setting["parameters"] = parameters
-        if inputs:
-            component_setting["inputs"] = inputs
+        if input_channels:
+            component_setting["input_artifacts"] = input_artifacts
+            component_setting["input_channels"] = input_channels
 
         return component_setting
 
