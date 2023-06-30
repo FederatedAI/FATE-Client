@@ -31,7 +31,7 @@ def output(ctx):
     pass
 
 
-@click.group(short_help="Output Operations")
+@click.group(short_help="Output Data Operations")
 @click.pass_context
 def data(ctx):
     """
