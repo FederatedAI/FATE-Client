@@ -16,14 +16,14 @@ from typing import List
 
 from ..component_base import Component
 from ...conf.types import PlaceHolder
-from ...interface import ArtifactChannel
+from ...interface import ArtifactType
 
 
-class HeteroLR(Component):
+class CoordinatedLR(Component):
     yaml_define_path = "./component_define/fate/hetero_lr.yaml"
 
     def __init__(self,
-                 name: str,
+                 _name: str,
                  runtime_roles: List[str] = None,
                  max_iter: int = 20,
                  early_stop: str = "diff",
@@ -33,15 +33,15 @@ class HeteroLR(Component):
                  learning_rate_scheduler: dict = PlaceHolder(),
                  init_param: dict = PlaceHolder(),
                  threshold: float = 0.5,
-                 train_data: ArtifactChannel = PlaceHolder(),
-                 validate_data: ArtifactChannel = PlaceHolder(),
-                 test_data: ArtifactChannel = PlaceHolder(),
-                 input_model: ArtifactChannel = PlaceHolder()
+                 train_data: ArtifactType = PlaceHolder(),
+                 validate_data: ArtifactType = PlaceHolder(),
+                 test_data: ArtifactType = PlaceHolder(),
+                 input_model: ArtifactType = PlaceHolder()
                  ):
         inputs = locals()
         self._process_init_inputs(inputs)
-        super(HeteroLR, self).__init__()
-        self.name = name
+        super(CoordinatedLR, self).__init__()
+        self._name = _name
         self.runtime_roles = runtime_roles
         self.max_iter = max_iter
         self.early_stop = early_stop
