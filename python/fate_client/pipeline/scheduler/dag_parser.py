@@ -560,9 +560,9 @@ class DagParser(object):
                               dag_spec,
                               component_specs,
                               data_tracer: dict):
-        if train_artifact_definition.type != test_artifact_definition.type:
-            raise ValueError(f"train_artifact_definition's type is {train_artifact_definition.type}, "
-                             f"can not be changed to {test_artifact_definition.type}")
+        if not (set(train_artifact_definition.types) & set(test_artifact_definition.types)):
+            raise ValueError(f"train_artifact_definition's types are {train_artifact_definition.types[0]}, "
+                             f"can not be changed to {test_artifact_definition.types[0]}")
         if not isinstance(output_channel, list):
             output_channel = [output_channel]
 
@@ -587,7 +587,7 @@ class DagParser(object):
 
         if not ret_output_channel:
             return None
-        elif train_artifact_definition.type == ArtifactType.DATASETS:
+        elif train_artifact_definition.is_multi:
             return ret_output_channel
         else:
             return ret_output_channel[0]
