@@ -136,17 +136,6 @@ component:
           - host
         description: ''
         is_multi: false
-      output_model:
-        types:
-          - dataframe
-        optional: false
-        stages:
-          - train
-        roles:
-          - guest
-          - host
-        description: ''
-        is_multi: false
       test_output_data:
         types:
           - dataframe
@@ -158,7 +147,18 @@ component:
           - host
         description: ''
         is_multi: false
-    model: { }
+    model:
+      output_model:
+        types:
+          - json_model
+        optional: false
+        stages:
+          - train
+        roles:
+          - guest
+          - host
+        description: ''
+        is_multi: false
     metric:
       metric:
         types:
