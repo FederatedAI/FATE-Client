@@ -16,7 +16,7 @@ from typing import List
 
 from ..component_base import Component
 from ...conf.types import PlaceHolder
-from ...interface import ArtifactChannel
+from ...interface import ArtifactType
 
 
 class Statistics(Component):
@@ -29,7 +29,7 @@ class Statistics(Component):
                  bias: bool = True,
                  skip_col: List[str] = PlaceHolder(),
                  use_anonymous: bool = False,
-                 train_data: ArtifactChannel = PlaceHolder()
+                 train_data: ArtifactType = PlaceHolder()
                  ):
         inputs = locals()
         self._process_init_inputs(inputs)
