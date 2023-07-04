@@ -23,21 +23,21 @@ class Statistics(Component):
     yaml_define_path = "./component_define/fate/statistics.yaml"
 
     def __init__(self,
-                 name: str,
+                 _name: str,
                  runtime_roles: List[str] = None,
                  metrics: List[str] = None,
                  bias: bool = True,
                  skip_col: List[str] = PlaceHolder(),
                  use_anonymous: bool = False,
-                 train_data: ArtifactType = PlaceHolder()
+                 input_data: ArtifactType = PlaceHolder()
                  ):
         inputs = locals()
         self._process_init_inputs(inputs)
         super(Statistics, self).__init__()
-        self.name = name
+        self._name = _name
         self.runtime_roles = runtime_roles
         self.metrics = metrics
         self.bias = bias
         self.skip_col = skip_col
         self.use_anonymous = use_anonymous
-        self.train_data = train_data
+        self.input_data = input_data

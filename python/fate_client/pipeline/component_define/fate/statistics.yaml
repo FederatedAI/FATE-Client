@@ -7,13 +7,105 @@ component:
   roles:
     - guest
     - host
-  parameters: { }
+  parameters:
+    metrics:
+      type: typing.Union[typing.List[fate.components.core.params._metrics.StatisticMetrics],
+        fate.components.core.params._metrics.StatisticMetrics]
+      default:
+        - mean
+        - std
+        - min
+        - max
+      optional: true
+      description: metrics to be computed, default ['count', 'mean', 'std', 'min',
+        'max']
+      type_meta:
+        title: typing.Union[typing.List[fate.components.core.params._metrics.StatisticMetrics],
+          fate.components.core.params._metrics.StatisticMetrics]
+        anyOf:
+          - type: array
+            items:
+              type: string
+          - type: string
+        default:
+          - mean
+          - std
+          - min
+          - max
+        description: metrics to be computed, default ['count', 'mean', 'std', 'min',
+          'max']
+    ddof:
+      type: ConstrainedNumberMeta
+      default: 1
+      optional: true
+      description: Delta Degrees of Freedom for std and var, default 1
+      type_meta:
+        title: ConstrainedNumberMeta
+        minimum: 0
+        type: integer
+    bias:
+      type: bool
+      default: true
+      optional: true
+      description: If False, the calculations of skewness and kurtosis are corrected
+        for statistical bias.
+      type_meta:
+        title: bool
+        type: boolean
+        default: false
+        description: bool, whether interpret `skip_col` as anonymous column names
+    skip_col:
+      type: typing.List[str]
+      default:
+      optional: true
+      description: columns to be skipped, default None; if None, statistics will be
+        computed over all columns
+      type_meta:
+        title: typing.List[str]
+        type: array
+        items:
+          type: string
+        default:
+        description: columns to be skipped, default None; if None, statistics will
+          be computed over all columns
+    use_anonymous:
+      type: bool
+      default: false
+      optional: true
+      description: bool, whether interpret `skip_col` as anonymous column names
+      type_meta:
+        title: bool
+        type: boolean
+        default: false
+        description: bool, whether interpret `skip_col` as anonymous column names
   input_artifacts:
-    data: { }
+    data:
+      input_data:
+        types:
+          - dataframe
+        optional: false
+        stages:
+          - default
+        roles:
+          - guest
+          - host
+        description: ''
+        is_multi: false
     model: { }
   output_artifacts:
     data: { }
-    model: { }
+    model:
+      output_model:
+        types:
+          - json_model
+        optional: false
+        stages:
+          - default
+        roles:
+          - guest
+          - host
+        description: ''
+        is_multi: false
     metric:
       metric:
         types:
