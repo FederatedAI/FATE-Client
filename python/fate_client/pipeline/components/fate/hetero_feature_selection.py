@@ -17,14 +17,14 @@ from typing import List
 
 from ..component_base import Component
 from ...conf.types import PlaceHolder
-from ...interface import ArtifactChannel
+from ...interface import ArtifactType
 
 
 class HeteroFeatureSelection(Component):
     yaml_define_path = "./component_define/fate/hetero_feature_selection.yaml"
 
     def __init__(self,
-                 name: str,
+                 _name: str,
                  runtime_roles: List[str] = None,
                  method: List[str] = PlaceHolder(),
                  select_col: List[str] = None,
@@ -33,16 +33,16 @@ class HeteroFeatureSelection(Component):
                  manual_param: dict = None,
                  keep_one: bool = True,
                  use_anonymous: bool = False,
-                 train_data: ArtifactChannel = PlaceHolder(),
-                 test_data: ArtifactChannel = PlaceHolder(),
-                 input_model: ArtifactChannel = PlaceHolder(),
-                 input_statistic_model: ArtifactChannel = PlaceHolder(),
-                 input_binning_model: ArtifactChannel = PlaceHolder()
+                 train_data: ArtifactType = PlaceHolder(),
+                 test_data: ArtifactType = PlaceHolder(),
+                 input_model: ArtifactType = PlaceHolder(),
+                 input_statistic_model: ArtifactType = PlaceHolder(),
+                 input_binning_model: ArtifactType = PlaceHolder()
                  ):
         inputs = locals()
         self._process_init_inputs(inputs)
         super(HeteroFeatureSelection, self).__init__()
-        self.name = name
+        self._name = _name
         self.runtime_roles = runtime_roles
         self.method = method
         self.select_col = select_col
