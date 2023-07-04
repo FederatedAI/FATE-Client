@@ -20,7 +20,7 @@ from .entity.dag_structures import JobConfSpec
 from .entity import FateFlowTaskInfo, StandaloneTaskInfo
 from .entity.runtime_entity import Roles
 from .conf.env_config import SiteInfo
-from .conf.types import SupportRole, PlaceHolder
+from .conf.types import SupportRole, PlaceHolder, InputArtifactType
 from .conf.job_configuration import JobConf
 from .components.component_base import Component
 from .scheduler.dag_parser import DagParser
@@ -115,10 +115,10 @@ class Pipeline(object):
 
     def add_task(self, task) -> "Pipeline":
         if isinstance(task, Component):
-            if task.name in self._tasks:
-                raise ValueError(f"Task {task.name} has been added before")
+            if task.task_name in self._tasks:
+                raise ValueError(f"Task {task.task_name} has been added before")
 
-            self._tasks[task.name] = task
+            self._tasks[task.task_name] = task
         elif isinstance(task, Pipeline):
             if task.stage != "deployed":
                 raise ValueError("Deploy training pipeline first and use get_deployed_pipeline to get the inst")
@@ -157,12 +157,18 @@ class Pipeline(object):
                 continue
             deploy_task = copy.deepcopy(task)
             predict_task_spec = self._predict_dag.tasks[task_name]
-            input_artifact_keys = task.component_spec.input_definitions.artifacts.keys()
-            for input_artifact_key in input_artifact_keys:
-                setattr(deploy_task, input_artifact_key, PlaceHolder())
+            for artifact_type in InputArtifactType.types():
+                if not getattr(task.component_spec.input_artifacts, artifact_type):
+                    continue
+                artifacts = getattr(task.component_spec.input_artifacts, artifact_type)
+                input_artifact_keys = artifacts.keys()
+                for input_artifact_key in input_artifact_keys:
+                    setattr(deploy_task, input_artifact_key, PlaceHolder())
 
-            if predict_task_spec.inputs and predict_task_spec.inputs.artifacts:
-                for input_artifact_key, input_channel in predict_task_spec.inputs.artifacts.items():
+                if not predict_task_spec.inputs or not getattr(predict_task_spec.inputs, artifact_type):
+                    continue
+                artifacts = getattr(predict_task_spec.inputs, artifact_type)
+                for input_artifact_key, input_channel in artifacts.items():
                     for artifact_source_type, channel in input_channel.items():
                         producer_task = channel.producer_task
                         output_artifact_key = channel.output_artifact_key
@@ -214,7 +220,7 @@ class Pipeline(object):
             task_name_list = []
             for task in task_list:
                 if isinstance(task, Component):
-                    task_name_list.append(task.name)
+                    task_name_list.append(task.task_name)
                 else:
                     task_name_list.append(task)
         else:
@@ -249,7 +255,7 @@ class StandalonePipeline(Pipeline):
 
     def get_task_info(self, task):
         if isinstance(task, Component):
-            task = task.name
+            task = task.task_name
 
         return StandaloneTaskInfo(task_name=task, model_info=self._model_info)
 
@@ -258,15 +264,27 @@ class FateFlowPipeline(Pipeline):
     def __init__(self, *args):
         super(FateFlowPipeline, self).__init__(FateFlowExecutor(), *args)
 
-    def upload(self, file: str, head: int,
-               namespace: str, name: str,
-               meta: dict, partitions=4,
-               destroy=True,
-               storage_engine=None, **kwargs):
-        self._executor.upload(file, head, namespace, name, meta, partitions, destroy, storage_engine, **kwargs)
+    def transform_local_file_to_dataframe(self,
+                                          file: str,
+                                          head: str,
+                                          namespace: str,
+                                          name: str,
+                                          meta: dict,
+                                          extend_sid=True,
+                                          partitions=4,
+                                          **kwargs):
+        data_warehouse = self._executor.upload(file=file,
+                                               head=head,
+                                               meta=meta,
+                                               partitions=partitions,
+                                               extend_sid=extend_sid,
+                                               role="local",
+                                               party_id="0",
+                                               **kwargs)
+        self._executor.transform_to_dataframe(namespace, name, data_warehouse, self._local_role, self._local_party_id)
 
     def get_task_info(self, task):
         if isinstance(task, Component):
-            task = task.name
+            task = task.task_name
 
         return FateFlowTaskInfo(task_name=task, model_info=self._model_info)

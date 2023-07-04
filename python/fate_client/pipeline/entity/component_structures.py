@@ -24,22 +24,28 @@ class ParameterSpec(BaseModel):
     type: str
     default: Any
     optional: bool
+    description: str = ""
+    type_meta: dict = {}
 
 
 class ArtifactSpec(BaseModel):
-    type: str
+    types: List[str]
     optional: bool
     stages: Optional[List[str]]
     roles: Optional[List[str]]
+    description: str = ""
+    is_multi: bool
 
 
-class InputDefinitionsSpec(BaseModel):
-    parameters: Dict[str, ParameterSpec]
-    artifacts: Dict[str, ArtifactSpec]
+class InputArtifactsSpec(BaseModel):
+    data: Dict[str, ArtifactSpec]
+    model: Dict[str, ArtifactSpec]
 
 
-class OutputDefinitionsSpec(BaseModel):
-    artifacts: Dict[str, ArtifactSpec]
+class OutputArtifactsSpec(BaseModel):
+    data: Dict[str, ArtifactSpec]
+    model: Dict[str, ArtifactSpec]
+    metric: Dict[str, ArtifactSpec]
 
 
 class ComponentSpec(BaseModel):
@@ -49,8 +55,9 @@ class ComponentSpec(BaseModel):
     version: str
     labels: List[str] = ["trainable"]
     roles: List[str]
-    input_definitions: InputDefinitionsSpec
-    output_definitions: OutputDefinitionsSpec
+    parameters: Dict[str, ParameterSpec]
+    input_artifacts: InputArtifactsSpec
+    output_artifacts: OutputArtifactsSpec
 
 
 class RuntimeOutputChannelSpec(BaseModel):
@@ -67,27 +74,40 @@ def load_component_spec(yaml_define_path: str):
     yaml_define_path = Path(__file__).parent.parent.joinpath(yaml_define_path).resolve()
     component_spec_dict = load_yaml_file(str(yaml_define_path))["component"]
     parameters = dict()
-    input_artifacts = dict()
-    output_artifacts = dict()
-    if "input_definitions" in component_spec_dict:
-        input_definition_spec = component_spec_dict["input_definitions"]
-        if "parameters" in input_definition_spec:
-            for key, value in input_definition_spec["parameters"].items():
-                parameters[key] = ParameterSpec(**value)
+    if "parameters" in component_spec_dict:
+        for key, value in component_spec_dict["parameters"].items():
+            parameters[key] = ParameterSpec(**value)
 
-        if "artifacts" in input_definition_spec:
-            for key, value in input_definition_spec["artifacts"].items():
-                input_artifacts[key] = ArtifactSpec(**value)
+    input_artifacts = dict(data=dict(),
+                           model=dict())
+    if "input_artifacts" in component_spec_dict:
+        input_artifacts_spec = component_spec_dict["input_artifacts"]
 
-    if "output_definitions" in component_spec_dict:
-        output_definition_spec = component_spec_dict["output_definitions"]
-        for key, value in output_definition_spec["artifacts"].items():
-            output_artifacts[key] = ArtifactSpec(**value)
+        input_keys = ["data", "model"]
+        for input_key in input_keys:
+            if input_key not in input_artifacts_spec:
+                continue
 
-    input_definitions = InputDefinitionsSpec(parameters=parameters,
-                                             artifacts=input_artifacts)
+            for key, value in input_artifacts_spec[input_key].items():
+                input_artifacts[input_key][key] = value
 
-    output_definitions = OutputDefinitionsSpec(artifacts=output_artifacts)
+    output_artifacts = dict(data=dict(),
+                            model=dict(),
+                            metric=dict())
+
+    if "output_artifacts" in component_spec_dict:
+        output_artifacts_spec = component_spec_dict["output_artifacts"]
+
+        output_keys = ["data", "model", "metric"]
+        for output_key in output_keys:
+            if output_key not in output_artifacts_spec:
+                continue
+            for key, value in output_artifacts_spec[output_key].items():
+                output_artifacts[output_key][key] = ArtifactSpec(**value)
+
+    input_artifacts = InputArtifactsSpec(**input_artifacts)
+
+    output_artifacts = OutputArtifactsSpec(**output_artifacts)
 
     return ComponentSpec(
         name=component_spec_dict["name"],
@@ -96,6 +116,7 @@ def load_component_spec(yaml_define_path: str):
         version=component_spec_dict["version"],
         labels=component_spec_dict["labels"],
         roles=component_spec_dict["roles"],
-        input_definitions=input_definitions,
-        output_definitions=output_definitions
+        parameters=parameters,
+        input_artifacts=input_artifacts,
+        output_artifacts=output_artifacts
     )

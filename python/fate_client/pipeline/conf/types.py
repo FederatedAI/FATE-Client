@@ -12,7 +12,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-class JobStage(object):
+class Stage(object):
     TRAIN = "train"
     PREDICT = "predict"
     DEFAULT = "default"
@@ -21,6 +21,28 @@ class JobStage(object):
 class ArtifactSourceType(object):
     TASK_OUTPUT_ARTIFACT = "task_output_artifact"
     MODEL_WAREHOUSE = "model_warehouse"
+    DATA_WAREHOUSE = "data_warehouse"
+
+
+class InputArtifactType(object):
+    DATA = "data"
+    MODEL = "model"
+
+    @classmethod
+    def types(cls):
+        for _type in [cls.DATA, cls.MODEL]:
+            yield _type
+
+
+class OutputArtifactType(object):
+    DATA = "data"
+    MODEL = "model"
+    METRIC = "metric"
+
+    @classmethod
+    def types(cls):
+        for _type in [cls.DATA, cls.MODEL, cls.METRIC]:
+            yield _type
 
 
 class ArtifactType(object):
