@@ -89,7 +89,7 @@ class PartyTaskRefSpec(BaseModel):
 
 class PartyTaskSpec(BaseModel):
     parties: Optional[List[PartySpec]]
-    tasks: Dict[str, PartyTaskRefSpec]
+    tasks: Optional[Dict[str, PartyTaskRefSpec]]
     conf: Optional[dict]
 
 
