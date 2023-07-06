@@ -12,13 +12,15 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+
 from .coordinated_lr import CoordinatedLR
 # from .multi_input import MultiInput
 from .dataframe_io_test import DataFrameIOTest
-# from .statistics import Statistics
+from .statistics import Statistics
 from .dataframe_transformer import DataFrameTransformer
 from .evaluation import Evaluation
 from .feature_scale import FeatureScale
 from .intersection import Intersection
+# from .lr import HeteroLR
 from .reader import Reader
 # from .multi_model_test import MultiModelTest
