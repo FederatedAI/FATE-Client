@@ -39,7 +39,7 @@ component:
             start_factor: 1.0
         description: learning rate scheduler, select method from {'step', 'linear',
           'constant'}for list of configurable arguments, refer to torch.optim.lr_scheduler
-    max_iter:
+    epochs:
       type: ConstrainedNumberMeta
       default: 20
       optional: true
