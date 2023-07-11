@@ -140,5 +140,4 @@ flow_cli.add_command(task.task)
 
 
 if __name__ == '__main__':
-    print(f'--start--')
     flow_cli()
