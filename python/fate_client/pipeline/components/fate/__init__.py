@@ -21,6 +21,7 @@ from .statistics import Statistics
 from .dataframe_transformer import DataFrameTransformer
 from .evaluation import Evaluation
 from .feature_scale import FeatureScale
+from .hetero_feature_selection import HeteroFeatureSelection
 from .intersection import Intersection
 from .reader import Reader
 # from .multi_model_test import MultiModelTest
