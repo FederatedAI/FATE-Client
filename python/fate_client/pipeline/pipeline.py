@@ -16,7 +16,7 @@ import copy
 from ruamel import yaml
 from .executor import StandaloneExecutor, FateFlowExecutor
 from .entity import DAG
-from .entity.dag_structures import JobConfSpec
+from .entity.dag_structures import JobConfSpec, ModelWarehouseConfSpec
 from .entity import FateFlowTaskInfo, StandaloneTaskInfo
 from .entity.runtime_entity import Roles
 from .conf.env_config import SiteInfo
@@ -147,7 +147,8 @@ class Pipeline(object):
         deploy_pipeline = Pipeline(self._executor)
         deploy_pipeline.set_stage("deployed")
         deploy_pipeline.conf = self._job_conf
-        deploy_pipeline.conf.update(self._predict_dag.conf.dict(exclude_defaults=True))
+        if self._predict_dag.conf:
+            deploy_pipeline.conf.update(self._predict_dag.conf.dict(exclude_defaults=True))
         deploy_pipeline.predict_dag = self._predict_dag
         deploy_pipeline.roles = self._roles
         deploy_pipeline.model_info = self._model_info
@@ -177,6 +178,18 @@ class Pipeline(object):
                         setattr(deploy_task, input_artifact_key, changed_channel)
 
             deploy_pipeline.add_task(deploy_task)
+
+        party_tasks = self._dag.dag_spec.dag.party_tasks
+        if not party_tasks:
+            return deploy_pipeline
+
+        for site_name, party_task_spec in party_tasks.items():
+            if not party_task_spec.tasks:
+                continue
+
+            for task_name, task_spec in party_task_spec.tasks.items():
+                if task_spec.inputs:
+                    getattr(deploy_pipeline, task_name).reset_source_inputs()
 
         return deploy_pipeline
 
@@ -231,8 +244,8 @@ class Pipeline(object):
         if self._model_info:
             if self._predict_dag.conf is None:
                 self._predict_dag.conf = JobConfSpec()
-            self._predict_dag.conf.model_id = self._model_info.model_id
-            self._predict_dag.conf.model_version = self._model_info.model_version
+            self._predict_dag.conf.model_warehouse = ModelWarehouseConfSpec(model_id=self._model_info.model_id,
+                                                                            model_version=self._model_info.model_version)
 
         return yaml.dump(self._predict_dag.dict(exclude_defaults=True))
 
