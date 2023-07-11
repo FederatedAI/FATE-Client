@@ -259,6 +259,18 @@ class Component(object):
 
         return conf
 
+    def reset_source_inputs(self):
+        for _, role_instances in self.__party_instance.items():
+            for __, inst in role_instances.items():
+                for ___, party_inst in inst.party_instance.items():
+                    component_setting = party_inst.get_component_setting()
+                    input_artifacts = self._component_spec.input_artifacts
+
+                    for artifact_type in InputArtifactType.types():
+                        for artifact_key in getattr(input_artifacts, artifact_type):
+                            if artifact_key in component_setting:
+                                component_setting.pop(artifact_key)
+
     def validate_runtime_env(self, roles):
         runtime_roles = roles.get_runtime_roles()
         for role, role_inst in self.__party_instance.items():

@@ -84,13 +84,13 @@ class TaskSpec(BaseModel):
 class PartyTaskRefSpec(BaseModel):
     parameters: Optional[Dict[Any, Any]]
     inputs: Optional[SourceInputArtifacts]
-    conf: Optional[Dict]
+    conf: Optional[Dict] = {}
 
 
 class PartyTaskSpec(BaseModel):
     parties: Optional[List[PartySpec]]
     tasks: Optional[Dict[str, PartyTaskRefSpec]]
-    conf: Optional[dict]
+    conf: Optional[dict] = {}
 
 
 class TaskConfSpec(BaseModel):

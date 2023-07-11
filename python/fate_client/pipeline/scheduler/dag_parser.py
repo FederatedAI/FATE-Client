@@ -213,10 +213,11 @@ class DagParser(object):
                 party_parties = party_tasks_spec.parties
                 party_task_spec = party_tasks_spec.tasks[task_name]
 
-                for party in party_parties:
-                    if party.role in task_parameters:
-                        for party_id in party.party_id:
-                            task_conf[party.role][party_id].update(party_task_spec.conf)
+                if party_task_spec.conf:
+                    for party in party_parties:
+                        if party.role in task_parameters:
+                            for party_id in party.party_id:
+                                task_conf[party.role][party_id].update(party_task_spec.conf)
 
                 parameters = party_task_spec.parameters
 
@@ -328,6 +329,9 @@ class DagParser(object):
         dag_spec = cls.deduce_dag(dag_parser, task_name_list, dag_schema.dag, component_specs, data_tracer)
         dag_spec = cls.erase_redundant_tasks(
             task_name_set,
+            dag_spec
+        )
+        dag_spec = cls.erase_party_task_inputs(
             dag_spec
         )
 
@@ -450,8 +454,23 @@ class DagParser(object):
         return ret_dag
 
     @classmethod
+    def erase_party_task_inputs(cls, dag_spec: DAGSpec):
+        ret_dag = copy.deepcopy(dag_spec)
+        if not dag_spec.party_tasks:
+            return ret_dag
+
+        for site_name, party_task_spec in dag_spec.party_tasks.items():
+            if not party_task_spec.tasks:
+                continue
+
+            for task_name, task_spec in party_task_spec.tasks.items():
+                if task_spec.inputs:
+                    ret_dag.party_tasks[site_name].tasks[task_name].inputs = None
+
+        return ret_dag
+
+    @classmethod
     def infer_dependent_tasks(cls, input_artifacts):
-        print (input_artifacts)
         if not input_artifacts:
             return []
 
