@@ -31,7 +31,7 @@ JOBID = click.option("-j", "--job-id", type=click.STRING,
 JOBID_REQUIRED = click.option("-j", "--job-id", type=click.STRING, required=True,
                               help="A valid job id.")
 
-role_choices_list = ["local", "guest", "arbiter", "host", "site", "client"]
+role_choices_list = ["site", "client", "super_client"]
 ROLE = click.option("-r", "--role", type=click.Choice(role_choices_list), metavar="TEXT",
                     help="Role name. Users can choose one from {} and {}.".format(",".join(role_choices_list[:-1]),
                                                                                   role_choices_list[-1]))
@@ -45,8 +45,9 @@ PARTYID = click.option("-p", "--party-id", type=click.STRING,
 PARTYID_REQUIRED = click.option("-p", "--party-id", type=click.STRING, required=True,
                                 help="A valid party id.")
 
-APP_ID = click.option("-app_id", "--app-id", type=click.STRING,
-                       help="A valid app_id.")
+APP_ID = click.option("-app_id", "--app-id", type=click.STRING, help="A valid app_id.")
+APP_NAME = click.option("-app_name", "--app-name", type=click.STRING, help="A valid app_name.")
+APP_TOKEN = click.option("-app_token", "--app-token", type=click.STRING, help="A valid app_token.")
 
 GUEST_PARTYID_REQUIRED = click.option("-gid", "--guest-party-id", type=click.STRING, required=True,
                                       help="A valid party id.")

@@ -12,11 +12,12 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-from .api import Job, Task, Data, Log, Model, Output, Permission, Provider, Service, Site, Table
+from .api import Client, Job, Task, Data, Log, Model, Output, Permission, Provider, Service, Site, Table
 from .utils.base_utils import BaseFlowClient
 
 
 class FlowClient(BaseFlowClient):
+    client_ = Client()
     job = Job()
     task = Task()
     data = Data()

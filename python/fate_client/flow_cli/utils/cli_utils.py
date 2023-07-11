@@ -13,14 +13,13 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 #
-import configparser
+
 import json
 import os
-from functools import wraps
-
 import click
 import requests
 from ruamel import yaml
+from functools import wraps
 
 
 def prettify(response):
@@ -84,4 +83,5 @@ def preprocess(**kwargs):
         with open(dsl_path, 'r') as dsl_fp:
             dsl_data = json.load(dsl_fp)
     return config_data, dsl_data
+
 

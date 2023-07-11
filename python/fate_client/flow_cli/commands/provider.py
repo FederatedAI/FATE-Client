@@ -51,10 +51,10 @@ def register(ctx, **kwargs):
 
 
 @provider.command("query", short_help="query Provider Command")
-@click.option("-n", "--name", type=click.STRING,help="Namespace.")
-@click.option("-d", "--device", type=click.STRING,help="Namespace.")
-@click.option("-v", "--version", type=click.STRING,help="Namespace.")
-@click.option("-p", "--provider_name", type=click.STRING,help="Namespace.")
+@click.option("-n", "--name", type=click.STRING, help="Name.")
+@click.option("-d", "--device", type=click.STRING, help="Device.")
+@click.option("-v", "--version", type=click.STRING, help="Version.")
+@click.option("-p", "--provider_name", type=click.STRING, help="Provider name.")
 @click.pass_context
 def query(ctx, **kwargs):
     """
@@ -65,18 +65,16 @@ def query(ctx, **kwargs):
     - USAGE:
 
     """
-    config_data, dsl_data = preprocess(**kwargs)
     client: FlowClient = ctx.obj["client"]
-    if "conf_path" in config_data.keys(): config_data.pop("conf_path")    
-    response = client.provider.query(**config_data)
+    response = client.provider.query(**kwargs)
     prettify(response)
 
 
 @provider.command("delete", short_help="delete Provider Command")
 @click.option("-n", "--name", type=click.STRING,help="Namespace.")
-@click.option("-d", "--device", type=click.STRING,help="Namespace.")
-@click.option("-v", "--version", type=click.STRING,help="Namespace.")
-@click.option("-p", "--provider_name", type=click.STRING,help="Namespace.")
+@click.option("-d", "--device", type=click.STRING,help="Device.")
+@click.option("-v", "--version", type=click.STRING,help="Version.")
+@click.option("-p", "--provider_name", type=click.STRING,help="Provider name.")
 @click.pass_context
 def delete(ctx, **kwargs):
     """
@@ -87,10 +85,8 @@ def delete(ctx, **kwargs):
     - USAGE:
 
     """
-    config_data, dsl_data = preprocess(**kwargs)
     client: FlowClient = ctx.obj["client"]
-    if "conf_path" in config_data.keys(): config_data.pop("conf_path")
-    response = client.provider.delete(config_data)
+    response = client.provider.delete(**kwargs)
     prettify(response)
 
 

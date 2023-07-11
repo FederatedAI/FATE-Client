@@ -13,6 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 #
+from .client import Client
 from .job import Job
 from .task import Task
 from .data import Data

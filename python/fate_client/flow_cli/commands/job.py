@@ -16,7 +16,7 @@
 import click
 
 from ..utils import cli_args
-from ..utils.cli_utils import load_yaml, preprocess, prettify
+from ..utils.cli_utils import load_yaml, prettify
 from fate_client.flow_sdk import FlowClient
 
 
@@ -46,12 +46,11 @@ def submit(ctx, **kwargs):
     - USAGE:
         flow job submit -c fate_flow/examples/lr/standalone/lr_train_dag.yaml
     """
-    print(f'submit:{kwargs}')
     dag_schema = load_yaml(kwargs.get("conf_path"))
     client: FlowClient = ctx.obj["client"]
-    #response = client.job.submit({"dag_schema":dag_schema})
     response = client.job.submit(dag_schema=dag_schema)
     prettify(response)
+
 
 @job.command("query", short_help="query Job Command")
 @cli_args.JOBID
@@ -107,7 +106,7 @@ def rerun(ctx, **kwargs):
 
     \b
     - USAGE:
-       flow job stop -j $JOB_ID
+       flow job rerun -j $JOB_ID
     """
     client: FlowClient = ctx.obj["client"]
     response = client.job.rerun(**kwargs)
@@ -128,7 +127,6 @@ def job_list(ctx, **kwargs):
         flow job list
         flow job list -l 30
     """
-    # config_data, dsl_data = preprocess(**kwargs)
     client: FlowClient = ctx.obj["client"]
     response = client.job.query_job_list(**kwargs)
     prettify(response)
@@ -147,7 +145,6 @@ def log(ctx, **kwargs):
     - USAGE:
         flow job log -j JOB_ID --output-path ./examples/
     """
-    # config_data, dsl_data = preprocess(**kwargs)
     client: FlowClient = ctx.obj["client"]
     response = client.job.download_log(**kwargs)
     prettify(response)

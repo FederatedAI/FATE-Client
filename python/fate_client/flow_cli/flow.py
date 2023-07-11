@@ -14,18 +14,18 @@
 #  limitations under the License.
 #
 import os
-# import sys
-# sys.path.append(r'D:\projects\FATE-Client\python')
 
 import click
 from ruamel import yaml
-
+from pathlib import Path
 from fate_client.flow_sdk import FlowClient
-from fate_client.flow_cli.commands import job, data, log, model, output, permission, provider, service, site, table, task, queue
+from fate_client.flow_cli.commands import client, job, data, log, model, output, permission, provider, service, site, table, task, queue
 from fate_client.flow_cli.utils.cli_utils import prettify
 
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
+
+config_path = Path(__file__).parent.joinpath("settings.yaml").resolve()
 
 
 @click.group(short_help='Fate Flow Client', context_settings=CONTEXT_SETTINGS)
@@ -38,27 +38,28 @@ def flow_cli(ctx):
     if ctx.invoked_subcommand == 'init':
         return
 
-    with open(os.path.join(os.path.dirname(__file__), 'settings.yaml'), 'r') as fin:
+    with open(config_path, 'r') as fin:
         config = yaml.safe_load(fin)
-    if not config.get('api_version'):
+        flow_config = config['flow_service']
+    if not flow_config.get('api_version'):
         raise ValueError('api_version in config is required')
-    ctx.obj['api_version'] = config['api_version']
+    ctx.obj['api_version'] = flow_config['api_version']
 
-    if config.get('ip') and config.get('port'):
+    if flow_config.get('ip') and flow_config.get('port'):
         ctx.obj['ip'] = config['ip']
-        ctx.obj['http_port'] = int(config['port'])
+        ctx.obj['http_port'] = int(flow_config['port'])
         ctx.obj['server_url'] = f'http://{ctx.obj["ip"]}:{ctx.obj["http_port"]}/{config["api_version"]}'
-        if config.get('app_id') and config.get('app_token'):
-            ctx.obj['app_id'] = config['app_id']
-            ctx.obj['app_token'] = config['app_token']
+        if flow_config.get('app_id') and flow_config.get('app_token'):
+            ctx.obj['app_id'] = flow_config['app_id']
+            ctx.obj['app_token'] = flow_config['app_token']
     else:
         raise ValueError('Invalid configuration file. Did you run "flow init"?')
 
-    ctx.obj['initialized'] = (config.get('ip') and config.get('port'))
+    ctx.obj['initialized'] = (flow_config.get('ip') and flow_config.get('port'))
     if ctx.obj['initialized']:
         ctx.obj["client"] = FlowClient(
-            ip=config.get('ip'), port=config.get('port'), version=config.get("api_version"),
-            app_id=config.get("app_id"), app_token=config.get('app_token')
+            ip=flow_config.get('ip'), port=flow_config.get('port'), version=flow_config.get("api_version"),
+            app_id=flow_config.get("app_id"), app_token=flow_config.get('app_token')
         )
 
 
@@ -82,16 +83,17 @@ def initialization(**kwargs):
 
     """
 
-    with open(os.path.join(os.path.dirname(__file__), 'settings.yaml'), 'r') as fin:
+    with open(config_path, 'r') as fin:
         config = yaml.safe_load(fin)
+        flow_config = config['flow_service']
 
     if kwargs.get('reset'):
-        config['api_version'] = 'v2'
+        flow_config['api_version'] = 'v2'
         for i in ('ip', 'port', 'app_id', 'app_token'):
-            config[i] = None
+            flow_config[i] = None
 
-        with open(os.path.join(os.path.dirname(__file__), 'settings.yaml'), 'w') as fout:
-            yaml.dump(config, fout, Dumper=yaml.RoundTripDumper)
+        with open(config_path, 'w') as fout:
+            yaml.dump(flow_config, fout, Dumper=yaml.RoundTripDumper)
         prettify(
             {
                 'retcode': 0,
@@ -100,16 +102,16 @@ def initialization(**kwargs):
             }
         )
     else:
-        config['api_version'] = 'v2'
+        flow_config['api_version'] = 'v2'
         _update = False
         for i in ('ip', 'port', 'app_id', 'secret_token'):
             if kwargs.get(i):
-                config[i] = kwargs[i]
+                flow_config[i] = kwargs[i]
                 _update = True
 
         if _update:
-            with open(os.path.join(os.path.dirname(__file__), 'settings.yaml'), 'w') as fout:
-                yaml.dump(config, fout, Dumper=yaml.RoundTripDumper)
+            with open(config, 'w') as fout:
+                yaml.dump(flow_config, fout, Dumper=yaml.RoundTripDumper)
             prettify(
                 {
                     'retcode': 0,
@@ -125,6 +127,7 @@ def initialization(**kwargs):
             )
 
 
+flow_cli.add_command(client.client)
 flow_cli.add_command(job.job)
 flow_cli.add_command(data.data)
 flow_cli.add_command(log.log)

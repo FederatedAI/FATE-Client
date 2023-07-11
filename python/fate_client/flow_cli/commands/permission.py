@@ -87,7 +87,7 @@ def query(ctx, **kwargs):
 
     \b
     - USAGE:
-        flow permission delete  -app_id $APP_ID
+        flow permission query  -app_id $APP_ID
     """
     client: FlowClient = ctx.obj["client"]
     response = client.permission.query(**kwargs)

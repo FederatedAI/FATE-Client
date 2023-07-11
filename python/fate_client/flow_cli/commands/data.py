@@ -60,8 +60,8 @@ def upload(ctx, **kwargs):
 
 
 @data.command("download", short_help="Download Table Command")
-@cli_args.TABLE_NAME
-@cli_args.NAMESPACE
+# @cli_args.TABLE_NAME
+# @cli_args.NAMESPACE
 @cli_args.CONF_PATH
 @click.pass_context
 def download(ctx, **kwargs):
@@ -76,13 +76,15 @@ def download(ctx, **kwargs):
         flow data download -c fateflow/examples/download/download_table.json
     """
     config_data, dsl_data = preprocess(**kwargs)
-    client: FlowClient = ctx.obj["data"]
+    client: FlowClient = ctx.obj["client"]
+    # if "conf_path" in config_data.keys():config_data.pop("conf_path")
     response = client.data.download(**config_data)
     prettify(response)
 
 
 @data.command("transformer", short_help="dataframe transformer")
 @cli_args.CONF_PATH
+@click.pass_context
 def dataframe_transformer(ctx, **kwargs):
     """
     - DESCRIPTION:
@@ -95,6 +97,7 @@ def dataframe_transformer(ctx, **kwargs):
         flow data download -c fateflow/examples/download/download_table.json
     """
     config_data, dsl_data = preprocess(**kwargs)
-    client: FlowClient = ctx.obj["data"]
+    client: FlowClient = ctx.obj["client"]
+    if "conf_path" in config_data.keys():config_data.pop("conf_path")
     response = client.data.dataframe_transformer(**config_data)
     prettify(response)
