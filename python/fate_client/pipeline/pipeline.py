@@ -294,7 +294,7 @@ class FateFlowPipeline(Pipeline):
                                                role="local",
                                                party_id="0",
                                                **kwargs)
-        self._executor.transform_to_dataframe(namespace, name, data_warehouse, self._local_role, self._local_party_id)
+        self._executor.transform_to_dataframe(namespace, name, data_warehouse, role="local", party_id="0")
 
     def get_task_info(self, task):
         if isinstance(task, Component):

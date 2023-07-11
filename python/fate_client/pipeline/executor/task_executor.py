@@ -223,10 +223,6 @@ class FateFlowExecutor(object):
                                party_id: str):
         flow_job_invoker = FATEFlowJobInvoker()
 
-        site_party_id = flow_job_invoker.query_site_info()
-        if site_party_id:
-            local_party_id = site_party_id
-
         flow_job_invoker.transform_to_dataframe(namespace=namespace,
                                                 name=name,
                                                 data_warehouse=data_warehouse,
