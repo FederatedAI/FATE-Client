@@ -16,6 +16,7 @@ class Stage(object):
     TRAIN = "train"
     PREDICT = "predict"
     DEFAULT = "default"
+    CROSS_VALIDATION = "cross_validation"
 
 
 class ArtifactSourceType(object):
