@@ -26,6 +26,9 @@ class RuntimeTaskOutputChannelSpec(BaseModel):
     output_artifact_key: str
     roles: Optional[List[Literal["guest", "host", "arbiter", "local"]]]
 
+    class Config:
+        extra = "forbid"
+
 
 # newly add: data source
 class DataWarehouseChannelSpec(BaseModel):
@@ -36,13 +39,19 @@ class DataWarehouseChannelSpec(BaseModel):
     namespace: Optional[str]
     name: Optional[str]
 
+    class Config:
+        extra = "forbid"
+
 
 class ModelWarehouseChannelSpec(BaseModel):
     model_id: Optional[str]
-    model_version: Optional[int]
+    model_version: Optional[str]
     producer_task: str
     output_artifact_key: str
     roles: Optional[List[Literal["guest", "host", "arbiter", "local"]]]
+
+    class Config:
+        extra = "forbid"
 
 
 InputArtifactSpec = TypeVar("InputArtifactSpec",
@@ -106,7 +115,7 @@ class JobConfSpec(BaseModel):
     auto_retries: Optional[int]
     model_warehouse: Optional[ModelWarehouseConfSpec]
     model_id: Optional[str]
-    model_version: Optional[int]
+    model_version: Optional[str]
     task: Optional[TaskConfSpec]
 
 
