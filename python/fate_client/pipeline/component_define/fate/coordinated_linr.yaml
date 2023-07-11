@@ -1,5 +1,5 @@
 component:
-  name: coordinated_lr
+  name: coordinated_linr
   description: ''
   provider: fate
   version: 2.0.0-alpha
@@ -154,16 +154,6 @@ component:
           fill_val: 0.0
           fit_intercept: true
         description: Model param init setting.
-    threshold:
-      type: ConstrainedNumberMeta
-      default: 0.5
-      optional: true
-      description: predict threshold for binary data
-      type_meta:
-        title: ConstrainedNumberMeta
-        minimum: 0.0
-        maximum: 1.0
-        type: number
   input_artifacts:
     data:
       train_data:

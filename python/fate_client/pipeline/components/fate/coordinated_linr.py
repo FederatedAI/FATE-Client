@@ -19,8 +19,8 @@ from ...conf.types import PlaceHolder
 from ...interface import ArtifactType
 
 
-class CoordinatedLR(Component):
-    yaml_define_path = "./component_define/fate/coordinated_lr.yaml"
+class CoordinatedLinR(Component):
+    yaml_define_path = "./component_define/fate/coordinated_linr.yaml"
 
     def __init__(self,
                  _name: str,
@@ -32,7 +32,6 @@ class CoordinatedLR(Component):
                  optimizer: dict = PlaceHolder(),
                  learning_rate_scheduler: dict = PlaceHolder(),
                  init_param: dict = PlaceHolder(),
-                 threshold: float = 0.5,
                  train_data: ArtifactType = PlaceHolder(),
                  validate_data: ArtifactType = PlaceHolder(),
                  test_data: ArtifactType = PlaceHolder(),
@@ -40,7 +39,7 @@ class CoordinatedLR(Component):
                  ):
         inputs = locals()
         self._process_init_inputs(inputs)
-        super(CoordinatedLR, self).__init__()
+        super(CoordinatedLinR, self).__init__()
         self._name = _name
         self.runtime_roles = runtime_roles
         self.epochs = epochs
@@ -50,7 +49,6 @@ class CoordinatedLR(Component):
         self.optimizer = optimizer
         self.learning_rate_scheduler = learning_rate_scheduler
         self.init_param = init_param
-        self.threshold = threshold
         self.train_data = train_data
         self.validate_data = validate_data
         self.test_data = test_data
