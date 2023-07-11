@@ -235,6 +235,7 @@ component:
         roles:
           - guest
           - host
+          - arbiter
         description: ''
         is_multi: false
     metric:
