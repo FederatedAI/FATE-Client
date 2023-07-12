@@ -189,7 +189,10 @@ class Pipeline(object):
 
             for task_name, task_spec in party_task_spec.tasks.items():
                 if task_spec.inputs:
-                    getattr(deploy_pipeline, task_name).reset_source_inputs()
+                    try:
+                        getattr(deploy_pipeline, task_name).reset_source_inputs()
+                    except AttributeError:
+                        pass
 
         return deploy_pipeline
 
