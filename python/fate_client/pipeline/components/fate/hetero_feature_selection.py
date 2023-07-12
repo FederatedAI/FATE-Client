@@ -36,8 +36,7 @@ class HeteroFeatureSelection(Component):
                  train_data: ArtifactType = PlaceHolder(),
                  test_data: ArtifactType = PlaceHolder(),
                  input_model: ArtifactType = PlaceHolder(),
-                 input_statistic_model: ArtifactType = PlaceHolder(),
-                 input_binning_model: ArtifactType = PlaceHolder()
+                 input_models: List[ArtifactType] = PlaceHolder()
                  ):
         inputs = locals()
         self._process_init_inputs(inputs)
@@ -54,5 +53,4 @@ class HeteroFeatureSelection(Component):
         self.train_data = train_data
         self.test_data = test_data
         self.input_model = input_model
-        self.input_statistic_model = input_statistic_model
-        self.input_binning_model = input_binning_model
+        self.input_models = input_models

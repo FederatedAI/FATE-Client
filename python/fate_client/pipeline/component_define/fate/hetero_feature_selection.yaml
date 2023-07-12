@@ -13,7 +13,7 @@ component:
       default:
         - manual
       optional: false
-      description: 'selection method, options: {manual, binning, statistic}'
+      description: 'selection method, options: {manual, binning, statistics}'
       type_meta:
         title: typing.List[fate.components.core.params._fields.StringChoice]
         type: array
@@ -21,7 +21,7 @@ component:
           type: string
         default:
           - manual
-        description: 'selection method, options: {manual, binning, statistic}'
+        description: 'selection method, options: {manual, binning, statistics}'
     select_col:
       type: typing.List[str]
       default:
@@ -168,9 +168,9 @@ component:
       type: ModelMetaclass
       default:
         keep_col: [ ]
-        left_out_col: [ ]
+        filter_out_col: [ ]
       optional: true
-      description: note that manual filter will always be processed as the last filter
+      description: manual filter param
       type_meta:
         title: ManualFilterParam
         type: object
@@ -181,8 +181,8 @@ component:
             type: array
             items:
               type: string
-          left_out_col:
-            title: Left Out Col
+          filter_out_col:
+            title: Filter Out Col
             default: [ ]
             type: array
             items:
