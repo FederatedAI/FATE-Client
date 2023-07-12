@@ -623,6 +623,7 @@ class DagParser(object):
 
         task_spec = dag_spec.tasks[task_name]
         component_spec = component_specs[task_name]
+
         if task_spec.inputs is None or task_spec.inputs.data is None:
             return None
 
@@ -640,6 +641,9 @@ class DagParser(object):
             if artifact_definition.is_multi:
                 channels = list(artifact_channel.items())[0][1]
                 for channel in channels:
+                    if isinstance(channel, DataWarehouseChannelSpec):
+                        continue
+
                     upstream_task.add(
                         cls.trace_back_deploy_task(
                             channel.producer_task,
@@ -650,6 +654,9 @@ class DagParser(object):
                     )
             else:
                 channel = list(artifact_channel.items())[0][1]
+                if isinstance(channel, DataWarehouseChannelSpec):
+                    continue
+
                 upstream_task.add(
                     cls.trace_back_deploy_task(
                         channel.producer_task,
