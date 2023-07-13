@@ -24,8 +24,10 @@ class Evaluation(Component):
     def __init__(self,
                  _name: str,
                  runtime_roles: List[str] = None,
-                 default_eval_metrics: Literal['binary', 'multi', 'regression'] = PlaceHolder(),
+                 default_eval_setting: Literal['binary', 'multi', 'regression'] = PlaceHolder(),
                  metrics: List[str] = None,
+                 predict_column_name: str = None,
+                 label_column_name: str = None,
                  input_data: ArtifactType = PlaceHolder(),
                  ):
         inputs = locals()
@@ -34,5 +36,8 @@ class Evaluation(Component):
         self._name = _name
         self.runtime_roles = runtime_roles
         self.input_data = input_data
-        self.default_eval_metrics = default_eval_metrics
+        self.default_eval_setting = default_eval_setting
         self.metrics = metrics
+        self.predict_column_name = predict_column_name
+        self.label_column_name = label_column_name
+        

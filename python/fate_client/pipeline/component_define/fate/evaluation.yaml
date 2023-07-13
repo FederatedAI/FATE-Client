@@ -8,7 +8,7 @@ component:
     - guest
     - host
   parameters:
-    default_eval_metrics:
+    default_eval_setting:
       type: type
       default: binary
       optional: true
@@ -27,6 +27,31 @@ component:
         items: {}
         default:
         description: ''
+    predict_column_name:
+      type: str
+      default:
+      optional: true
+      description: predict data column name, if None(default), will use                                         'predict_score'
+        when use binary and regression default setting,                                         and
+        use 'predict_result' on multi classification default setting
+      type_meta:
+        title: str
+        type: string
+        default:
+        description: label data column namem if None(default),                                      will
+          use 'label' in the input dataframe
+    label_column_name:
+      type: str
+      default:
+      optional: true
+      description: label data column namem if None(default),                                      will
+        use 'label' in the input dataframe
+      type_meta:
+        title: str
+        type: string
+        default:
+        description: label data column namem if None(default),                                      will
+          use 'label' in the input dataframe
   input_artifacts:
     data:
       input_data:
