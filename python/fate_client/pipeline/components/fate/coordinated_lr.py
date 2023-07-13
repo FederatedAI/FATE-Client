@@ -34,6 +34,8 @@ class CoordinatedLR(Component):
                  init_param: dict = PlaceHolder(),
                  threshold: float = 0.5,
                  train_data: ArtifactType = PlaceHolder(),
+                 cv_data: ArtifactType = PlaceHolder(),
+                 cv_param: dict = PlaceHolder(),
                  validate_data: ArtifactType = PlaceHolder(),
                  test_data: ArtifactType = PlaceHolder(),
                  input_model: ArtifactType = PlaceHolder()
@@ -55,3 +57,5 @@ class CoordinatedLR(Component):
         self.validate_data = validate_data
         self.test_data = test_data
         self.input_model = input_model
+        self.cv_data = cv_data
+        self.cv_param = cv_param

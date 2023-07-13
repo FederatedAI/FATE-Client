@@ -164,6 +164,49 @@ component:
         minimum: 0.0
         maximum: 1.0
         type: number
+    cv_param:
+      type: CVParam
+      default:
+        n_splits: 5
+        shuffle: false
+        random_state:
+      optional: true
+      description: cross validation param
+      type_meta:
+        title: CVParam
+        $ref: '#/definitions/abc__CVParam'
+        definitions:
+          abc__CVParam:
+            title: CVParam
+            type: object
+            properties:
+              n_splits:
+                title: N Splits
+                exclusiveMinimum: 1
+                type: integer
+              shuffle:
+                title: Shuffle
+                default: false
+                type: boolean
+              random_state:
+                title: Random State
+                type: integer
+            required:
+              - n_splits
+        default:
+          n_splits: 5
+          shuffle: false
+          random_state:
+        description: cross validation param
+    metrics:
+      type: type
+      default:
+        - auc
+      optional: true
+      description: ''
+      type_meta:
+        title: type
+        type: string
   input_artifacts:
     data:
       train_data:
@@ -194,6 +237,17 @@ component:
         optional: false
         stages:
           - predict
+        roles:
+          - guest
+          - host
+        description: ''
+        is_multi: false
+      cv_data:
+        types:
+          - dataframe
+        optional: false
+        stages:
+          - cross_validation
         roles:
           - guest
           - host
@@ -235,6 +289,17 @@ component:
           - host
         description: ''
         is_multi: false
+      cv_output_datas:
+        types:
+          - dataframe
+        optional: false
+        stages:
+          - cross_validation
+        roles:
+          - guest
+          - host
+        description: ''
+        is_multi: true
     model:
       output_model:
         types:
