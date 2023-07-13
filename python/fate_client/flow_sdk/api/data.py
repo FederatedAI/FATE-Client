@@ -41,7 +41,7 @@ class Data(BaseFlowAPI):
         """
         kwargs = locals()
         params = filter_invalid_params(**kwargs)
-        return self._post(url='/data/upload', json=params)
+        return self._post(url='/data/component/upload', json=params)
 
     def dataframe_transformer(self, namespace: str, name: str, data_warehouse: dict, role: str = None,
                               party_id: str = None):
@@ -60,7 +60,7 @@ class Data(BaseFlowAPI):
         """
         kwargs = locals()
         params = filter_invalid_params(**kwargs)
-        return self._post(url='/data/dataframe/transformer', json=params)
+        return self._post(url='/data/component/dataframe/transformer', json=params)
 
     def download(self, namespace: str = None, name: str = None):
         """
@@ -75,4 +75,4 @@ class Data(BaseFlowAPI):
         """
         kwargs = locals()
         params = filter_invalid_params(**kwargs)
-        return self._get(url='/data/download', params=params)
+        return self._get(url='/data/component/download', json=params)
