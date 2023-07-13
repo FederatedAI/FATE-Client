@@ -20,7 +20,7 @@ from ..utils.cli_utils import load_yaml, preprocess,prettify
 from fate_client.flow_sdk import FlowClient
 
 
-@click.group(short_help="Data Operations")
+@click.group(short_help="Model Operations")
 @click.pass_context
 def model(ctx):
     """
@@ -98,13 +98,10 @@ def migrate(ctx, **kwargs):
     prettify(response)
 
 
-@model.command("export", short_help="Migrate Model Command")
+@model.command("export", short_help="Export Model Command")
 @cli_args.CONF_PATH
-@click.option('--from-database', is_flag=True, default=False,
-              help="If specified and there is a valid database environment, fate flow will import model from database "
-                   "which you specified in configuration file.")
 @click.pass_context
-def import_model(ctx, **kwargs):
+def export_model(ctx, **kwargs):
     """
     \b
     - DESCRIPTION:
@@ -113,10 +110,11 @@ def import_model(ctx, **kwargs):
     \b
     - USAGE:
         flow model export -c fate_flow/examples/export_model.json
-        flow model export -c fate_flow/examples/store_model.json --to-database
+        # flow model export -c fate_flow/examples/store_model.json --to-database
     """
+    config_data, dsl_data = preprocess(**kwargs)
     client: FlowClient = ctx.obj["client"]
-    response = client.model.import_model(**kwargs)
+    response = client.model.export(**config_data)
     prettify(response)
 
 

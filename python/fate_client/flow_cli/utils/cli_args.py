@@ -57,8 +57,8 @@ ARBITER_PARTYID_REQUIRED = click.option("-aid", "--arbiter-party-id", type=click
                                         help="A valid party id.")
 HOST_PARTYIDS_REQUIRED = click.option("-hids", "--host-party-ids", type=click.STRING, required=True,
                                       help="Multiple party ids, use a comma to separate each one.")
-TASK_NAME = click.option("-cpn", "--task-name", type=click.STRING,
-                              help="A valid component name.")
+TASK_NAME = click.option("--task-name", type=click.STRING, help="A valid component name.")
+TASK_NAME_REQUIRED = click.option("--task-name", type=click.STRING, help="A valid component name.", required=True,)
 
 
 COMPONENT_NAME = click.option("-cpn", "--component-name", type=click.STRING,
@@ -81,7 +81,7 @@ INPUT_PATH = click.option("-i", "--input-path", type=click.Path(exists=True),
                           help="User specifies input directory/file path.")
 INPUT_PATH_REQUIRED = click.option("-i", "--input-path", type=click.Path(exists=True), required=True,
                                    help="User specifies input directory/file path.")
-
+NAME = click.option("-n", "--name", type=click.STRING,help="A valid name.")
 NAMESPACE = click.option("-n", "--namespace", type=click.STRING,
                          help="Namespace.")
 NAMESPACE_REQUIRED = click.option("-n", "--namespace", type=click.STRING, required=True,

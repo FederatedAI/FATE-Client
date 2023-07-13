@@ -61,7 +61,7 @@ class BaseFlowClient:
             response = self._http.send(prepped, stream=stream)
         except Exception as e:
             response = {
-                'retcode': 100,
+                'code': 100,
                 'retmsg': str(e),
             }
 

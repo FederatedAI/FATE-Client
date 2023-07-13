@@ -20,12 +20,12 @@ from ruamel import yaml
 from pathlib import Path
 from fate_client.flow_sdk import FlowClient
 from fate_client.flow_cli.commands import client, job, data, log, model, output, permission, provider, service, site, table, task, queue
-from fate_client.flow_cli.utils.cli_utils import prettify
+from fate_client.flow_cli.utils.cli_utils import prettify, connect_service
 
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
-config_path = Path(__file__).parent.joinpath("settings.yaml").resolve()
+config_path = Path(__file__).parent.parent.joinpath("settings.yaml").resolve()
 
 
 @click.group(short_help='Fate Flow Client', context_settings=CONTEXT_SETTINGS)
@@ -46,9 +46,9 @@ def flow_cli(ctx):
     ctx.obj['api_version'] = flow_config['api_version']
 
     if flow_config.get('ip') and flow_config.get('port'):
-        ctx.obj['ip'] = config['ip']
+        ctx.obj['ip'] = flow_config['ip']
         ctx.obj['http_port'] = int(flow_config['port'])
-        ctx.obj['server_url'] = f'http://{ctx.obj["ip"]}:{ctx.obj["http_port"]}/{config["api_version"]}'
+        ctx.obj['server_url'] = f'http://{ctx.obj["ip"]}:{ctx.obj["http_port"]}/{flow_config["api_version"]}'
         if flow_config.get('app_id') and flow_config.get('app_token'):
             ctx.obj['app_id'] = flow_config['app_id']
             ctx.obj['app_token'] = flow_config['app_token']
@@ -96,7 +96,7 @@ def initialization(**kwargs):
             yaml.dump(flow_config, fout, Dumper=yaml.RoundTripDumper)
         prettify(
             {
-                'retcode': 0,
+                'code': 0,
                 'retmsg': 'Fate Flow CLI has been reset successfully. '
                           'Please do initialization again before you using flow CLI v2.'
             }
@@ -104,24 +104,33 @@ def initialization(**kwargs):
     else:
         flow_config['api_version'] = 'v2'
         _update = False
-        for i in ('ip', 'port', 'app_id', 'secret_token'):
+        for i in ('ip', 'port', 'app_id', 'app_token'):
             if kwargs.get(i):
                 flow_config[i] = kwargs[i]
                 _update = True
 
-        if _update:
-            with open(config, 'w') as fout:
-                yaml.dump(flow_config, fout, Dumper=yaml.RoundTripDumper)
+        if not connect_service(flow_config["ip"], flow_config["port"]):
             prettify(
                 {
-                    'retcode': 0,
+                    'code': 100,
+                    'retmsg': 'Fate Flow CLI initialization failed, Please try again.'
+                }
+            )
+            return
+
+        if _update:
+            with open(config_path, 'w') as fout:
+                yaml.dump(config, fout, Dumper=yaml.RoundTripDumper)
+            prettify(
+                {
+                    'code': 0,
                     'retmsg': 'Fate Flow CLI has been initialized successfully.'
                 }
             )
         else:
             prettify(
                 {
-                    'retcode': 100,
+                    'code': 100,
                     'retmsg': 'Fate Flow CLI initialization failed.'
                 }
             )

@@ -106,15 +106,14 @@ def delete_metric(ctx, **kwargs):
 
 
 @output.command("query-model", short_help="Model query")
-@cli_args.JOBID
-@cli_args.ROLE
-@cli_args.PARTYID
-@cli_args.TASK_NAME
+@cli_args.JOBID_REQUIRED
+@cli_args.ROLE_REQUIRED
+@cli_args.PARTYID_REQUIRED
+@cli_args.TASK_NAME_REQUIRED
 @click.pass_context
 def query_model(ctx, **kwargs):
     """
     - DESCRIPTION:
-
 
     \b
     - USAGE:
@@ -135,7 +134,6 @@ def delete_model(ctx, **kwargs):
     """
     - DESCRIPTION:
 
-
     \b
     - USAGE:
         flow output delete-model -j $JOB_ID -r guest -p 9999  -cpn reader_0
@@ -154,7 +152,6 @@ def delete_model(ctx, **kwargs):
 def download_data(ctx, **kwargs):
     """
     - DESCRIPTION:
-
 
     \b
     - USAGE:

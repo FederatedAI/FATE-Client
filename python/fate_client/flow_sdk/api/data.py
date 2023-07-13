@@ -15,6 +15,7 @@
 #
 from ..utils.base_utils import BaseFlowAPI
 from ..utils.params_utils import filter_invalid_params
+from ..utils.io_utils import download_from_request
 
 
 class Data(BaseFlowAPI):
@@ -41,10 +42,9 @@ class Data(BaseFlowAPI):
         """
         kwargs = locals()
         params = filter_invalid_params(**kwargs)
-        return self._post(url='/data/upload', json=params)
+        return self._post(url='/data/component/upload/', json=params)
 
-    def dataframe_transformer(self, namespace: str, name: str, data_warehouse: dict, role: str = None,
-                              party_id: str = None):
+    def dataframe_transformer(self, namespace: str, name: str, data_warehouse: dict):
         """
         upload file
 
@@ -62,7 +62,7 @@ class Data(BaseFlowAPI):
         params = filter_invalid_params(**kwargs)
         return self._post(url='/data/dataframe/transformer', json=params)
 
-    def download(self, namespace: str = None, name: str = None):
+    def download(self, namespace: str = None, name: str = None, output_path: str = None):
         """
         download
 
@@ -75,4 +75,8 @@ class Data(BaseFlowAPI):
         """
         kwargs = locals()
         params = filter_invalid_params(**kwargs)
-        return self._get(url='/data/download', params=params)
+        resp = self._get(url='/data/download', params=params, handle_result=False)
+        if output_path:
+            return download_from_request(resp, output_path)
+        else:
+            return resp
