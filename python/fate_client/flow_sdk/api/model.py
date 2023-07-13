@@ -61,7 +61,7 @@ class Model(BaseFlowAPI):
         params = filter_invalid_params(**kwargs)
         return self._post(url='/model/migrate', params=params)
 
-    def export(self, role: str, model_id: str, model_version: str, party_id: str, dir_path: str):
+    def export(self, role: str, model_id: str, model_version: str, party_id: str, path: str):
         """
 
         Args:

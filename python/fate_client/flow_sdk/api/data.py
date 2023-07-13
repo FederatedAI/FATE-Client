@@ -60,9 +60,9 @@ class Data(BaseFlowAPI):
         """
         kwargs = locals()
         params = filter_invalid_params(**kwargs)
-        return self._post(url='/data/dataframe/transformer', json=params)
+        return self._post(url='/data/component/dataframe/transformer', json=params)
 
-    def download(self, namespace: str = None, name: str = None, output_path: str = None):
+    def download(self, namespace: str = None, name: str = None, path: str = None):
         """
         download
 
@@ -76,7 +76,26 @@ class Data(BaseFlowAPI):
         kwargs = locals()
         params = filter_invalid_params(**kwargs)
         resp = self._get(url='/data/download', params=params, handle_result=False)
-        if output_path:
-            return download_from_request(resp, output_path)
+        if path:
+            return download_from_request(resp, path)
+        else:
+            return resp
+
+    def download_component(self, namespace: str = None, name: str = None, path: str = None):
+        """
+        download
+
+        Args:
+            namespace:
+            name:
+
+        Returns:
+
+        """
+        kwargs = locals()
+        params = filter_invalid_params(**kwargs)
+        resp = self._post(url='/data/component/download', json=params)
+        if path:
+            return download_from_request(resp, path)
         else:
             return resp

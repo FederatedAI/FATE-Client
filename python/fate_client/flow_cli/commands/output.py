@@ -124,6 +124,25 @@ def query_model(ctx, **kwargs):
     prettify(response)
 
 
+@output.command("down-model", short_help="Model Down")
+@cli_args.JOBID
+@cli_args.ROLE
+@cli_args.PARTYID
+@cli_args.TASK_NAME
+@click.pass_context
+def down_model(ctx, **kwargs):
+    """
+    - DESCRIPTION:
+
+    \b
+    - USAGE:
+        flow output delete-model -j $JOB_ID -r guest -p 9999  -cpn reader_0
+    """
+    client: FlowClient = ctx.obj["client"]
+    response = client.output.down_model(**kwargs)
+    prettify(response)
+
+
 @output.command("delete-model", short_help="Model delete")
 @cli_args.JOBID
 @cli_args.ROLE
