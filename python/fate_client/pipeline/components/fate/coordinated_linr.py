@@ -28,11 +28,13 @@ class CoordinatedLinR(Component):
                  epochs: int = 20,
                  early_stop: str = "diff",
                  tol: float = 1e-4,
-                 batch_size: int = -1,
+                 batch_size: int = None,
                  optimizer: dict = PlaceHolder(),
                  learning_rate_scheduler: dict = PlaceHolder(),
                  init_param: dict = PlaceHolder(),
                  train_data: ArtifactType = PlaceHolder(),
+                 cv_data: ArtifactType = PlaceHolder(),
+                 cv_param: dict = PlaceHolder(),
                  validate_data: ArtifactType = PlaceHolder(),
                  test_data: ArtifactType = PlaceHolder(),
                  input_model: ArtifactType = PlaceHolder()
@@ -53,3 +55,5 @@ class CoordinatedLinR(Component):
         self.validate_data = validate_data
         self.test_data = test_data
         self.input_model = input_model
+        self.cv_data = cv_data
+        self.cv_param = cv_param

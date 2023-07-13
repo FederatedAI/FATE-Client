@@ -28,7 +28,7 @@ class CoordinatedLR(Component):
                  epochs: int = 20,
                  early_stop: str = "diff",
                  tol: float = 1e-4,
-                 batch_size: int = -1,
+                 batch_size: int = None,
                  optimizer: dict = PlaceHolder(),
                  learning_rate_scheduler: dict = PlaceHolder(),
                  init_param: dict = PlaceHolder(),

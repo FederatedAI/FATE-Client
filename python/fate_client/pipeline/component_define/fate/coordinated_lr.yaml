@@ -50,12 +50,13 @@ component:
         type: integer
     batch_size:
       type: ConstrainedNumberMeta
-      default: 100
+      default:
       optional: true
-      description: batch size, value less or equals to 0 means full batch
+      description: batch size, None means full batch, otherwise should be no less
+        than 10, default None
       type_meta:
         title: ConstrainedNumberMeta
-        minimum: -1
+        minimum: 10
         type: integer
     optimizer:
       type: OptimizerParam
