@@ -76,7 +76,7 @@ OUTPUT_PATH = click.option("-o", "--output-path", type=click.Path(exists=False),
                            help="User specifies output directory/file path.")
 OUTPUT_PATH_REQUIRED = click.option("-o", "--output-path", type=click.Path(exists=False), required=True,
                                     help="User specifies output directory/file path.")
-PATH = click.option("-o", "--output-path", type=click.Path(exists=False),
+PATH = click.option("-o", "--path", type=click.Path(exists=False),
                            help="User specifies output directory/file path.")
 
 INPUT_PATH = click.option("-i", "--input-path", type=click.Path(exists=True),

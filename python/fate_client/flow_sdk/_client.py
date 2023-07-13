@@ -29,6 +29,7 @@ class FlowClient(BaseFlowClient):
     service = Service()
     site = Site()
     table = Table()
+    # test = Test()
 
     def __init__(self, ip="127.0.0.1", port=9380, version="v2", app_id=None, app_token=None, user_name=""):
         super().__init__(ip, port, version, app_id=app_id, app_token=app_token, user_name=user_name)

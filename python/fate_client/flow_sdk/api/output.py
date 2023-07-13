@@ -103,7 +103,7 @@ class Output(BaseFlowAPI):
         """
         kwargs = locals()
         params = filter_invalid_params(**kwargs)
-        return self._post(url='/output/model/down', json=params)
+        return self._get(url='/output/model/download', params=params)
 
     def delete_model(self, job_id: str, role: str, party_id: str, task_name: str):
         """

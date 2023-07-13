@@ -52,6 +52,26 @@ def upload(ctx, **kwargs):
     prettify(response)
 
 
+@data.command("download-component", short_help="Download Component Command")
+@cli_args.NAME
+@cli_args.NAMESPACE
+@cli_args.PATH
+@click.pass_context
+def download_component(ctx, **kwargs):
+    """
+    - DESCRIPTION:
+
+    \b
+        Download Component.
+    \b
+    - USAGE:
+        flow data download-component -c fateflow/examples/download/download_table.json
+    """
+    client: FlowClient = ctx.obj["client"]
+    response = client.data.download_component(**kwargs)
+    prettify(response)
+
+
 @data.command("transformer", short_help="dataframe transformer")
 @cli_args.CONF_PATH
 @click.pass_context
@@ -72,12 +92,12 @@ def dataframe_transformer(ctx, **kwargs):
     prettify(response)
 
 
-@data.command("download-component", short_help="Download Component Command")
-@cli_args.TABLE_NAME
+@data.command("download", short_help="Download Command")
+@cli_args.NAME
 @cli_args.NAMESPACE
 @cli_args.PATH
 @click.pass_context
-def download_component(ctx, **kwargs):
+def download(ctx, **kwargs):
     """
     - DESCRIPTION:
 
@@ -85,8 +105,8 @@ def download_component(ctx, **kwargs):
         Download Component.
     \b
     - USAGE:
-        flow data download-component -c fateflow/examples/download/download_table.json
+        flow data download -c fateflow/examples/download/download_table.json
     """
     client: FlowClient = ctx.obj["client"]
-    response = client.data.download_component(**kwargs)
+    response = client.data.download(**kwargs)
     prettify(response)
