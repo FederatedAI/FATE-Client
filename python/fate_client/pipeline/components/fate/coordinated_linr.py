@@ -34,6 +34,7 @@ class CoordinatedLinR(Component):
                  init_param: dict = PlaceHolder(),
                  train_data: ArtifactType = PlaceHolder(),
                  cv_data: ArtifactType = PlaceHolder(),
+                 output_cv_data: bool = True,
                  cv_param: dict = PlaceHolder(),
                  validate_data: ArtifactType = PlaceHolder(),
                  test_data: ArtifactType = PlaceHolder(),
@@ -57,3 +58,4 @@ class CoordinatedLinR(Component):
         self.input_model = input_model
         self.cv_data = cv_data
         self.cv_param = cv_param
+        self.output_cv_data = output_cv_data
