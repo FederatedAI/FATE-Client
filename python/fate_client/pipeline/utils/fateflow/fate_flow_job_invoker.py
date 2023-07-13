@@ -121,8 +121,6 @@ class FATEFlowJobInvoker(object):
                                             head=head,
                                             meta=meta,
                                             extend_sid=extend_sid,
-                                            role=role,
-                                            party_id=party_id,
                                             **kwargs)
         try:
             code = response["code"]
@@ -141,9 +139,7 @@ class FATEFlowJobInvoker(object):
     def transform_to_dataframe(self, name, namespace, data_warehouse, role, party_id):
         response = self._client.data.dataframe_transformer(namespace=namespace,
                                                            name=name,
-                                                           data_warehouse=data_warehouse,
-                                                           role=role,
-                                                           party_id=party_id)
+                                                           data_warehouse=data_warehouse)
 
         try:
             code = response["code"]
