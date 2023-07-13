@@ -208,6 +208,16 @@ component:
       type_meta:
         title: type
         type: string
+    output_cv_data:
+      type: bool
+      default: true
+      optional: true
+      description: whether output prediction result per cv fold
+      type_meta:
+        title: bool
+        type: boolean
+        default: true
+        description: whether output prediction result per cv fold
   input_artifacts:
     data:
       train_data:
@@ -293,7 +303,7 @@ component:
       cv_output_datas:
         types:
           - dataframe
-        optional: false
+        optional: true
         stages:
           - cross_validation
         roles:
