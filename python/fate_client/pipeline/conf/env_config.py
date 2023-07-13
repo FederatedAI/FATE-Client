@@ -21,7 +21,7 @@ from ruamel import yaml
 __all__ = ["StatusCode", "FlowConfig", "StandaloneConfig", "SiteInfo"]
 
 
-with Path(__file__).parent.parent.joinpath("pipeline_config.yaml").resolve().open("r") as fin:
+with Path(__file__).parent.parent.parent.joinpath("settings.yaml").resolve().open("r") as fin:
     __DEFAULT_CONFIG: dict = yaml.safe_load(fin)
 
 
@@ -41,16 +41,16 @@ class StatusCode(object):
 
 
 class SiteInfo(object):
-    conf = get_default_config().get("site_info", {})
+    conf = get_default_config().get("pipeline", {}).get("site_info", {})
     ROLE = conf.get("local_role")
     PARTY_ID = conf.get("local_party_id")
 
 
 class FlowConfig(object):
-    conf = get_default_config().get("fate_flow", {})
+    conf = get_default_config().get("flow_service", {})
     IP = conf.get("ip")
     PORT = conf.get("port")
-    VERSION = conf.get("version")
+    VERSION = conf.get("api_version")
 
 
 class Device(object):
