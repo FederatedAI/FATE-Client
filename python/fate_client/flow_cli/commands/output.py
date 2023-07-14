@@ -151,7 +151,7 @@ def delete_model(ctx, **kwargs):
     prettify(response)
 
 
-@data.command("download", short_help="Download data")
+@output.command("download", short_help="Download data")
 @cli_args.JOBID
 @cli_args.ROLE
 @cli_args.PARTYID

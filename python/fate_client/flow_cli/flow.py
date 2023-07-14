@@ -27,7 +27,7 @@ import click
 from ruamel import yaml
 from pathlib import Path
 from fate_client.flow_sdk import FlowClient
-from fate_client.flow_cli.commands import client, job, data, log, model, output, permission, provider, service, site, table, task, queue
+from fate_client.flow_cli.commands import client, job, data, log, model, output, permission, provider, service, site, table, task, queue,test
 from fate_client.flow_cli.utils.cli_utils import prettify, connect_service
 
 
@@ -157,11 +157,8 @@ flow_cli.add_command(service.service)
 flow_cli.add_command(site.site)
 flow_cli.add_command(table.table)
 flow_cli.add_command(task.task)
+flow_cli.add_command(test.test)
 
 
 if __name__ == '__main__':
     flow_cli()
-    # from fate_client.flow_cli.utils.cli_utils import load_yaml
-    # dag_schema = load_yaml("toy_dag.yaml")
-    # print(dag_schema)
-#
