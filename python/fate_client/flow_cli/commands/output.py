@@ -31,17 +31,6 @@ def output(ctx):
     pass
 
 
-@click.group(short_help="Output Operations")
-@click.pass_context
-def data(ctx):
-    """
-    \b
-    Provides numbers of data operational commands, including upload, download and etc.
-    For more details, please check out the help text.
-    """
-    pass
-
-
 @output.command("key", short_help="Key metric query")
 @cli_args.JOBID
 @cli_args.ROLE
@@ -136,7 +125,7 @@ def down_model(ctx, **kwargs):
 
     \b
     - USAGE:
-        flow output delete-model -j $JOB_ID -r guest -p 9999  -cpn reader_0
+        flow output down-model -j $JOB_ID -r guest -p 9999  --task-name reader_0
     """
     client: FlowClient = ctx.obj["client"]
     response = client.output.down_model(**kwargs)
