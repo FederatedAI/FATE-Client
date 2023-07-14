@@ -181,11 +181,11 @@ class FATEFlowJobInvoker(object):
                         file_names.append(file)
 
                 if len(file_names) == 1:
-                    output_data_dict[output_key] = pd.read_csv(path.joinpath(file_names[0]))
+                    output_data_dict[output_key] = self.load_data_to_pd_df(path.joinpath(file_names[0]))
                 else:
                     output_data_dict[output_key] = dict()
                     for file_name in file_names:
-                        output_data_dict[output_key][file_name] = pd.read_csv(path.joinpath(file_name))
+                        output_data_dict[output_key][file_name] = self.load_data_to_pd_df(path.joinpath(file_name))
 
             return output_data_dict
 
@@ -212,6 +212,39 @@ class FATEFlowJobInvoker(object):
         except BaseException:
             raise ValueError(f"query task={job_id}, role={role}, "
                              f"party_id={party_id}'s output metrics is failed, response={response}")
+
+    @staticmethod
+    def load_data_to_pd_df(path: Path):
+        import pandas as pd
+        import json
+        is_predict_task = False
+        template_col_names = ["label", "predict_result", "predict_score", "predict_detail", "type"]
+
+        with open(path, "r") as fin:
+            columns = set(fin.readline().strip().split(",", -1))
+            tot = 0
+            for col in template_col_names:
+                if col in columns:
+                    tot += 1
+
+            if tot >= 4:
+                is_predict_task = True
+
+        if is_predict_task:
+            data = []
+            columns = None
+            with open(path, "r") as fin:
+                for line in fin:
+                    if not columns:
+                        columns = line.strip().split(",")
+                    else:
+                        cols = line.split(",", -1)
+                        predict_detail = json.loads(",".join(cols[len(columns) - 2: -1])[1:-1].replace("\'", "\""))
+                        value = cols[: len(columns) - 2] + [predict_detail] + cols[-1:]
+                        data.append(value)
+            return pd.DataFrame(data, columns=columns)
+        else:
+            return pd.read_csv(path)
 
 
 class JobStatus(object):
