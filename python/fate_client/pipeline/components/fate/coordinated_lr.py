@@ -39,7 +39,8 @@ class CoordinatedLR(Component):
                  output_cv_data: bool = True,
                  validate_data: ArtifactType = PlaceHolder(),
                  test_data: ArtifactType = PlaceHolder(),
-                 input_model: ArtifactType = PlaceHolder()
+                 input_model: ArtifactType = PlaceHolder(),
+                 warm_start_model: ArtifactType = PlaceHolder()
                  ):
         inputs = locals()
         self._process_init_inputs(inputs)
@@ -61,3 +62,4 @@ class CoordinatedLR(Component):
         self.cv_data = cv_data
         self.cv_param = cv_param
         self.output_cv_data = output_cv_data
+        self.warm_start_model = warm_start_model

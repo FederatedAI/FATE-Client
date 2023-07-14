@@ -255,6 +255,18 @@ component:
         description: ''
         is_multi: false
     model:
+      warm_start_model:
+        types:
+          - json_model
+        optional: true
+        stages:
+          - train
+        roles:
+          - guest
+          - host
+          - arbiter
+        description: ''
+        is_multi: false
       input_model:
         types:
           - json_model
