@@ -202,9 +202,6 @@ class FateFlowExecutor(object):
                partitions=4,
                **kwargs):
         flow_job_invoker = FATEFlowJobInvoker()
-        site_party_id = flow_job_invoker.query_site_info()
-        if site_party_id:
-            local_party_id = site_party_id
 
         return flow_job_invoker.upload_data(file=file,
                                             head=head,
@@ -222,10 +219,6 @@ class FateFlowExecutor(object):
                                role: str,
                                party_id: str):
         flow_job_invoker = FATEFlowJobInvoker()
-
-        site_party_id = flow_job_invoker.query_site_info()
-        if site_party_id:
-            local_party_id = site_party_id
 
         flow_job_invoker.transform_to_dataframe(namespace=namespace,
                                                 name=name,

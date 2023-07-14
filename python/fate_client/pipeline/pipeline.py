@@ -171,11 +171,19 @@ class Pipeline(object):
                 artifacts = getattr(predict_task_spec.inputs, artifact_type)
                 for input_artifact_key, input_channel in artifacts.items():
                     for artifact_source_type, channel in input_channel.items():
-                        producer_task = channel.producer_task
-                        output_artifact_key = channel.output_artifact_key
-                        changed_channel = copy.deepcopy(self._tasks[producer_task].outputs[output_artifact_key])
-                        changed_channel.source = artifact_source_type
-                        setattr(deploy_task, input_artifact_key, changed_channel)
+                        channels = channel if isinstance(channel, list) else [channel]
+                        changed_channels = []
+                        for _c in channels:
+                            producer_task = _c.producer_task
+                            output_artifact_key = _c.output_artifact_key
+                            changed_channel = copy.deepcopy(self._tasks[producer_task].outputs[output_artifact_key])
+                            changed_channel.source = artifact_source_type
+                            changed_channels.append(changed_channel)
+
+                        if isinstance(channel, list):
+                            setattr(deploy_task, input_artifact_key, changed_channels)
+                        else:
+                            setattr(deploy_task, input_artifact_key, changed_channels[0])
 
             deploy_pipeline.add_task(deploy_task)
 
@@ -189,7 +197,10 @@ class Pipeline(object):
 
             for task_name, task_spec in party_task_spec.tasks.items():
                 if task_spec.inputs:
-                    getattr(deploy_pipeline, task_name).reset_source_inputs()
+                    try:
+                        getattr(deploy_pipeline, task_name).reset_source_inputs()
+                    except AttributeError:
+                        pass
 
         return deploy_pipeline
 
@@ -294,7 +305,7 @@ class FateFlowPipeline(Pipeline):
                                                role="local",
                                                party_id="0",
                                                **kwargs)
-        self._executor.transform_to_dataframe(namespace, name, data_warehouse, self._local_role, self._local_party_id)
+        self._executor.transform_to_dataframe(namespace, name, data_warehouse, role="local", party_id="0")
 
     def get_task_info(self, task):
         if isinstance(task, Component):

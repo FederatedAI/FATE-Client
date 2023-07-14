@@ -1,9 +1,9 @@
 component:
-  name: coordinated_lr
+  name: homo_lr
   description: ''
   provider: fate
   version: 2.0.0-alpha
-  labels: [ ]
+  labels: []
   roles:
     - guest
     - host
@@ -50,13 +50,12 @@ component:
         type: integer
     batch_size:
       type: ConstrainedNumberMeta
-      default:
+      default: 100
       optional: true
-      description: batch size, None means full batch, otherwise should be no less
-        than 10, default None
+      description: batch size, value less or equals to 0 means full batch
       type_meta:
         title: ConstrainedNumberMeta
-        minimum: 10
+        minimum: -1
         type: integer
     optimizer:
       type: OptimizerParam
@@ -102,24 +101,6 @@ component:
             lr: 0.01
             weight_decay: 0
         description: ''
-    tol:
-      type: ConstrainedNumberMeta
-      default: 0.0001
-      optional: true
-      description: ''
-      type_meta:
-        title: ConstrainedNumberMeta
-        minimum: 0
-        type: number
-    early_stop:
-      type: type
-      default: diff
-      optional: true
-      description: early stopping criterion, choose from {weight_diff, diff, abs,
-        val_metrics}
-      type_meta:
-        title: type
-        type: string
     init_param:
       type: InitParam
       default:
@@ -165,49 +146,25 @@ component:
         minimum: 0.0
         maximum: 1.0
         type: number
-    cv_param:
-      type: CVParam
-      default:
-        n_splits: 5
-        shuffle: false
-        random_state:
+    ovr:
+      type: bool
+      default: false
       optional: true
-      description: cross validation param
+      description: predict threshold for binary data
       type_meta:
-        title: CVParam
-        $ref: '#/definitions/abc__CVParam'
-        definitions:
-          abc__CVParam:
-            title: CVParam
-            type: object
-            properties:
-              n_splits:
-                title: N Splits
-                exclusiveMinimum: 1
-                type: integer
-              shuffle:
-                title: Shuffle
-                default: false
-                type: boolean
-              random_state:
-                title: Random State
-                type: integer
-            required:
-              - n_splits
-        default:
-          n_splits: 5
-          shuffle: false
-          random_state:
-        description: cross validation param
-    metrics:
-      type: type
+        title: bool
+        type: boolean
+        default: false
+        description: predict threshold for binary data
+    label_num:
+      type: ConstrainedNumberMeta
       default:
-        - auc
       optional: true
       description: ''
       type_meta:
-        title: type
-        type: string
+        title: ConstrainedNumberMeta
+        minimum: 2
+        type: integer
   input_artifacts:
     data:
       train_data:
@@ -243,19 +200,19 @@ component:
           - host
         description: ''
         is_multi: false
-      cv_data:
+    model:
+      train_input_model:
         types:
-          - dataframe
-        optional: false
+          - json_model
+        optional: true
         stages:
-          - cross_validation
+          - train
         roles:
           - guest
           - host
         description: ''
         is_multi: false
-    model:
-      input_model:
+      predict_input_model:
         types:
           - json_model
         optional: false
@@ -290,19 +247,8 @@ component:
           - host
         description: ''
         is_multi: false
-      cv_output_datas:
-        types:
-          - dataframe
-        optional: false
-        stages:
-          - cross_validation
-        roles:
-          - guest
-          - host
-        description: ''
-        is_multi: true
     model:
-      output_model:
+      train_output_model:
         types:
           - json_model
         optional: false
@@ -311,7 +257,6 @@ component:
         roles:
           - guest
           - host
-          - arbiter
         description: ''
         is_multi: false
     metric:
@@ -319,8 +264,9 @@ component:
         types:
           - json_metric
         optional: false
-        stages: [ ]
-        roles: [ ]
+        stages: []
+        roles: []
         description: metric, invisible for user
         is_multi: false
 schema_version: v1
+

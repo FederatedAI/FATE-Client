@@ -19,8 +19,8 @@ from ...conf.types import PlaceHolder
 from ...interface import ArtifactType
 
 
-class CoordinatedLinR(Component):
-    yaml_define_path = "./component_define/fate/coordinated_linr.yaml"
+class HomoLR(Component):
+    yaml_define_path = "./component_define/fate/homo_lr.yaml"
 
     def __init__(self,
                  _name: str,
@@ -28,20 +28,22 @@ class CoordinatedLinR(Component):
                  epochs: int = 20,
                  early_stop: str = "diff",
                  tol: float = 1e-4,
-                 batch_size: int = None,
+                 batch_size: int = -1,
                  optimizer: dict = PlaceHolder(),
                  learning_rate_scheduler: dict = PlaceHolder(),
                  init_param: dict = PlaceHolder(),
+                 threshold: float = 0.5,
+                 ovr: bool = False,
+                 label_num: int = None,
                  train_data: ArtifactType = PlaceHolder(),
-                 cv_data: ArtifactType = PlaceHolder(),
-                 cv_param: dict = PlaceHolder(),
                  validate_data: ArtifactType = PlaceHolder(),
                  test_data: ArtifactType = PlaceHolder(),
-                 input_model: ArtifactType = PlaceHolder()
+                 train_input_model: ArtifactType = PlaceHolder(),
+                 predict_input_model: ArtifactType = PlaceHolder()
                  ):
         inputs = locals()
         self._process_init_inputs(inputs)
-        super(CoordinatedLinR, self).__init__()
+        super(HomoLR, self).__init__()
         self._name = _name
         self.runtime_roles = runtime_roles
         self.epochs = epochs
@@ -51,9 +53,13 @@ class CoordinatedLinR(Component):
         self.optimizer = optimizer
         self.learning_rate_scheduler = learning_rate_scheduler
         self.init_param = init_param
+        self.threshold = threshold
         self.train_data = train_data
         self.validate_data = validate_data
         self.test_data = test_data
-        self.input_model = input_model
-        self.cv_data = cv_data
-        self.cv_param = cv_param
+        self.train_input_model = train_input_model
+        self.predict_input_model = predict_input_model
+        self.ovr = ovr
+        self.label_num = label_num
+        
+        
