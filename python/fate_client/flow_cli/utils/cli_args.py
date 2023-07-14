@@ -45,9 +45,9 @@ PARTYID = click.option("-p", "--party-id", type=click.STRING,
 PARTYID_REQUIRED = click.option("-p", "--party-id", type=click.STRING, required=True,
                                 help="A valid party id.")
 
-APP_ID = click.option("-app_id", "--app-id", type=click.STRING, help="A valid app_id.")
-APP_NAME = click.option("-app_name", "--app-name", type=click.STRING, help="A valid app_name.")
-APP_TOKEN = click.option("-app_token", "--app-token", type=click.STRING, help="A valid app_token.")
+APP_ID = click.option("--app-id", type=click.STRING, help="A valid app_id.")
+APP_NAME = click.option("--app-name", type=click.STRING, help="A valid app_name.")
+APP_TOKEN = click.option("--app-token", type=click.STRING, help="A valid app_token.")
 
 GUEST_PARTYID_REQUIRED = click.option("-gid", "--guest-party-id", type=click.STRING, required=True,
                                       help="A valid party id.")
@@ -76,14 +76,13 @@ OUTPUT_PATH = click.option("-o", "--output-path", type=click.Path(exists=False),
                            help="User specifies output directory/file path.")
 OUTPUT_PATH_REQUIRED = click.option("-o", "--output-path", type=click.Path(exists=False), required=True,
                                     help="User specifies output directory/file path.")
-PATH = click.option("-o", "--path", type=click.Path(exists=False),
-                           help="User specifies output directory/file path.")
+PATH = click.option("--path", type=click.Path(exists=False),help="User specifies output directory/file path.")
 
 INPUT_PATH = click.option("-i", "--input-path", type=click.Path(exists=True),
                           help="User specifies input directory/file path.")
 INPUT_PATH_REQUIRED = click.option("-i", "--input-path", type=click.Path(exists=True), required=True,
                                    help="User specifies input directory/file path.")
-NAME = click.option("-n", "--name", type=click.STRING,help="A valid name.")
+NAME = click.option("--name", type=click.STRING,help="A valid name.")
 NAMESPACE = click.option("-n", "--namespace", type=click.STRING,
                          help="Namespace.")
 NAMESPACE_REQUIRED = click.option("-n", "--namespace", type=click.STRING, required=True,

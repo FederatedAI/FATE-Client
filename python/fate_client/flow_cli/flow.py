@@ -14,6 +14,14 @@
 #  limitations under the License.
 #
 import os
+import sys
+# # current_path = os.path.dirname(os.path.abspath(__file__))
+# current_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# print(current_path)
+# # sys.path.append(current_path)
+# sys.path.insert(0,current_path)
+# print(sys.path)
+
 
 import click
 from ruamel import yaml
@@ -153,3 +161,7 @@ flow_cli.add_command(task.task)
 
 if __name__ == '__main__':
     flow_cli()
+    # from fate_client.flow_cli.utils.cli_utils import load_yaml
+    # dag_schema = load_yaml("toy_dag.yaml")
+    # print(dag_schema)
+#

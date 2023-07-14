@@ -25,3 +25,4 @@ from .provider import Provider
 from .service import Service
 from .site import Site
 from .table import Table
+from .test import Test
