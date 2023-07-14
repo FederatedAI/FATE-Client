@@ -311,4 +311,7 @@ class FateFlowPipeline(Pipeline):
         if isinstance(task, Component):
             task = task.task_name
 
+        if task not in self._tasks:
+            raise ValueError(f"Task {task} not exist")
+
         return FateFlowTaskInfo(task_name=task, model_info=self._model_info)
