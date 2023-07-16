@@ -12,11 +12,12 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-from .api import Job, Task, Data, Log, Model, Output, Permission, Provider, Service, Site, Table
+from .api import Client, Job, Task, Data, Log, Model, Output, Permission, Provider, Service, Site, Table, Test
 from .utils.base_utils import BaseFlowClient
 
 
 class FlowClient(BaseFlowClient):
+    client_ = Client()
     job = Job()
     task = Task()
     data = Data()
@@ -28,6 +29,7 @@ class FlowClient(BaseFlowClient):
     service = Service()
     site = Site()
     table = Table()
+    test = Test()
 
     def __init__(self, ip="127.0.0.1", port=9380, version="v2", app_id=None, app_token=None, user_name=""):
         super().__init__(ip, port, version, app_id=app_id, app_token=app_token, user_name=user_name)

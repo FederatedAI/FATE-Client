@@ -33,12 +33,6 @@ def data(ctx):
 
 @data.command("upload", short_help="Upload Table Command")
 @cli_args.CONF_PATH
-#@click.option('--verbose', is_flag=True, default=False,
-#              help="If specified, verbose mode will be turn on. "
-#                   "Users can have feedback on upload task in progress. (default: False)")
-#@click.option('--drop', is_flag=True, default=False,
-#              help="If specified, data of old version would be replaced by the current version. "
-#                   "Otherwise, current upload task would be rejected. (default: False)")
 @click.pass_context
 def upload(ctx, **kwargs):
     """
@@ -54,35 +48,33 @@ def upload(ctx, **kwargs):
     """
     config_data, dsl_data = preprocess(**kwargs)
     client: FlowClient = ctx.obj["client"]
-    if "conf_path" in config_data.keys():config_data.pop("conf_path")
     response = client.data.upload(**config_data)
     prettify(response)
 
 
-@data.command("download", short_help="Download Table Command")
-@cli_args.TABLE_NAME
+@data.command("download-component", short_help="Download Component Command")
+@cli_args.NAME
 @cli_args.NAMESPACE
-@cli_args.CONF_PATH
+@cli_args.PATH
 @click.pass_context
-def download(ctx, **kwargs):
+def download_component(ctx, **kwargs):
     """
     - DESCRIPTION:
 
     \b
-        Download Data Table.
-
+        Download Component.
     \b
     - USAGE:
-        flow data download -c fateflow/examples/download/download_table.json
+        flow data download-component -c fateflow/examples/download/download_table.json
     """
-    config_data, dsl_data = preprocess(**kwargs)
-    client: FlowClient = ctx.obj["data"]
-    response = client.data.download(**config_data)
+    client: FlowClient = ctx.obj["client"]
+    response = client.data.download_component(**kwargs)
     prettify(response)
 
 
 @data.command("transformer", short_help="dataframe transformer")
 @cli_args.CONF_PATH
+@click.pass_context
 def dataframe_transformer(ctx, **kwargs):
     """
     - DESCRIPTION:
@@ -92,9 +84,29 @@ def dataframe_transformer(ctx, **kwargs):
 
     \b
     - USAGE:
-        flow data download -c fateflow/examples/download/download_table.json
+        flow data transformer -c fateflow/examples/download/dataframe_transformer.json
     """
     config_data, dsl_data = preprocess(**kwargs)
-    client: FlowClient = ctx.obj["data"]
+    client: FlowClient = ctx.obj["client"]
     response = client.data.dataframe_transformer(**config_data)
+    prettify(response)
+
+
+@data.command("download", short_help="Download Command")
+@cli_args.NAME
+@cli_args.NAMESPACE
+@cli_args.PATH
+@click.pass_context
+def download(ctx, **kwargs):
+    """
+    - DESCRIPTION:
+
+    \b
+        Download Component.
+    \b
+    - USAGE:
+        flow data download -c fateflow/examples/download/download_table.json
+    """
+    client: FlowClient = ctx.obj["client"]
+    response = client.data.download(**kwargs)
     prettify(response)
