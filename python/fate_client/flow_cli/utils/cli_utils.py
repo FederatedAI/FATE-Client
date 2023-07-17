@@ -13,14 +13,14 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 #
-import configparser
+
 import json
 import os
-from functools import wraps
-
 import click
 import requests
+import socket
 from ruamel import yaml
+from functools import wraps
 
 
 def prettify(response):
@@ -30,7 +30,7 @@ def prettify(response):
             response = response.json()
         except json.decoder.JSONDecodeError:
             response = {
-                'retcode': 100,
+                'code': 100,
                 'retmsg': response.text,
             }
 
@@ -66,22 +66,17 @@ def preprocess(**kwargs):
         conf_path = os.path.abspath(kwargs.get('conf_path'))
         with open(conf_path, 'r') as conf_fp:
             config_data = json.load(conf_fp)
+    return config_data, None
 
-        if config_data.get('output_path'):
-            config_data['output_path'] = os.path.abspath(config_data['output_path'])
 
-        if ('party_id' in kwargs.keys()) or ('role' in kwargs.keys()):
-            config_data['local'] = config_data.get('local', {})
-            if kwargs.get('party_id'):
-                config_data['local']['party_id'] = kwargs.get('party_id')
-            if kwargs.get('role'):
-                config_data['local']['role'] = kwargs.get('role')
-    config_data.update(dict((k, v) for k, v in kwargs.items() if v is not None))
+def connect_service(ip, port, timeout=3):
+    try:
+        client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client.settimeout(timeout)
+        client.connect((ip, int(port)))
+        return True
+    except Exception as e:
+        return False
 
-    dsl_data = {}
-    if kwargs.get('dsl_path'):
-        dsl_path = os.path.abspath(kwargs.get('dsl_path'))
-        with open(dsl_path, 'r') as dsl_fp:
-            dsl_data = json.load(dsl_fp)
-    return config_data, dsl_data
+
 

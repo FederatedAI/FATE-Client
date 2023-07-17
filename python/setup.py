@@ -38,7 +38,7 @@ install_requires = [
 extras_require = {
     "fate": ["pyfate"],
 }
-entry_points = {"console_scripts": ["fate_client = fate_client.cli:cli"]}
+entry_points = {"console_scripts": ["flow = fate_client.flow_cli.flow:flow_cli"]}
 
 setup_kwargs = {
     "name": "fate-client",

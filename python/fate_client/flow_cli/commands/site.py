@@ -42,7 +42,6 @@ def info(ctx):
     - USAGE:
         flow site query
     """
-    #config_data, dsl_data = preprocess(**kwargs)
     client: FlowClient = ctx.obj["client"]
     response = client.site.info()
     prettify(response)

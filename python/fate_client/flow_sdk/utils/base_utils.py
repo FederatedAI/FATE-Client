@@ -27,6 +27,7 @@ import requests
 def _is_api_endpoint(obj):
     return isinstance(obj, BaseFlowAPI)
 
+
 class BaseFlowClient:
     API_BASE_URL = ''
 
@@ -60,7 +61,7 @@ class BaseFlowClient:
             response = self._http.send(prepped, stream=stream)
         except Exception as e:
             response = {
-                'retcode': 100,
+                'code': 100,
                 'retmsg': str(e),
             }
 
@@ -94,18 +95,18 @@ class BaseFlowClient:
         if self.app_id and self.app_token:
             nonce, timestamp, sign = self.generate_signature_params()
             return {
-                "app_id": self.app_id,
-                "user_name": self.user_name,
-                "nonce": nonce,
-                "timestamp": timestamp,
-                "signature": sign
+                "appId": self.app_id,
+                "userName": self.user_name,
+                "Nonce": nonce,
+                "Timestamp": timestamp,
+                "Signature": sign
             }
         else:
             return {}
 
     def generate_signature_params(self):
-        nonce = str(random.randint(10000, 99999))
-        timestamp = str(int(time.time()))
+        nonce = str(random.randint(1000, 9999))
+        timestamp = str(int(time.time())*1000)
         temp = hashlib.md5(str(self.app_id + self.user_name + nonce + timestamp).encode("utf8")).hexdigest().lower()
         sign = hashlib.md5(str(temp + self.app_token).encode("utf8")).hexdigest().lower()
         return nonce, timestamp, sign
@@ -130,12 +131,10 @@ class BaseFlowAPI:
 
     def _post(self, url, handle_result=True, **kwargs):
         if handle_result:
-            res = self._handle_result(self._client.post(url, **kwargs))
-            #return self._handle_result(self._client.post(url, **kwargs))
+            return self._handle_result(self._client.post(url, **kwargs))
         else:
-            res = self._client.post(url, **kwargs)
-            #return self._client.post(url, **kwargs)
-        return res
+            return self._client.post(url, **kwargs)
+
     def _handle_result(self, response):
         return self._client._handle_result(response)
 

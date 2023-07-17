@@ -15,6 +15,7 @@
 #
 from ..utils.base_utils import BaseFlowAPI
 from ..utils.params_utils import filter_invalid_params
+from ..utils.io_utils import download_from_request
 
 
 class Data(BaseFlowAPI):
@@ -41,10 +42,15 @@ class Data(BaseFlowAPI):
         """
         kwargs = locals()
         params = filter_invalid_params(**kwargs)
-        return self._post(url='/data/component/upload', json=params)
+        response = self._post(url='/data/component/upload/', json=params)
+        if response.json()['code'] != 0:
+            return response
+        else:
+            print(f'upload success:{response.json()}')
+            response = self.dataframe_transformer(namespace=namespace, name=name, data_warehouse={"data_warehouse": response.json()['data']})
+            return response
 
-    def dataframe_transformer(self, namespace: str, name: str, data_warehouse: dict, role: str = None,
-                              party_id: str = None):
+    def dataframe_transformer(self, namespace: str, name: str, data_warehouse: dict):
         """
         upload file
 
@@ -62,7 +68,7 @@ class Data(BaseFlowAPI):
         params = filter_invalid_params(**kwargs)
         return self._post(url='/data/component/dataframe/transformer', json=params)
 
-    def download(self, namespace: str = None, name: str = None):
+    def download(self, namespace: str = None, name: str = None, path: str = None):
         """
         download
 
@@ -75,4 +81,23 @@ class Data(BaseFlowAPI):
         """
         kwargs = locals()
         params = filter_invalid_params(**kwargs)
-        return self._get(url='/data/component/download', json=params)
+        resp = self._get(url='/data/download', params=params, handle_result=False)
+        if path:
+            return download_from_request(resp, path)
+        else:
+            return resp
+
+    def download_component(self, namespace: str = None, name: str = None, path: str = None):
+        """
+        download
+
+        Args:
+            namespace:
+            name:
+
+        Returns:
+
+        """
+        kwargs = locals()
+        params = filter_invalid_params(**kwargs)
+        return self._post(url='/data/component/download', json=params)

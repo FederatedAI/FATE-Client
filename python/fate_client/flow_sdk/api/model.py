@@ -48,7 +48,7 @@ class Model(BaseFlowAPI):
         params = filter_invalid_params(**kwargs)
         return self._post(url='/model/load', params=params)
 
-    def migrate(self):
+    def migrate(self, role: str, model_id: str, model_version: str, party_id: str, dir_path: str):
         """
 
         Args:
@@ -61,7 +61,7 @@ class Model(BaseFlowAPI):
         params = filter_invalid_params(**kwargs)
         return self._post(url='/model/migrate', params=params)
 
-    def export(self):
+    def export(self, role: str, model_id: str, model_version: str, party_id: str, path: str):
         """
 
         Args:
@@ -71,7 +71,7 @@ class Model(BaseFlowAPI):
         """
         kwargs = locals()
         params = filter_invalid_params(**kwargs)
-        return self._post(url='/model/export', params=params)
+        return self._post(url='/model/local/export', json=params)
 
     def import_model(self):
         """

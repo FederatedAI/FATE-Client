@@ -1,0 +1,31 @@
+flow_service:
+  api_version: v2
+  ip: 127.0.0.1
+  port: 9380
+  app_id:
+  app_token:
+
+pipeline:
+  log_directory:
+  console_display_log:
+  site_info:
+    local_role: guest
+    local_party_id: 9999
+
+  standalone:
+    job_dir:
+    logger:
+      level: "DEBUG"
+      debug_mode: false
+    device:
+      type: "CPU"
+    mlmd:
+      type: pipeline
+      metadata:
+        db:
+    computing:
+      type: standalone
+    federation_engine:
+      type: standalone
+
+
