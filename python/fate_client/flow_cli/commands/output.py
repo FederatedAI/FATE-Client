@@ -44,7 +44,7 @@ def query_key(ctx, **kwargs):
 
     \b
     - USAGE:
-        flow output key -j $JOB_ID -r guest -p 9999  -tsn reader_0
+        flow output key -j $JOB_ID -r guest -p 9999  -tn reader_0
 
     """
     client: FlowClient = ctx.obj["client"]
@@ -65,7 +65,7 @@ def query_metric(ctx, **kwargs):
 
     \b
     - USAGE:
-        flow output query-metric -j $JOB_ID -r guest -p 9999  -tsn reader_0
+        flow output query-metric -j $JOB_ID -r guest -p 9999  -tn reader_0
 
     """
     client: FlowClient = ctx.obj["client"]
@@ -86,7 +86,7 @@ def delete_metric(ctx, **kwargs):
         Used to be 'delete-metric'.
     \b
     - USAGE:
-        flow output delete-metric -j $JOB_ID -r guest -p 9999  -tsn reader_0
+        flow output delete-metric -j $JOB_ID -r guest -p 9999  -tn reader_0
 
     """
     client: FlowClient = ctx.obj["client"]
@@ -106,7 +106,7 @@ def query_model(ctx, **kwargs):
 
     \b
     - USAGE:
-        flow output query-model -j $JOB_ID -r guest -p 9999  -tsn reader_0
+        flow output query-model -j $JOB_ID -r guest -p 9999  -tn reader_0
 
     """
     client: FlowClient = ctx.obj["client"]
@@ -126,7 +126,7 @@ def down_model(ctx, **kwargs):
 
     \b
     - USAGE:
-        flow output down-model -j $JOB_ID -r guest -p 9999  -tsn reader_0
+        flow output down-model -j $JOB_ID -r guest -p 9999  -tn reader_0
 
     """
     client: FlowClient = ctx.obj["client"]
@@ -146,7 +146,7 @@ def delete_model(ctx, **kwargs):
 
     \b
     - USAGE:
-        flow output delete-model -j $JOB_ID -r guest -p 9999  -tsn reader_0
+        flow output delete-model -j $JOB_ID -r guest -p 9999  -tn reader_0
 
     """
     client: FlowClient = ctx.obj["client"]
@@ -167,7 +167,7 @@ def download_data(ctx, **kwargs):
 
     \b
     - USAGE:
-        flow output download -j $JOB_ID -r guest -p 9999  -tsn reader_0  -o /data/project/xx
+        flow output download -j $JOB_ID -r guest -p 9999  -tn reader_0  -o /data/project/xx
 
     """
     client: FlowClient = ctx.obj["client"]

@@ -128,7 +128,7 @@ def job_list(ctx, **kwargs):
         get List job.
     \b
     - USAGE:
-        flow job list -j xxx -r guest - p 9999 -tsn xxx  -l 30
+        flow job list -j xxx -r guest - p 9999 -tn xxx  -l 30
     """
     client: FlowClient = ctx.obj["client"]
     response = client.job.query_job_list(**kwargs)

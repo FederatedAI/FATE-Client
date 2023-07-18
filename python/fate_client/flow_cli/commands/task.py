@@ -47,7 +47,7 @@ def query(ctx, **kwargs):
 
     \b
     - USAGE:
-        flow task query -j xxx -r guest -p 999 -tsn xxx -s success
+        flow task query -j xxx -r guest -p 999 -tn xxx -s success
 
     """
     client: FlowClient = ctx.obj["client"]
@@ -71,7 +71,7 @@ def query_list(ctx, **kwargs):
 
     \b
     - USAGE:
-        flow task list -j xxx -r guest -p 999 -tid xxx -tsn xxx -s success -l 25
+        flow task list -j xxx -r guest -p 999 -tid xxx -tn xxx -s success -l 25
     """
     client: FlowClient = ctx.obj["client"]
     response = client.task.query_task_list(**kwargs)

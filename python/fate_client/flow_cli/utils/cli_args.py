@@ -65,8 +65,8 @@ ARBITER_PARTYID_REQUIRED = click.option("-aid", "--arbiter-party-id", type=click
                                         help="A valid party id.")
 HOST_PARTYIDS_REQUIRED = click.option("-hids", "--host-party-ids", type=click.STRING, required=True,
                                       help="Multiple party ids, use a comma to separate each one.")
-TASK_NAME = click.option("-tsn", "--task-name", type=click.STRING, help="A valid task name.")
-TASK_NAME_REQUIRED = click.option("-tsn", "--task-name", type=click.STRING, help="A valid task name.", required=True,)
+TASK_NAME = click.option("-tn", "--task-name", type=click.STRING, help="A valid task name.")
+TASK_NAME_REQUIRED = click.option("-tn", "--task-name", type=click.STRING, help="A valid task name.", required=True,)
 
 TASK_ID = click.option("-tid", "--task-id", type=click.STRING, help="A valid task id.")
 TASK_ID_REQUIRED = click.option("-tid", "--task-id", type=click.STRING, help="A valid task id.", required=True,)
