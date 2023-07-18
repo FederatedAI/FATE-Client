@@ -16,7 +16,7 @@
 import click
 
 from ..utils import cli_args
-from ..utils.cli_utils import load_yaml, preprocess, prettify
+from ..utils.cli_utils import prettify
 from fate_client.flow_sdk import FlowClient
 
 
@@ -33,7 +33,7 @@ def task(ctx):
 
 @task.command("query", short_help="Query Task Command")
 @cli_args.JOBID
-@cli_args.ROLE
+@cli_args.ROLE_IDE
 @cli_args.PARTYID
 @cli_args.TASK_NAME
 @cli_args.STATUS
@@ -47,15 +47,21 @@ def query(ctx, **kwargs):
 
     \b
     - USAGE:
-        flow task query -j $JOB_ID -p 9999 -r guest
-        flow task query -cpn hetero_feature_binning_0 -s success
+        flow task query -j xxx -r guest -p 999 -tn xxx -s success
+
     """
-    #config_data, dsl_data = preprocess(**kwargs)
     client: FlowClient = ctx.obj["client"]
     response = client.task.query(**kwargs)
     prettify(response)
 
+
 @task.command("list", short_help="List Task Command")
+@cli_args.JOBID
+@cli_args.ROLE_IDE
+@cli_args.PARTYID
+@cli_args.TASK_ID
+@cli_args.TASK_NAME
+@cli_args.STATUS
 @cli_args.LIMIT
 @click.pass_context
 def query_list(ctx, **kwargs):
@@ -65,10 +71,8 @@ def query_list(ctx, **kwargs):
 
     \b
     - USAGE:
-        flow task list
-        flow task list -l 25
+        flow task list -j xxx -r guest -p 999 -tid xxx -tn xxx -s success -l 25
     """
-    #config_data, dsl_data = preprocess(**kwargs)
     client: FlowClient = ctx.obj["client"]
     response = client.task.query_task_list(**kwargs)
     prettify(response)

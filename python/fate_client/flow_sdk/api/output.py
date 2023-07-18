@@ -123,7 +123,7 @@ class Output(BaseFlowAPI):
         return self._post(url='/output/model/delete', json=params)
 
     def download_data(self, job_id: str, role: str, party_id: str, task_name: str, output_key: str = None,
-                      download_dir: str = None):
+                      path: str = None):
         """
 
         Args:
@@ -142,7 +142,7 @@ class Output(BaseFlowAPI):
         kwargs = locals()
         params = filter_invalid_params(**kwargs)
         resp = self._get(url='/output/data/download', params=params, handle_result=False)
-        if download_dir:
-            return download_from_request(resp, download_dir)
+        if path:
+            return download_from_request(resp, path)
         else:
             return resp

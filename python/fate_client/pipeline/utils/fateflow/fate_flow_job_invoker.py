@@ -157,7 +157,7 @@ class FATEFlowJobInvoker(object):
     def get_output_data(self, job_id, role, party_id, task_name):
         with tempfile.TemporaryDirectory() as data_dir:
             response = self._client.output.download_data(job_id=job_id, role=role, party_id=party_id,
-                                                         task_name=task_name, download_dir=data_dir)
+                                                         task_name=task_name, path=data_dir)
             try:
                 code = response["code"]
                 if code != 0:
@@ -171,7 +171,6 @@ class FATEFlowJobInvoker(object):
                 return None
 
             output_data_dict = {}
-            import pandas as pd
             for output_key in output_keys:
                 path = Path(data_dir).joinpath(output_key)
                 files = os.listdir(path)
@@ -238,7 +237,7 @@ class FATEFlowJobInvoker(object):
                     if not columns:
                         columns = line.strip().split(",")
                     else:
-                        cols = line.split(",", -1)
+                        cols = line.strip().split(",", -1)
                         predict_detail = json.loads(",".join(cols[len(columns) - 2: -1])[1:-1].replace("\'", "\""))
                         value = cols[: len(columns) - 2] + [predict_detail] + cols[-1:]
                         data.append(value)

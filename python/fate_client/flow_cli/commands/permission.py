@@ -33,8 +33,8 @@ def permission(ctx):
 
 
 @permission.command("grant", short_help="Grant permission Command")
-@cli_args.APP_ID
-@cli_args.ROLE
+@cli_args.APP_ID_REQUIRED
+@cli_args.ROLE_REQUIRED
 @click.pass_context
 def grant(ctx, **kwargs):
     """
@@ -46,7 +46,7 @@ def grant(ctx, **kwargs):
 
     \b
     - USAGE:
-        flow permission grant -app_id $APP_ID  -r guest
+        flow permission grant -app_id $APP_ID  -r site
     """
     client: FlowClient = ctx.obj["client"]
     response = client.permission.grant(**kwargs)
@@ -54,8 +54,8 @@ def grant(ctx, **kwargs):
 
 
 @permission.command("delete", short_help="Delete Privilege Command")
-@cli_args.APP_ID
-@cli_args.ROLE
+@cli_args.APP_ID_REQUIRED
+@cli_args.ROLE_REQUIRED
 @click.pass_context
 def delete(ctx, **kwargs):
     """
@@ -67,7 +67,7 @@ def delete(ctx, **kwargs):
 
     \b
     - USAGE:
-        flow permission delete  -app_id $APP_ID  -r guest
+        flow permission delete  -app_id $APP_ID  -r site
     """
     client: FlowClient = ctx.obj["client"]
     response = client.permission.delete(**kwargs)
@@ -75,7 +75,7 @@ def delete(ctx, **kwargs):
 
 
 @permission.command("query", short_help="Query Privilege Command")
-@cli_args.APP_ID
+@cli_args.APP_ID_REQUIRED
 @click.pass_context
 def query(ctx, **kwargs):
     """

@@ -42,13 +42,7 @@ class Data(BaseFlowAPI):
         """
         kwargs = locals()
         params = filter_invalid_params(**kwargs)
-        response = self._post(url='/data/component/upload/', json=params)
-        if response.json()['code'] != 0:
-            return response
-        else:
-            print(f'upload success:{response.json()}')
-            response = self.dataframe_transformer(namespace=namespace, name=name, data_warehouse={"data_warehouse": response.json()['data']})
-            return response
+        return self._post(url='/data/component/upload/', json=params)
 
     def dataframe_transformer(self, namespace: str, name: str, data_warehouse: dict):
         """
