@@ -26,10 +26,17 @@ DSL_PATH = click.option("-d", "--dsl-path", type=click.Path(exists=True),
 LIMIT = click.option("-l", "--limit", type=click.INT, default=10,
                      help="LIMIT flag constrains the number of records to return. (default: 10)")
 
-JOBID = click.option("-j", "--job-id", type=click.STRING,
-                     help="A valid job id.")
-JOBID_REQUIRED = click.option("-j", "--job-id", type=click.STRING, required=True,
-                              help="A valid job id.")
+JOBID = click.option("-j", "--job-id", type=click.STRING, help="A valid job id.")
+JOBID_REQUIRED = click.option("-j", "--job-id", type=click.STRING, required=True, help="A valid job id.")
+
+role_ide_list = ["guest", "host", "arbiter"]
+ROLE_IDE = click.option("-r", "--role", type=click.Choice(role_ide_list), metavar="TEXT",
+                    help="Role name. Users can choose one from {} and {}.".format(",".join(role_ide_list[:-1]),
+                                                                                  role_ide_list[-1]))
+ROLE_IDE_REQUIRED = click.option("-r", "--role", type=click.Choice(role_ide_list), required=True, metavar="TEXT",
+                             help="Role name. Users can choose one from {} and {}.".format(
+                                 ",".join(role_ide_list[:-1]),
+                                 role_ide_list[-1]))
 
 role_choices_list = ["site", "client", "super_client"]
 ROLE = click.option("-r", "--role", type=click.Choice(role_choices_list), metavar="TEXT",
@@ -40,12 +47,13 @@ ROLE_REQUIRED = click.option("-r", "--role", type=click.Choice(role_choices_list
                                  ",".join(role_choices_list[:-1]),
                                  role_choices_list[-1]))
 
-PARTYID = click.option("-p", "--party-id", type=click.STRING,
-                       help="A valid party id.")
+PARTYID = click.option("-p", "--party-id", type=click.STRING, help="A valid party id.")
 PARTYID_REQUIRED = click.option("-p", "--party-id", type=click.STRING, required=True,
                                 help="A valid party id.")
 
 APP_ID = click.option("--app-id", type=click.STRING, help="A valid app_id.")
+APP_ID_REQUIRED = click.option("--app-id", type=click.STRING, help="A valid app_id.")
+
 APP_NAME = click.option("--app-name", type=click.STRING, help="A valid app_name.")
 APP_TOKEN = click.option("--app-token", type=click.STRING, help="A valid app_token.")
 
@@ -57,8 +65,11 @@ ARBITER_PARTYID_REQUIRED = click.option("-aid", "--arbiter-party-id", type=click
                                         help="A valid party id.")
 HOST_PARTYIDS_REQUIRED = click.option("-hids", "--host-party-ids", type=click.STRING, required=True,
                                       help="Multiple party ids, use a comma to separate each one.")
-TASK_NAME = click.option("--task-name", type=click.STRING, help="A valid component name.")
-TASK_NAME_REQUIRED = click.option("--task-name", type=click.STRING, help="A valid component name.", required=True,)
+TASK_NAME = click.option("-tsn", "--task-name", type=click.STRING, help="A valid task name.")
+TASK_NAME_REQUIRED = click.option("-tsn", "--task-name", type=click.STRING, help="A valid task name.", required=True,)
+
+TASK_ID = click.option("-tid", "--task-id", type=click.STRING, help="A valid task id.")
+TASK_ID_REQUIRED = click.option("-tid", "--task-id", type=click.STRING, help="A valid task id.", required=True,)
 
 
 COMPONENT_NAME = click.option("-cpn", "--component-name", type=click.STRING,
@@ -76,7 +87,7 @@ OUTPUT_PATH = click.option("-o", "--output-path", type=click.Path(exists=False),
                            help="User specifies output directory/file path.")
 OUTPUT_PATH_REQUIRED = click.option("-o", "--output-path", type=click.Path(exists=False), required=True,
                                     help="User specifies output directory/file path.")
-PATH = click.option("--path", type=click.Path(exists=False),help="User specifies output directory/file path.")
+PATH = click.option("-o", "--path", type=click.Path(exists=False),help="User specifies output directory/file path.")
 
 INPUT_PATH = click.option("-i", "--input-path", type=click.Path(exists=True),
                           help="User specifies input directory/file path.")

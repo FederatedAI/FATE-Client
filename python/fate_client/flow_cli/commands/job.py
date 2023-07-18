@@ -54,7 +54,7 @@ def submit(ctx, **kwargs):
 
 @job.command("query", short_help="query Job Command")
 @cli_args.JOBID
-@cli_args.ROLE
+@cli_args.ROLE_IDE
 @cli_args.PARTYID
 @cli_args.STATUS
 @click.pass_context
@@ -114,6 +114,10 @@ def rerun(ctx, **kwargs):
 
 
 @job.command("list", short_help="stop Job Command")
+@cli_args.JOBID
+@cli_args.ROLE_IDE
+@cli_args.PARTYID
+@cli_args.TASK_NAME
 @cli_args.LIMIT
 @click.pass_context
 def job_list(ctx, **kwargs):
@@ -124,8 +128,7 @@ def job_list(ctx, **kwargs):
         get List job.
     \b
     - USAGE:
-        flow job list
-        flow job list -l 30
+        flow job list -j xxx -r guest - p 9999 -tsn xxx  -l 30
     """
     client: FlowClient = ctx.obj["client"]
     response = client.job.query_job_list(**kwargs)
@@ -169,9 +172,9 @@ def clean(ctx, **kwargs):
 
 
 @job.command("dependency", short_help="Clean Job Command")
-@cli_args.JOBID
-@cli_args.ROLE
-@cli_args.PARTYID
+@cli_args.JOBID_REQUIRED
+@cli_args.ROLE_IDE_REQUIRED
+@cli_args.PARTYID_REQUIRED
 @click.pass_context
 def dependency(ctx, **kwargs):
     """

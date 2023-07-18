@@ -32,9 +32,10 @@ def output(ctx):
 
 
 @output.command("key", short_help="Key metric query")
-@cli_args.JOBID
-@cli_args.ROLE
-@cli_args.PARTYID
+@cli_args.JOBID_REQUIRED
+@cli_args.ROLE_IDE_REQUIRED
+@cli_args.PARTYID_REQUIRED
+@cli_args.TASK_NAME_REQUIRED
 @click.pass_context
 def query_key(ctx, **kwargs):
     """
@@ -43,6 +44,7 @@ def query_key(ctx, **kwargs):
 
     \b
     - USAGE:
+        flow output key -j $JOB_ID -r guest -p 9999  -tsn reader_0
 
     """
     client: FlowClient = ctx.obj["client"]
@@ -51,10 +53,10 @@ def query_key(ctx, **kwargs):
 
 
 @output.command("query-metric", short_help="Metric query")
-@cli_args.JOBID
-@cli_args.ROLE
-@cli_args.PARTYID
-@cli_args.TASK_NAME
+@cli_args.JOBID_REQUIRED
+@cli_args.ROLE_IDE_REQUIRED
+@cli_args.PARTYID_REQUIRED
+@cli_args.TASK_NAME_REQUIRED
 @click.pass_context
 def query_metric(ctx, **kwargs):
     """
@@ -63,7 +65,7 @@ def query_metric(ctx, **kwargs):
 
     \b
     - USAGE:
-        flow output query-metric -j $JOB_ID -r guest -p 9999  -cpn reader_0
+        flow output query-metric -j $JOB_ID -r guest -p 9999  -tsn reader_0
 
     """
     client: FlowClient = ctx.obj["client"]
@@ -72,22 +74,20 @@ def query_metric(ctx, **kwargs):
 
 
 @output.command("delete-metric", short_help="Metric delete")
-@cli_args.JOBID
-@cli_args.ROLE
-@cli_args.PARTYID
-@cli_args.TASK_NAME
+@cli_args.JOBID_REQUIRED
+@cli_args.ROLE_IDE_REQUIRED
+@cli_args.PARTYID_REQUIRED
+@cli_args.TASK_NAME_REQUIRED
 @click.pass_context
 def delete_metric(ctx, **kwargs):
     """
     - DESCRIPTION:
-
+        delete metric.
+        Used to be 'delete-metric'.
     \b
-    delete metric.
-    Used to be 'delete-metric'.
-    \b
-
     - USAGE:
-        flow output delete-metric -j $JOB_ID -r guest -p 9999  -cpn reader_0
+        flow output delete-metric -j $JOB_ID -r guest -p 9999  -tsn reader_0
+
     """
     client: FlowClient = ctx.obj["client"]
     response = client.output.delete_metric(**kwargs)
@@ -96,7 +96,7 @@ def delete_metric(ctx, **kwargs):
 
 @output.command("query-model", short_help="Model query")
 @cli_args.JOBID_REQUIRED
-@cli_args.ROLE_REQUIRED
+@cli_args.ROLE_IDE_REQUIRED
 @cli_args.PARTYID_REQUIRED
 @cli_args.TASK_NAME_REQUIRED
 @click.pass_context
@@ -106,7 +106,8 @@ def query_model(ctx, **kwargs):
 
     \b
     - USAGE:
-        flow output query-model -j $JOB_ID -r guest -p 9999  -cpn reader_0
+        flow output query-model -j $JOB_ID -r guest -p 9999  -tsn reader_0
+
     """
     client: FlowClient = ctx.obj["client"]
     response = client.output.query_model(**kwargs)
@@ -114,10 +115,10 @@ def query_model(ctx, **kwargs):
 
 
 @output.command("down-model", short_help="Model Down")
-@cli_args.JOBID
-@cli_args.ROLE
-@cli_args.PARTYID
-@cli_args.TASK_NAME
+@cli_args.JOBID_REQUIRED
+@cli_args.ROLE_IDE_REQUIRED
+@cli_args.PARTYID_REQUIRED
+@cli_args.TASK_NAME_REQUIRED
 @click.pass_context
 def down_model(ctx, **kwargs):
     """
@@ -125,7 +126,8 @@ def down_model(ctx, **kwargs):
 
     \b
     - USAGE:
-        flow output down-model -j $JOB_ID -r guest -p 9999  --task-name reader_0
+        flow output down-model -j $JOB_ID -r guest -p 9999  -tsn reader_0
+
     """
     client: FlowClient = ctx.obj["client"]
     response = client.output.down_model(**kwargs)
@@ -133,10 +135,10 @@ def down_model(ctx, **kwargs):
 
 
 @output.command("delete-model", short_help="Model delete")
-@cli_args.JOBID
-@cli_args.ROLE
-@cli_args.PARTYID
-@cli_args.TASK_NAME
+@cli_args.JOBID_REQUIRED
+@cli_args.ROLE_IDE_REQUIRED
+@cli_args.PARTYID_REQUIRED
+@cli_args.TASK_NAME_REQUIRED
 @click.pass_context
 def delete_model(ctx, **kwargs):
     """
@@ -144,7 +146,8 @@ def delete_model(ctx, **kwargs):
 
     \b
     - USAGE:
-        flow output delete-model -j $JOB_ID -r guest -p 9999  -cpn reader_0
+        flow output delete-model -j $JOB_ID -r guest -p 9999  -tsn reader_0
+
     """
     client: FlowClient = ctx.obj["client"]
     response = client.output.delete_model(**kwargs)
@@ -152,10 +155,11 @@ def delete_model(ctx, **kwargs):
 
 
 @output.command("download", short_help="Download data")
-@cli_args.JOBID
-@cli_args.ROLE
-@cli_args.PARTYID
-@cli_args.TASK_NAME
+@cli_args.JOBID_REQUIRED
+@cli_args.ROLE_IDE_REQUIRED
+@cli_args.PARTYID_REQUIRED
+@cli_args.TASK_NAME_REQUIRED
+@cli_args.PATH
 @click.pass_context
 def download_data(ctx, **kwargs):
     """
@@ -163,7 +167,8 @@ def download_data(ctx, **kwargs):
 
     \b
     - USAGE:
-        flow output download -j $JOB_ID -r guest -p 9999  -cpn reader_0
+        flow output download -j $JOB_ID -r guest -p 9999  -tsn reader_0  -o /data/project/xx
+
     """
     client: FlowClient = ctx.obj["client"]
     response = client.output.download_data(**kwargs)
