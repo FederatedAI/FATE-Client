@@ -1,0 +1,62 @@
+component:
+  name: feature_union
+  description: ''
+  provider: fate
+  version: 2.0.0-alpha
+  labels: [ ]
+  roles:
+    - guest
+    - host
+  parameters:
+    axis:
+      type: ConstrainedNumberMeta
+      default: 0
+      optional: false
+      description: axis along which concatenation is performed, 0 for row-wise, 1
+        for column-wise
+      type_meta:
+        title: ConstrainedNumberMeta
+        minimum: 0
+        maximum: 1
+        type: integer
+  input_artifacts:
+    data:
+      input_data_list:
+        types:
+          - dataframe
+        optional: false
+        stages:
+          - default
+        roles:
+          - guest
+          - host
+        description: ''
+        is_multi: true
+    model: { }
+  output_artifacts:
+    data:
+      output_data:
+        types:
+          - dataframe
+        optional: false
+        stages:
+          - default
+        roles:
+          - guest
+          - host
+        description: ''
+        is_multi: false
+    model: { }
+    metric:
+      metric:
+        types:
+          - json_metric
+        optional: false
+        stages:
+          - default
+        roles:
+          - guest
+          - host
+        description: metric, invisible for user
+        is_multi: false
+schema_version: v1
