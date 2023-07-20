@@ -20,6 +20,7 @@ from .dataframe_io_test import DataFrameIOTest
 from .dataframe_transformer import DataFrameTransformer
 from .evaluation import Evaluation
 from .feature_scale import FeatureScale
+from .feature_union import FeatureUnion
 from .hetero_feature_binning import HeteroFeatureBinning
 from .hetero_feature_selection import HeteroFeatureSelection
 from .intersection import Intersection
