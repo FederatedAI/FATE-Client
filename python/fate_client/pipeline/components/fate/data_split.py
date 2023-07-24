@@ -31,7 +31,7 @@ class DataSplit(Component):
                  test_size: int = None,
                  stratified: bool = False,
                  random_state: int = None,
-                 ctx_mode: str = "hetero"
+                 federated_sample: bool = True
                  ):
         inputs = locals()
         self._process_init_inputs(inputs)
@@ -44,4 +44,4 @@ class DataSplit(Component):
         self.test_size = test_size
         self.stratified = stratified
         self.random_state = random_state
-        self.ctx_mode = ctx_mode
+        self.federated_sample = federated_sample
