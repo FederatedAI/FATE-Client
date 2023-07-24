@@ -9,56 +9,59 @@ component:
     - host
   parameters:
     train_size:
-      type: typing.Union[fate.components.core.params._fields.ConstrainedIntValue,
-        fate.components.core.params._fields.ConstrainedFloatValue]
+      type: typing.Union[fate.components.core.params._fields.ConstrainedFloatValue,
+        fate.components.core.params._fields.ConstrainedIntValue]
       default:
       optional: true
       description: size of output training data, should be either int for exact sample
         size or float for fraction
       type_meta:
-        title: typing.Union[fate.components.core.params._fields.ConstrainedIntValue,
-          fate.components.core.params._fields.ConstrainedFloatValue]
+        title: typing.Union[fate.components.core.params._fields.ConstrainedFloatValue,
+          fate.components.core.params._fields.ConstrainedIntValue]
         anyOf:
-          - type: integer
-            minimum: 0
           - type: number
             minimum: 0.0
+            maximum: 1.0
+          - type: integer
+            minimum: 0
         default:
         description: size of output training data, should be either int for exact
           sample size or float for fraction
     validate_size:
-      type: typing.Union[fate.components.core.params._fields.ConstrainedIntValue,
-        fate.components.core.params._fields.ConstrainedFloatValue]
+      type: typing.Union[fate.components.core.params._fields.ConstrainedFloatValue,
+        fate.components.core.params._fields.ConstrainedIntValue]
       default:
       optional: true
       description: size of output validation data, should be either int for exact
         sample size or float for fraction
       type_meta:
-        title: typing.Union[fate.components.core.params._fields.ConstrainedIntValue,
-          fate.components.core.params._fields.ConstrainedFloatValue]
+        title: typing.Union[fate.components.core.params._fields.ConstrainedFloatValue,
+          fate.components.core.params._fields.ConstrainedIntValue]
         anyOf:
-          - type: integer
-            minimum: 0
           - type: number
             minimum: 0.0
+            maximum: 1.0
+          - type: integer
+            minimum: 0
         default:
         description: size of output validation data, should be either int for exact
           sample size or float for fraction
     test_size:
-      type: typing.Union[fate.components.core.params._fields.ConstrainedIntValue,
-        fate.components.core.params._fields.ConstrainedFloatValue]
+      type: typing.Union[fate.components.core.params._fields.ConstrainedFloatValue,
+        fate.components.core.params._fields.ConstrainedIntValue]
       default:
       optional: true
       description: size of output test data, should be either int for exact sample
         size or float for fraction
       type_meta:
-        title: typing.Union[fate.components.core.params._fields.ConstrainedIntValue,
-          fate.components.core.params._fields.ConstrainedFloatValue]
+        title: typing.Union[fate.components.core.params._fields.ConstrainedFloatValue,
+          fate.components.core.params._fields.ConstrainedIntValue]
         anyOf:
-          - type: integer
-            minimum: 0
           - type: number
             minimum: 0.0
+            maximum: 1.0
+          - type: integer
+            minimum: 0
         default:
         description: size of output test data, should be either int for exact sample
           size or float for fraction
