@@ -12,7 +12,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-from typing import List
+from typing import List, Union
 
 from ..component_base import Component
 from ...conf.types import PlaceHolder
@@ -26,12 +26,12 @@ class DataSplit(Component):
                  _name: str,
                  runtime_roles: List[str] = None,
                  input_data: ArtifactType = PlaceHolder(),
-                 train_size: int = None,
-                 validate_size: int = None,
-                 test_size: int = None,
+                 train_size: Union[int, float] = None,
+                 validate_size: Union[int, float] = None,
+                 test_size: Union[int, float] = None,
                  stratified: bool = False,
                  random_state: int = None,
-                 ctx_mode: str = "hetero"
+                 federated_sample: bool = True
                  ):
         inputs = locals()
         self._process_init_inputs(inputs)
@@ -44,4 +44,4 @@ class DataSplit(Component):
         self.test_size = test_size
         self.stratified = stratified
         self.random_state = random_state
-        self.ctx_mode = ctx_mode
+        self.federated_sample = federated_sample

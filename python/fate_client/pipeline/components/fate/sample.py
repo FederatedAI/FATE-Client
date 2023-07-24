@@ -19,7 +19,7 @@ from ...conf.types import PlaceHolder
 from ...interface import ArtifactType
 
 
-class sample(Component):
+class Sample(Component):
     yaml_define_path = "./component_define/fate/sample.yaml"
 
     def __init__(self,
@@ -30,12 +30,12 @@ class sample(Component):
                  frac: float = None,
                  n: int = None,
                  random_state: int = None,
-                 ctx_mode: str = "hetero",
+                 federated_sample: bool = True,
                  input_data: ArtifactType = PlaceHolder()
                  ):
         inputs = locals()
         self._process_init_inputs(inputs)
-        super(sample, self).__init__()
+        super(Sample, self).__init__()
         self._name = _name
         self.runtime_roles = runtime_roles
         self.mode = mode
@@ -43,5 +43,5 @@ class sample(Component):
         self.frac = frac
         self.n = n
         self.random_state = random_state
-        self.ctx_mode = ctx_mode
+        self.federated_sample = federated_sample
         self.input_data = input_data

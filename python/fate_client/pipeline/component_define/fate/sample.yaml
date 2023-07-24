@@ -25,8 +25,9 @@ component:
       type_meta:
         title: bool
         type: boolean
-        default: false
-        description: whether allow sampling with replacement, default False
+        default: true
+        description: sampling mode, 'homo' & 'local' scenario should sample locally,default
+          True for 'hetero' federation scenario
     frac:
       type: typing.Union[fate.components.core.params._fields.ConstrainedFloatValue,
         typing.Mapping[typing.Union[fate.components.core.params._fields.ConstrainedIntValue,
@@ -54,31 +55,15 @@ component:
           0.5, 1: 0.8, 2: 0.3}, any label unspecified in dict will not be sampled,default:
           1.0, cannot be used with n'
     n:
-      type: typing.Union[fate.components.core.params._fields.ConstrainedIntValue,
-        typing.Mapping[typing.Union[fate.components.core.params._fields.ConstrainedIntValue,
-        fate.components.core.params._fields.ConstrainedFloatValue], fate.components.core.params._fields.ConstrainedIntValue]]
+      type: ConstrainedNumberMeta
       default:
       optional: true
-      description: 'exact sample size, it should be an int greater than 0, otherwise
-        a dict of pairs like [label_i, sample_count_i],e.g. {0: 50, 1: 20, 2: 30},
-        any label unspecified in dict will not be sampled,default: None, cannot be
-        used with frac'
+      description: 'exact sample size, it should be an int greater than 0, default:
+        None, cannot be used with frac'
       type_meta:
-        title: typing.Union[fate.components.core.params._fields.ConstrainedIntValue,
-          typing.Mapping[typing.Union[fate.components.core.params._fields.ConstrainedIntValue,
-          fate.components.core.params._fields.ConstrainedFloatValue], fate.components.core.params._fields.ConstrainedIntValue]]
-        anyOf:
-          - type: integer
-            exclusiveMinimum: 0
-          - type: object
-            additionalProperties:
-              type: integer
-              exclusiveMinimum: 0
-        default:
-        description: 'exact sample size, it should be an int greater than 0, otherwise
-          a dict of pairs like [label_i, sample_count_i],e.g. {0: 50, 1: 20, 2: 30},
-          any label unspecified in dict will not be sampled,default: None, cannot
-          be used with frac'
+        title: ConstrainedNumberMeta
+        exclusiveMinimum: 0
+        type: integer
     random_state:
       type: ConstrainedNumberMeta
       default:
@@ -88,14 +73,18 @@ component:
         title: ConstrainedNumberMeta
         minimum: 0
         type: integer
-    ctx_mode:
-      type: type
-      default: hetero
+    federated_sample:
+      type: bool
+      default: true
       optional: true
-      description: sampling mode, 'homo' & 'local' will both sample locally
+      description: sampling mode, 'homo' & 'local' scenario should sample locally,default
+        True for 'hetero' federation scenario
       type_meta:
-        title: type
-        type: string
+        title: bool
+        type: boolean
+        default: true
+        description: sampling mode, 'homo' & 'local' scenario should sample locally,default
+          True for 'hetero' federation scenario
   input_artifacts:
     data:
       input_data:
@@ -103,7 +92,7 @@ component:
           - dataframe
         optional: false
         stages:
-          - train
+          - default
         roles:
           - guest
           - host
@@ -117,7 +106,7 @@ component:
           - dataframe
         optional: false
         stages:
-          - train
+          - default
         roles:
           - guest
           - host
@@ -129,8 +118,11 @@ component:
         types:
           - json_metric
         optional: false
-        stages: [ ]
-        roles: [ ]
+        stages:
+          - default
+        roles:
+          - guest
+          - host
         description: metric, invisible for user
         is_multi: false
 schema_version: v1
