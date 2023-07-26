@@ -75,8 +75,8 @@ component:
         title: bool
         type: boolean
         default: true
-        description: sampling mode, 'homo' & 'local' scenario should sample locally,
-          default True for hetero scenario
+        description: whether guest sync data set sids with host, default True for
+          hetero scenario, should set to False for local and homo scenario
     random_state:
       type: ConstrainedNumberMeta
       default:
@@ -86,18 +86,18 @@ component:
         title: ConstrainedNumberMeta
         minimum: 0
         type: integer
-    federated_sample:
+    hetero_sync:
       type: bool
       default: true
       optional: true
-      description: sampling mode, 'homo' & 'local' scenario should sample locally,
-        default True for hetero scenario
+      description: whether guest sync data set sids with host, default True for hetero
+        scenario, should set to False for local and homo scenario
       type_meta:
         title: bool
         type: boolean
         default: true
-        description: sampling mode, 'homo' & 'local' scenario should sample locally,
-          default True for hetero scenario
+        description: whether guest sync data set sids with host, default True for
+          hetero scenario, should set to False for local and homo scenario
   input_artifacts:
     data:
       input_data:
