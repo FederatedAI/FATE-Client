@@ -30,7 +30,7 @@ class Sample(Component):
                  frac: float = None,
                  n: int = None,
                  random_state: int = None,
-                 federated_sample: bool = True,
+                 hetero_sync: bool = True,
                  input_data: ArtifactType = PlaceHolder()
                  ):
         inputs = locals()
@@ -43,5 +43,5 @@ class Sample(Component):
         self.frac = frac
         self.n = n
         self.random_state = random_state
-        self.federated_sample = federated_sample
+        self.hetero_sync = hetero_sync
         self.input_data = input_data

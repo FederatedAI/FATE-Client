@@ -26,8 +26,8 @@ component:
         title: bool
         type: boolean
         default: true
-        description: sampling mode, 'homo' & 'local' scenario should sample locally,default
-          True for 'hetero' federation scenario
+        description: whether guest sync sampled data sids with host, default True
+          for hetero scenario, should set to False for local and homo scenario
     frac:
       type: typing.Union[fate.components.core.params._fields.ConstrainedFloatValue,
         typing.Mapping[typing.Union[fate.components.core.params._fields.ConstrainedIntValue,
@@ -73,18 +73,18 @@ component:
         title: ConstrainedNumberMeta
         minimum: 0
         type: integer
-    federated_sample:
+    hetero_sync:
       type: bool
       default: true
       optional: true
-      description: sampling mode, 'homo' & 'local' scenario should sample locally,default
-        True for 'hetero' federation scenario
+      description: whether guest sync sampled data sids with host, default True for
+        hetero scenario, should set to False for local and homo scenario
       type_meta:
         title: bool
         type: boolean
         default: true
-        description: sampling mode, 'homo' & 'local' scenario should sample locally,default
-          True for 'hetero' federation scenario
+        description: whether guest sync sampled data sids with host, default True
+          for hetero scenario, should set to False for local and homo scenario
   input_artifacts:
     data:
       input_data:
