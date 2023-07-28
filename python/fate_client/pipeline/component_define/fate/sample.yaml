@@ -8,15 +8,6 @@ component:
     - guest
     - host
   parameters:
-    mode:
-      type: type
-      default: random
-      optional: true
-      description: sample mode, if select 'weight', will use dataframe's weight as
-        sampling weight, default 'random'
-      type_meta:
-        title: type
-        type: string
     replace:
       type: bool
       default: false

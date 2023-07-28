@@ -12,7 +12,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-from typing import List
+from typing import List, Union
 
 from ..component_base import Component
 from ...conf.types import PlaceHolder
@@ -25,9 +25,8 @@ class Sample(Component):
     def __init__(self,
                  _name: str,
                  runtime_roles: List[str] = None,
-                 mode: str = "random",
                  replace: bool = False,
-                 frac: float = None,
+                 frac: Union[float, dict] = None,
                  n: int = None,
                  random_state: int = None,
                  hetero_sync: bool = True,
@@ -38,7 +37,6 @@ class Sample(Component):
         super(Sample, self).__init__()
         self._name = _name
         self.runtime_roles = runtime_roles
-        self.mode = mode
         self.replace = replace
         self.frac = frac
         self.n = n
