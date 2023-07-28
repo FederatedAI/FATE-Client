@@ -113,19 +113,15 @@ component:
         default: false
         description: bool, whether compute host's metrics or not
     transform_method:
-      type: str
+      type: type
       default:
       optional: true
       description: str, values to which binned data will be transformed, select from
         {'woe', 'bin_idx'}; note that host will not transform features to woe values
         regardless of setting
       type_meta:
-        title: str
+        title: type
         type: string
-        default:
-        description: str, values to which binned data will be transformed, select
-          from {'woe', 'bin_idx'}; note that host will not transform features to woe
-          values regardless of setting
     skip_metrics:
       type: bool
       default: false
