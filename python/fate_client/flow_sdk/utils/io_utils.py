@@ -19,6 +19,8 @@ from tempfile import TemporaryDirectory
 
 
 def download_from_request(http_response, download_path):
+    if http_response.headers.get('content-type') == 'application/json':
+        return http_response.json()
     try:
         with TemporaryDirectory() as output_tmp_dir:
             path = os.path.join(output_tmp_dir, str(uuid.uuid1()))
