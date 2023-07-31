@@ -1,5 +1,5 @@
 component:
-  name: feature_union
+  name: union
   description: ''
   provider: fate
   version: 2.0.0-alpha
