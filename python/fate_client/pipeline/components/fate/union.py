@@ -19,8 +19,8 @@ from ...conf.types import PlaceHolder
 from ...interface import ArtifactType
 
 
-class FeatureUnion(Component):
-    yaml_define_path = "./component_define/fate/feature_union.yaml"
+class Union(Component):
+    yaml_define_path = "./component_define/fate/union.yaml"
 
     def __init__(self,
                  _name: str,
@@ -30,7 +30,7 @@ class FeatureUnion(Component):
                  ):
         inputs = locals()
         self._process_init_inputs(inputs)
-        super(FeatureUnion, self).__init__()
+        super(Union, self).__init__()
         self._name = _name
         self.runtime_roles = runtime_roles
         self.input_data_list = input_data_list
