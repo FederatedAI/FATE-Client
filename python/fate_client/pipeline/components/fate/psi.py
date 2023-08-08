@@ -18,19 +18,21 @@ from ..component_base import Component
 from ...interface import ArtifactType
 
 
-class Intersection(Component):
-    yaml_define_path = "./component_define/fate/intersection.yaml"
+class PSI(Component):
+    yaml_define_path = "./component_define/fate/psi.yaml"
 
     def __init__(self,
                  _name: str,
                  runtime_roles: List[str] = None,
                  input_data: ArtifactType = PlaceHolder(),
-                 method: str = PlaceHolder(),
+                 protocol: str = PlaceHolder(),
+                 curve_type: str = PlaceHolder()
                  ):
         inputs = locals()
         self._process_init_inputs(inputs)
-        super(Intersection, self).__init__()
+        super(PSI, self).__init__()
         self._name = _name
         self.runtime_roles = runtime_roles
         self.input_data = input_data
-        self.method = method
+        self.protocol = protocol
+        self.curve_type = curve_type
