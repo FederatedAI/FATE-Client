@@ -68,6 +68,8 @@ class JobConfig(object):
         # self.work_mode = config.get("work_mode", 0)
         self.data_base_dir = config.get("data_base_dir", "")
         self.system_setting = config.get("system_setting", {})
+        self.task_cores = config.get("task_cores", 4)
+        self.timeout = config.get("timeout", 3600)
 
     @staticmethod
     def load(path: typing.Union[str, Path]):
