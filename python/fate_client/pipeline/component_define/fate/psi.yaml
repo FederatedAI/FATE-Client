@@ -1,5 +1,5 @@
 component:
-  name: intersection
+  name: psi
   description: ''
   provider: fate
   version: 2.0.0-alpha
@@ -8,15 +8,25 @@ component:
     - guest
     - host
   parameters:
-    method:
+    protocol:
       type: str
-      default: raw
+      default: ecdh_psi
       optional: true
       description: ''
       type_meta:
         title: str
         type: string
-        default: raw
+        default: curve25519
+        description: ''
+    curve_type:
+      type: str
+      default: curve25519
+      optional: true
+      description: ''
+      type_meta:
+        title: str
+        type: string
+        default: curve25519
         description: ''
   input_artifacts:
     data:
@@ -45,7 +55,7 @@ component:
           - host
         description: ''
         is_multi: false
-    model: { }
+    model: {}
     metric:
       metric:
         types:
