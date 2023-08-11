@@ -238,7 +238,7 @@ component:
       input_models:
         types:
           - json_model
-        optional: false
+        optional: true
         stages:
           - train
         roles:
