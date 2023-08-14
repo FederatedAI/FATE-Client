@@ -60,14 +60,14 @@ def toy(ctx, **kwargs):
 
 
 def check_log(flow_sdk, party_id, job_id, job_status):
-    _path = "../..fate_flow/logs/toy"
+    _path = "../../fate_flow/logs/toy"
     r = flow_sdk.job.download_log(job_id=job_id, path=_path)
     if r["code"] == 0:
-        log_msg = flow_sdk.test.check_toy(party_id, job_status, _path)
+        log_msg = flow_sdk.test.check_toy(party_id, job_status, r['directory'])
         try:
             for msg in log_msg:
                 print(msg)
-        except BaseException:
+        except BaseException as e:
             print(f"auto check log failed, please check {_path}")
     else:
         print(f"get log failed, please check PROJECT_BASE/logs/{job_id} on the fateflow server machine")

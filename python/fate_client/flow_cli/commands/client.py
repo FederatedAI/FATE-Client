@@ -32,7 +32,7 @@ def client(ctx):
 
 
 @client.command("create-client", short_help="Create Client Command")
-@cli_args.APP_NAME
+@cli_args.APP_NAME_REQUIRED
 @click.pass_context
 def create_client(ctx, **kwargs):
     """
@@ -44,7 +44,7 @@ def create_client(ctx, **kwargs):
 
     \b
     - USAGE:
-        flow client create-client -app_name xxx
+        flow client create-client --app-name xxx
     """
     client: FlowClient = ctx.obj["client"]
     response = client.client_.create_client(**kwargs)
@@ -52,7 +52,7 @@ def create_client(ctx, **kwargs):
 
 
 @client.command("delete-client", short_help="Delete Client Command")
-@cli_args.APP_ID
+@cli_args.APP_ID_REQUIRED
 @click.pass_context
 def delete_client(ctx, **kwargs):
     """
@@ -64,7 +64,7 @@ def delete_client(ctx, **kwargs):
 
     \b
     - USAGE:
-        flow client delete-client -app_id xxx
+        flow client delete-client --app-id xxx
     """
     client: FlowClient = ctx.obj["client"]
     response = client.client_.delete_client(**kwargs)
@@ -85,7 +85,7 @@ def query_client(ctx, **kwargs):
 
     \b
     - USAGE:
-        flow client query-client  -app_id xxx -app_name xxx
+        flow client query-client  --app-id xxx --app-name xxx
     """
     client: FlowClient = ctx.obj["client"]
     response = client.client_.query_client(**kwargs)
@@ -93,7 +93,7 @@ def query_client(ctx, **kwargs):
 
 
 @client.command("create-site", short_help="Create Site Command")
-@cli_args.PARTYID
+@cli_args.PARTYID_REQUIRED
 @click.pass_context
 def create_site(ctx, **kwargs):
     """
@@ -113,7 +113,7 @@ def create_site(ctx, **kwargs):
 
 
 @client.command("delete-site", short_help="Delete Site Command")
-@cli_args.PARTYID
+@cli_args.PARTYID_REQUIRED
 @click.pass_context
 def delete_site(ctx, **kwargs):
     """
@@ -133,7 +133,7 @@ def delete_site(ctx, **kwargs):
 
 
 @client.command("query-site", short_help="Query Site Command")
-@cli_args.PARTYID
+@cli_args.PARTYID_REQUIRED
 @click.pass_context
 def query_site(ctx, **kwargs):
     """
@@ -153,9 +153,9 @@ def query_site(ctx, **kwargs):
 
 
 @client.command("create-partner", short_help="Create Partner Command")
-@cli_args.PARTYID
-@cli_args.APP_ID
-@cli_args.APP_TOKEN
+@cli_args.PARTYID_REQUIRED
+@cli_args.APP_ID_REQUIRED
+@cli_args.APP_TOKEN_REQUIRED
 @click.pass_context
 def create_partner(ctx, **kwargs):
     """
@@ -175,7 +175,7 @@ def create_partner(ctx, **kwargs):
 
 
 @client.command("delete-partner", short_help="Delete Partner Command")
-@cli_args.PARTYID
+@cli_args.PARTYID_REQUIRED
 @click.pass_context
 def delete_partner(ctx, **kwargs):
     """

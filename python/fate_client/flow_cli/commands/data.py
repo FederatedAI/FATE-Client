@@ -44,17 +44,16 @@ def upload(ctx, **kwargs):
     \b
     - USAGE:
         flow data upload -c fateflow/examples/upload/upload_guest.json
-        flow data upload -c fateflow/examples/upload/upload_host.json --verbose --drop
     """
-    config_data, dsl_data = preprocess(**kwargs)
+    config_data = preprocess(**kwargs)
     client: FlowClient = ctx.obj["client"]
     response = client.data.upload(**config_data)
     prettify(response)
 
 
 @data.command("download-component", short_help="Download Component Command")
-@cli_args.NAME
-@cli_args.NAMESPACE
+@cli_args.NAME_REQUIRED
+@cli_args.NAMESPACE_REQUIRED
 @cli_args.PATH
 @click.pass_context
 def download_component(ctx, **kwargs):
@@ -65,7 +64,7 @@ def download_component(ctx, **kwargs):
         Download Component.
     \b
     - USAGE:
-        flow data download-component -c fateflow/examples/download/download_table.json
+        flow data download-component --name xxx -namespace xxx -o /data/project/xx
     """
     client: FlowClient = ctx.obj["client"]
     response = client.data.download_component(**kwargs)
@@ -86,15 +85,15 @@ def dataframe_transformer(ctx, **kwargs):
     - USAGE:
         flow data transformer -c fateflow/examples/download/dataframe_transformer.json
     """
-    config_data, dsl_data = preprocess(**kwargs)
+    config_data = preprocess(**kwargs)
     client: FlowClient = ctx.obj["client"]
     response = client.data.dataframe_transformer(**config_data)
     prettify(response)
 
 
 @data.command("download", short_help="Download Command")
-@cli_args.NAME
-@cli_args.NAMESPACE
+@cli_args.NAME_REQUIRED
+@cli_args.NAMESPACE_REQUIRED
 @cli_args.PATH
 @click.pass_context
 def download(ctx, **kwargs):
@@ -105,7 +104,7 @@ def download(ctx, **kwargs):
         Download Component.
     \b
     - USAGE:
-        flow data download -c fateflow/examples/download/download_table.json
+        flow data download --name xxx -namespace xxx  -o xxx
     """
     client: FlowClient = ctx.obj["client"]
     response = client.data.download(**kwargs)

@@ -88,7 +88,7 @@ class Output(BaseFlowAPI):
         params = filter_invalid_params(**kwargs)
         return self._get(url='/output/model/query', params=params)
 
-    def down_model(self, job_id: str, role: str, party_id: str, task_name: str):
+    def down_model(self, job_id: str, role: str, party_id: str, task_name: str, path: str):
         """
 
         Args:
@@ -146,3 +146,35 @@ class Output(BaseFlowAPI):
             return download_from_request(resp, path)
         else:
             return resp
+
+    def data_table(self, job_id: str, role: str, party_id: str, task_name: str):
+        """
+
+        Args:
+            job_id:
+            role:
+            party_id:
+            task_name:
+
+        Returns:
+
+        """
+        kwargs = locals()
+        params = filter_invalid_params(**kwargs)
+        return self._get(url='/output/data/table', params=params)
+
+    def data_display(self, job_id: str, role: str, party_id: str, task_name: str):
+        """
+
+        Args:
+            job_id:
+            role:
+            party_id:
+            task_name:
+
+        Returns:
+
+        """
+        kwargs = locals()
+        params = filter_invalid_params(**kwargs)
+        return self._get(url='/output/data/display', params=params)

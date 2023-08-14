@@ -18,4 +18,6 @@ def filter_invalid_params(self, value=None, **kwargs):
     for _k, _v in kwargs.items():
         if _v is not value:
             _p[_k] = _v
+        if _v == "":
+            raise Exception({f"field {_k} is not be null"})
     return _p

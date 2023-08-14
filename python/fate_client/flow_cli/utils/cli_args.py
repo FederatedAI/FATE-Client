@@ -52,10 +52,13 @@ PARTYID_REQUIRED = click.option("-p", "--party-id", type=click.STRING, required=
                                 help="A valid party id.")
 
 APP_ID = click.option("--app-id", type=click.STRING, help="A valid app_id.")
-APP_ID_REQUIRED = click.option("--app-id", type=click.STRING, help="A valid app_id.")
+APP_ID_REQUIRED = click.option("--app-id", type=click.STRING, help="A valid app_id.", required=True)
 
 APP_NAME = click.option("--app-name", type=click.STRING, help="A valid app_name.")
+APP_NAME_REQUIRED = click.option("--app-name", type=click.STRING, help="A valid app_name.", required=True)
+
 APP_TOKEN = click.option("--app-token", type=click.STRING, help="A valid app_token.")
+APP_TOKEN_REQUIRED = click.option("--app-token", type=click.STRING, help="A valid app_token.", required=True)
 
 GUEST_PARTYID_REQUIRED = click.option("-gid", "--guest-party-id", type=click.STRING, required=True,
                                       help="A valid party id.")
@@ -71,6 +74,9 @@ TASK_NAME_REQUIRED = click.option("-tn", "--task-name", type=click.STRING, help=
 TASK_ID = click.option("-tid", "--task-id", type=click.STRING, help="A valid task id.")
 TASK_ID_REQUIRED = click.option("-tid", "--task-id", type=click.STRING, help="A valid task id.", required=True,)
 
+TASK_VERSION = click.option("--task-version", type=click.STRING, help="A valid task version.")
+
+COMPONENT = click.option("--component", type=click.STRING, help="A valid component name.")
 
 COMPONENT_NAME = click.option("-cpn", "--component-name", type=click.STRING,
                               help="A valid component name.")
@@ -87,16 +93,20 @@ OUTPUT_PATH = click.option("-o", "--output-path", type=click.Path(exists=False),
                            help="User specifies output directory/file path.")
 OUTPUT_PATH_REQUIRED = click.option("-o", "--output-path", type=click.Path(exists=False), required=True,
                                     help="User specifies output directory/file path.")
-PATH = click.option("-o", "--path", type=click.Path(exists=False),help="User specifies output directory/file path.")
+PATH = click.option("-o", "--path", type=click.Path(exists=False), help="User specifies output directory/file path.")
+PATH_REQUIRED = click.option("-o", "--path", type=click.Path(exists=False), help="User specifies output directory/file path.", required=True)
 
 INPUT_PATH = click.option("-i", "--input-path", type=click.Path(exists=True),
                           help="User specifies input directory/file path.")
 INPUT_PATH_REQUIRED = click.option("-i", "--input-path", type=click.Path(exists=True), required=True,
                                    help="User specifies input directory/file path.")
-NAME = click.option("--name", type=click.STRING,help="A valid name.")
-NAMESPACE = click.option("-n", "--namespace", type=click.STRING,
+
+NAME = click.option("--name", type=click.STRING, help="A valid name.")
+NAME_REQUIRED = click.option("--name", type=click.STRING, help="A valid name.", required=True)
+
+NAMESPACE = click.option("--namespace", type=click.STRING,
                          help="Namespace.")
-NAMESPACE_REQUIRED = click.option("-n", "--namespace", type=click.STRING, required=True,
+NAMESPACE_REQUIRED = click.option("--namespace", type=click.STRING, required=True,
                                   help="Namespace.")
 
 TABLE_NAME = click.option("-t", "--table-name", type=click.STRING,
@@ -105,6 +115,7 @@ TABLE_NAME_REQUIRED = click.option("-t", "--table-name", type=click.STRING, requ
                                    help="Table name.")
 
 TABLE_DISPLAY = click.option("--table-display", type=click.STRING, required=False, help="Table display.")
+DISPLAY = click.option("--display", type=click.STRING, required=False, help="display.")
 
 
 TAG_NAME_REQUIRED = click.option("-t", "--tag-name", type=click.STRING, required=True,
@@ -121,7 +132,11 @@ MODEL_ID_REQUIRED = click.option("--model-id", type=click.STRING, required=True,
 MODEL_VERSION = click.option("--model-version", type=click.STRING, help="Model version.")
 MODEL_VERSION_REQUIRED = click.option("--model-version", type=click.STRING, required=True, help="Model version.")
 
-SERVICE_NAME = click.option("--service", type=click.STRING, required=True, help="Service Name.")
+SERVICE_NAME_REQUIRED = click.option("--service-name", type=click.STRING, required=True, help="Service Name.")
+
+SERVER_NAME = click.option("--server-name", type=click.STRING, help="Service Name.")
+SERVER_NAME_REQUIRED = click.option("--server-name", type=click.STRING, required=True, help="Service Name.")
+
 FORCE = click.option("--force", is_flag=True, default=False, help="Force execute.")
 SIMPLE = click.option("-s", '--simple', is_flag=True, default=False, help="Simple output.")
 
@@ -138,3 +153,36 @@ SRC_ROLE = click.option("--src-role", type=click.Choice(role_choices_list), requ
 
 MIN_DATA = click.option("--min-data", type=click.INT, help="min data")
 CONNECTOR_NAME = click.option("--connector-name", type=click.STRING, required=True, help="connector name")
+
+
+LOG_TYPE_REQUIRED = click.option("--log-type", type=click.STRING, required=True, help="Log type.")
+
+INSTANCE_ID = click.option("--instance-id", type=click.STRING, help="Instance id.")
+
+OUTPUT_KEY = click.option("--output-key", type=click.STRING, help="output key.")
+
+DATA_SET = click.option("--dataset", type=click.STRING, help="data set.")
+
+DEVICE = click.option("--device", type=click.STRING, help="A valid device.")
+DEVICE_REQUIRED = click.option("--device", type=click.STRING, help="A valid device.", required=True)
+
+VERSION = click.option("--version", type=click.STRING, help="A valid version.")
+VERSION_REQUIRED = click.option("--version", type=click.STRING, help="A valid version.", required=True)
+
+METADATA_REQUIRED = click.option("--meda-data", type=click.STRING, help="A valid meda data.", required=True)
+
+URI_REQUIRED = click.option("--uri", type=click.STRING, help="A valid url.", required=True)
+
+METHOD = click.option("--method", type=click.STRING, help="A valid method.")
+
+PARAMS = click.option("--params", type=click.STRING, help="A valid url.")
+
+DATA = click.option("--data", type=click.STRING, help="A valid data.")
+
+PROTOCOL = click.option("--protocol", type=click.STRING, help="A valid protocol.")
+
+PROVIDER_NAME = click.option("--provider-name", type=click.STRING, help="A valid provider.")
+
+HOST_REQUIRED = click.option("--host", type=click.STRING, help="A valid host ip.")
+PORT_REQUIRED = click.option("--port", type=click.STRING, help="A valid port.")
+

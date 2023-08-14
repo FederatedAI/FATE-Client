@@ -13,6 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 #
+import os
 from typing import Dict, Union
 
 from requests.models import Response
@@ -130,9 +131,10 @@ class Job(BaseFlowAPI):
         _path = kwargs.pop("path", None)
         data = filter_invalid_params(**kwargs)
         resp = self._post(url='/job/log/download', handle_result=False, json=data)
+        extract_dir = os.path.join(_path, 'job_{}_log'.format(job_id))
         if _path:
             # download to local dir
-            return download_from_request(resp, _path)
+            return download_from_request(resp, extract_dir)
         else:
             # return data stream
             return resp

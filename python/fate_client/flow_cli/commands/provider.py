@@ -16,7 +16,7 @@
 import click
 
 from ..utils import cli_args
-from ..utils.cli_utils import load_yaml, preprocess, prettify
+from ..utils.cli_utils import prettify, preprocess
 from fate_client.flow_sdk import FlowClient
 
 
@@ -41,20 +41,19 @@ def register(ctx, **kwargs):
 
     \b
     - USAGE:
-
+        flow provider register -c /data/project/xxx.json
     """
-    config_data, dsl_data = preprocess(**kwargs)
+    config_data = preprocess(**kwargs)
     client: FlowClient = ctx.obj["client"]
-    if "conf_path" in config_data.keys(): config_data.pop("conf_path")
     response = client.provider.register(**config_data)
     prettify(response)
 
 
 @provider.command("query", short_help="query Provider Command")
-@click.option("-n", "--name", type=click.STRING, help="Name.")
-@click.option("-d", "--device", type=click.STRING, help="Device.")
-@click.option("-v", "--version", type=click.STRING, help="Version.")
-@click.option("-p", "--provider_name", type=click.STRING, help="Provider name.")
+@cli_args.NAME
+@cli_args.DEVICE
+@cli_args.VERSION
+@cli_args.PROVIDER_NAME
 @click.pass_context
 def query(ctx, **kwargs):
     """
@@ -63,7 +62,7 @@ def query(ctx, **kwargs):
 
     \b
     - USAGE:
-
+        flow provider query --name xxx
     """
     client: FlowClient = ctx.obj["client"]
     response = client.provider.query(**kwargs)
@@ -71,10 +70,11 @@ def query(ctx, **kwargs):
 
 
 @provider.command("delete", short_help="delete Provider Command")
-@click.option("-n", "--name", type=click.STRING,help="Namespace.")
-@click.option("-d", "--device", type=click.STRING,help="Device.")
-@click.option("-v", "--version", type=click.STRING,help="Version.")
-@click.option("-p", "--provider-name", type=click.STRING,help="Provider name.")
+# @cli_args.NAME
+# @cli_args.DEVICE
+# @cli_args.VERSION
+# @cli_args.PROVIDER_NAME
+@cli_args.CONF_PATH
 @click.pass_context
 def delete(ctx, **kwargs):
     """
@@ -83,10 +83,11 @@ def delete(ctx, **kwargs):
 
     \b
     - USAGE:
-
+        flow provider delete -c /data/project/xxx.json
     """
+    config_data = preprocess(**kwargs)
     client: FlowClient = ctx.obj["client"]
-    response = client.provider.delete(**kwargs)
+    response = client.provider.delete(**config_data)
     prettify(response)
 
 

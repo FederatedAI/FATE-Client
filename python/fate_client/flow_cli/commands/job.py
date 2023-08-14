@@ -118,6 +118,7 @@ def rerun(ctx, **kwargs):
 @cli_args.ROLE_IDE
 @cli_args.PARTYID
 @cli_args.TASK_NAME
+@cli_args.STATUS
 @cli_args.LIMIT
 @click.pass_context
 def job_list(ctx, **kwargs):
@@ -137,7 +138,7 @@ def job_list(ctx, **kwargs):
 
 @job.command("log", short_help="Log Job Command")
 @cli_args.JOBID_REQUIRED
-@cli_args.OUTPUT_PATH_REQUIRED
+@cli_args.PATH
 @click.pass_context
 def log(ctx, **kwargs):
     """
@@ -146,15 +147,32 @@ def log(ctx, **kwargs):
 
     \b
     - USAGE:
-        flow job log -j JOB_ID --output-path ./examples/
+        flow job log -j JOB_ID -o /data/project/examples/
     """
     client: FlowClient = ctx.obj["client"]
     response = client.job.download_log(**kwargs)
     prettify(response)
 
 
+@job.command("clean-queue", short_help="Clean Queue Job Command")
+@click.pass_context
+def clean_queue(ctx):
+    """
+    - DESCRIPTION:
+        Clean waiting job.
+        Used to be 'clean_queue'.
+
+    \b
+    - USAGE:
+        flow job clean-queue
+    """
+    client: FlowClient = ctx.obj["client"]
+    response = client.job.queue_clean()
+    prettify(response)
+
+
 @job.command("clean", short_help="Clean Job Command")
-@cli_args.JOBID
+@cli_args.JOBID_REQUIRED
 @click.pass_context
 def clean(ctx, **kwargs):
     """

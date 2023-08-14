@@ -39,14 +39,11 @@ def permission(ctx):
 def grant(ctx, **kwargs):
     """
     - DESCRIPTION:
-
-
     \b
     grant component | dataset privilege
-
     \b
     - USAGE:
-        flow permission grant -app_id $APP_ID  -r site
+        flow permission grant --app-id $APP_ID  -r site
     """
     client: FlowClient = ctx.obj["client"]
     response = client.permission.grant(**kwargs)
@@ -67,7 +64,7 @@ def delete(ctx, **kwargs):
 
     \b
     - USAGE:
-        flow permission delete  -app_id $APP_ID  -r site
+        flow permission delete  --app-id $APP_ID  -r site
     """
     client: FlowClient = ctx.obj["client"]
     response = client.permission.delete(**kwargs)
@@ -81,14 +78,84 @@ def query(ctx, **kwargs):
     """
     - DESCRIPTION:
 
+    \b
+    query component | dataset privilege
+
+    \b
+    - USAGE:
+        flow permission query  --app-id $APP_ID
+    """
+    client: FlowClient = ctx.obj["client"]
+    response = client.permission.query(**kwargs)
+    prettify(response)
+
+
+@permission.command("query-role", short_help="Query Role Command")
+@click.pass_context
+def query_role(ctx, **kwargs):
+    """
+    - DESCRIPTION:
 
     \b
     query component | dataset privilege
 
     \b
     - USAGE:
-        flow permission query  -app_id $APP_ID
+        flow permission query-role
     """
     client: FlowClient = ctx.obj["client"]
-    response = client.permission.query(**kwargs)
+    response = client.permission.query_role(**kwargs)
+    prettify(response)
+
+
+@permission.command("grant-resource", short_help="Grant Resource Command")
+@cli_args.CONF_PATH
+@click.pass_context
+def grant_resource(ctx, **kwargs):
+    """
+    - DESCRIPTION:
+    \b
+    grant resource
+    \b
+    - USAGE:
+        flow permission grant-resource  -c xxx.json
+    """
+    config_data = preprocess(**kwargs)
+    client: FlowClient = ctx.obj["client"]
+    response = client.permission.grant_resource(**config_data)
+    prettify(response)
+
+
+@permission.command("delete-resource", short_help="Delete Resource Command")
+@cli_args.CONF_PATH
+@click.pass_context
+def grant_resource(ctx, **kwargs):
+    """
+    - DESCRIPTION:
+    \b
+    grant resource
+    \b
+    - USAGE:
+        flow permission delete-resource  -c xxx.json
+    """
+    config_data = preprocess(**kwargs)
+    client: FlowClient = ctx.obj["client"]
+    response = client.permission.delete_resource(**config_data)
+    prettify(response)
+
+
+@permission.command("query-resource", short_help="Delete Resource Command")
+@cli_args.PARTYID_REQUIRED
+@click.pass_context
+def query_resource(ctx, **kwargs):
+    """
+    - DESCRIPTION:
+    \b
+    grant resource
+    \b
+    - USAGE:
+        flow permission query-resource  -p 9999
+    """
+    client: FlowClient = ctx.obj["client"]
+    response = client.permission.query_resource(**kwargs)
     prettify(response)

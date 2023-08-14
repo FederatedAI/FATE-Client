@@ -13,27 +13,12 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 #
+import os
 from ..utils.base_utils import BaseFlowAPI
 from ..utils.params_utils import filter_invalid_params
 
 
 class Model(BaseFlowAPI):
-    def deploy(self, model_id: str = None, model_version: int = None):
-        """
-
-        Args:
-            model_id:
-            model_version:
-
-
-        Returns:
-        {'code': 0, 'message': 'success','data':{...}]}
-        """
-        kwargs = locals()
-        params = filter_invalid_params(**kwargs)
-        # todo
-        return self._post(url='/model/deploy', params=params)
-
     def load(self):
         """
 
@@ -53,7 +38,6 @@ class Model(BaseFlowAPI):
 
         Args:
 
-
         Returns:
 
         """
@@ -71,9 +55,10 @@ class Model(BaseFlowAPI):
         """
         kwargs = locals()
         params = filter_invalid_params(**kwargs)
-        return self._post(url='/model/local/export', json=params)
+        return self._post(url='/model/export', json=params)
 
-    def import_model(self):
+
+    def import_model(self, model_id: str, model_version: str, files: str):
         """
 
         Args:
@@ -83,7 +68,21 @@ class Model(BaseFlowAPI):
         """
         kwargs = locals()
         params = filter_invalid_params(**kwargs)
-        return self._post(url='/model/import', params=params)
+        files = {'file': open(files, 'rb')}
+        return self._post(url='/model/import', data=params, files=files, handle_result=False)
+
+    def delete_model(self):
+        """
+
+        Args:
+
+        Returns:
+
+        """
+        kwargs = locals()
+        params = filter_invalid_params(**kwargs)
+        return self._post(url='/model/delete', params=params)
+
 
     def store(self):
         """
