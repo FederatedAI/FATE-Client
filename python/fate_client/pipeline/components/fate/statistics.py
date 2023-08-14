@@ -12,7 +12,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-from typing import List
+from typing import List, Union
 
 from ..component_base import Component
 from ...conf.types import PlaceHolder
@@ -25,10 +25,11 @@ class Statistics(Component):
     def __init__(self,
                  _name: str,
                  runtime_roles: List[str] = None,
-                 metrics: List[str] = None,
+                 metrics: Union[List[str], str] = None,
                  bias: bool = True,
                  skip_col: List[str] = PlaceHolder(),
                  use_anonymous: bool = False,
+                 relative_error: float = 1e-3,
                  input_data: ArtifactType = PlaceHolder()
                  ):
         inputs = locals()
@@ -40,4 +41,5 @@ class Statistics(Component):
         self.bias = bias
         self.skip_col = skip_col
         self.use_anonymous = use_anonymous
+        self.relative_error = relative_error
         self.input_data = input_data
