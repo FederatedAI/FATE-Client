@@ -28,4 +28,6 @@ from .reader import Reader
 from .sample import Sample
 from .statistics import Statistics
 from .union import Union
+from .homo_lr import HomoLR
+from .hetero_sbt import HeteroSBT
 # from .multi_model_test import MultiModelTest
