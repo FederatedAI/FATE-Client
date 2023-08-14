@@ -18,7 +18,7 @@ from ..utils.params_utils import filter_invalid_params
 
 
 class Table(BaseFlowAPI):
-    def query(self, namespace: str = None, name: str = None, dispaly: bool = False):
+    def query(self, namespace: str = None, name: str = None, display: bool = False):
         """
 
         Args:

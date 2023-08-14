@@ -13,6 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 #
+import os
 from ..utils.base_utils import BaseFlowAPI
 from ..utils.params_utils import filter_invalid_params
 from ..utils.io_utils import download_from_request
@@ -41,6 +42,8 @@ class Data(BaseFlowAPI):
         {'code': 0, 'message': 'success','data':{...}]}
         """
         kwargs = locals()
+        if not os.path.exists(file):
+            raise Exception(f"{file} is not exist, please check the file path")
         params = filter_invalid_params(**kwargs)
         return self._post(url='/data/component/upload/', json=params)
 

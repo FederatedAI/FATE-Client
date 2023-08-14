@@ -19,7 +19,7 @@ import click
 from ruamel import yaml
 from pathlib import Path
 from fate_client.flow_sdk import FlowClient
-from fate_client.flow_cli.commands import client, job, data, log, model, output, permission, provider, service, site, table, task, queue,test
+from fate_client.flow_cli.commands import client, job, data, log, model, output, permission, provider, service, site, table, task, queue, test
 from fate_client.flow_cli.utils.cli_utils import prettify, connect_service
 
 
@@ -72,14 +72,14 @@ def flow_cli(ctx):
               help='If specified, initialization settings would be reset to none. Users should init flow again.')
 def initialization(**kwargs):
     """
+    \b
     - DESCRIPTION:
         Flow CLI Init Command. provide ip and port of a valid fate flow server.
         If the server enables client authentication, you need to configure app-id and app-token
-
-
+    \b
     - USAGE:
         flow init --ip 127.0.0.1 --port 9380
-        flow init --app-id xxx --app-token
+        flow init --app-id xxx --app-token xxx
 
     """
 
@@ -134,6 +134,12 @@ def initialization(**kwargs):
                     'retmsg': 'Fate Flow CLI initialization failed.'
                 }
             )
+
+
+@flow_cli.command('version', short_help='Flow CLI Version Command')
+def get_version():
+    import fate_client
+    print(fate_client.__version__)
 
 
 flow_cli.add_command(client.client)

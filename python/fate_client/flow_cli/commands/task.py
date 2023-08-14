@@ -37,6 +37,8 @@ def task(ctx):
 @cli_args.PARTYID
 @cli_args.TASK_NAME
 @cli_args.STATUS
+@cli_args.TASK_ID
+@cli_args.TASK_VERSION
 @click.pass_context
 def query(ctx, **kwargs):
     """

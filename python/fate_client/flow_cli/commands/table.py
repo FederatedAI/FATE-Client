@@ -33,8 +33,8 @@ def table(ctx):
 
 @table.command("query", short_help="Table query Command")
 @cli_args.NAMESPACE_REQUIRED
-@cli_args.TABLE_NAME_REQUIRED
-@cli_args.TABLE_DISPLAY
+@cli_args.NAME_REQUIRED
+@cli_args.DISPLAY
 @click.pass_context
 def query(ctx, **kwargs):
     """
@@ -43,16 +43,16 @@ def query(ctx, **kwargs):
 
     \b
     - USAGE:
-        flow table query -n $NAMESPACE -t $TABLE_NAME
+        flow table query --namespace $NAMESPACE --name xxx
     """
-    # config_data, dsl_data = preprocess(**kwargs)
     client: FlowClient = ctx.obj["client"]
     response = client.table.query(**kwargs)
     prettify(response)
 
+
 @table.command("delete", short_help="Table delete Command")
 @cli_args.NAMESPACE_REQUIRED
-@cli_args.TABLE_NAME_REQUIRED
+@cli_args.NAME_REQUIRED
 @click.pass_context
 def delete(ctx, **kwargs):
     """
@@ -61,9 +61,8 @@ def delete(ctx, **kwargs):
 
     \b
     - USAGE:
-        flow table delete -n $NAMESPACE -t $TABLE_NAME
+        flow table delete --namespace $NAMESPACE --name $TABLE_NAME
     """
-    # config_data, dsl_data = preprocess(**kwargs)
     client: FlowClient = ctx.obj["client"]
     response = client.table.delete(**kwargs)
     prettify(response)

@@ -61,13 +61,13 @@ class Test(BaseFlowAPI):
     @classmethod
     def check_toy(cls, guest_party_id, job_status, log_dir):
         if job_status in {"success", "canceled"}:
-            info_log = os.path.join(log_dir, "guest", guest_party_id, "INFO.log")
+            info_log = os.path.join(log_dir, "guest", guest_party_id, "toy_example_0", "INFO")
             with open(info_log, "r") as fin:
                 for line in fin:
                     if line.find("secure_add_guest") != -1:
                         yield line.strip()
         else:
-            error_log = os.path.join(log_dir, "guest", guest_party_id, "ERROR.log")
+            error_log = os.path.join(log_dir, "guest", guest_party_id, "toy_example_0", "ERROR")
             with open(error_log, "r") as fin:
                 for line in fin:
                     yield line.strip()

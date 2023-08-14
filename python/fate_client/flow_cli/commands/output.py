@@ -119,6 +119,7 @@ def query_model(ctx, **kwargs):
 @cli_args.ROLE_IDE_REQUIRED
 @cli_args.PARTYID_REQUIRED
 @cli_args.TASK_NAME_REQUIRED
+@cli_args.PATH_REQUIRED
 @click.pass_context
 def down_model(ctx, **kwargs):
     """
@@ -126,7 +127,7 @@ def down_model(ctx, **kwargs):
 
     \b
     - USAGE:
-        flow output down-model -j $JOB_ID -r guest -p 9999  -tn reader_0
+        flow output down-model -j $JOB_ID -r guest -p 9999  -tn reader_0 -o /data/project/xxx
 
     """
     client: FlowClient = ctx.obj["client"]
@@ -172,4 +173,44 @@ def download_data(ctx, **kwargs):
     """
     client: FlowClient = ctx.obj["client"]
     response = client.output.download_data(**kwargs)
+    prettify(response)
+
+
+@output.command("table", short_help="Get data table")
+@cli_args.JOBID_REQUIRED
+@cli_args.ROLE_IDE_REQUIRED
+@cli_args.PARTYID_REQUIRED
+@cli_args.TASK_NAME_REQUIRED
+@click.pass_context
+def table_data(ctx, **kwargs):
+    """
+    - DESCRIPTION:
+
+    \b
+    - USAGE:
+        flow output table -j $JOB_ID -r guest -p 9999  -tn reader_0
+
+    """
+    client: FlowClient = ctx.obj["client"]
+    response = client.output.data_table(**kwargs)
+    prettify(response)
+
+
+@output.command("display", short_help="Display data")
+@cli_args.JOBID_REQUIRED
+@cli_args.ROLE_IDE_REQUIRED
+@cli_args.PARTYID_REQUIRED
+@cli_args.TASK_NAME_REQUIRED
+@click.pass_context
+def display_data(ctx, **kwargs):
+    """
+    - DESCRIPTION:
+
+    \b
+    - USAGE:
+        flow output display -j $JOB_ID -r guest -p 9999  -tn reader_0
+
+    """
+    client: FlowClient = ctx.obj["client"]
+    response = client.output.data_display(**kwargs)
     prettify(response)
