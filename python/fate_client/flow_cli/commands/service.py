@@ -16,7 +16,7 @@
 import click
 
 from ..utils import cli_args
-from ..utils.cli_utils import load_yaml, preprocess, prettify
+from ..utils.cli_utils import preprocess, prettify
 from fate_client.flow_sdk import FlowClient
 
 
