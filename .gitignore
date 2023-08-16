@@ -25,3 +25,4 @@ Cargo.lock
 /logs/
 /jobs/
 /metric/
+/python/build
