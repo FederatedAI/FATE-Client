@@ -75,6 +75,29 @@ def query(ctx, **kwargs):
     prettify(response)
 
 
+@job.command("add-notes", short_help="Add notes for job")
+@cli_args.JOBID_REQUIRED
+@cli_args.ROLE_REQUIRED
+@cli_args.PARTYID_REQUIRED
+@click.option("--notes", type=click.STRING, required=True, help="notes for job")
+@click.pass_context
+def add_notes(ctx, **kwargs):
+    """
+    - DESCRIPTION:
+
+    \b
+        Add notes for job
+
+    \b
+    - USAGE:
+       flow job add-notes -j $JOB_ID -r $ROLE -p $PARTY_ID --nodes "xxx"
+    """
+    client: FlowClient = ctx.obj["client"]
+    response = client.job.add_notes(**kwargs)
+    prettify(response)
+
+
+
 @job.command("stop", short_help="stop Job Command")
 @cli_args.JOBID_REQUIRED
 @click.pass_context
