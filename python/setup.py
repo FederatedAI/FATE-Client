@@ -32,7 +32,7 @@ install_requires = [
     "setuptools",
     "networkx",
     "pydantic",
-    "ml_metadata",
+    "ml_metadata=1.13.1",
 ]
 
 extras_require = {
