@@ -15,7 +15,7 @@
 #
 from ..utils.base_utils import BaseFlowAPI
 from ..utils.params_utils import filter_invalid_params
-from ..utils.io_utils import download_from_request
+from ..utils.io_utils import download_from_request, download_tarfile
 
 
 class Output(BaseFlowAPI):
@@ -103,7 +103,8 @@ class Output(BaseFlowAPI):
         """
         kwargs = locals()
         params = filter_invalid_params(**kwargs)
-        return self._get(url='/output/model/download', params=params)
+        resp = self._get(url='/output/model/download', params=params, handle_result=False)
+        return download_tarfile(resp, path, name=job_id + '_' + task_name)
 
     def delete_model(self, job_id: str, role: str, party_id: str, task_name: str):
         """
