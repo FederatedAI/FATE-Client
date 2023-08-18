@@ -3,6 +3,11 @@ from dataclasses import dataclass, field, fields
 from enum import Enum
 
 
+class AggregatorType(Enum):
+    PLAINTEXT = 'plaintext'
+    SECURE_AGGREGATE = 'secure_aggregate'
+
+
 @dataclass
 class TrainingArguments(_hf_TrainingArguments):
     
@@ -52,8 +57,10 @@ class FedArguments(object):
     """
     The argument for Fed algorithm
     """
-    aggregate_strategy: AggregateStrategy = field(default=AggregateStrategy.EPOCH.value)
+    aggregate_strategy: AggregateStrategy = field(
+        default=AggregateStrategy.EPOCH.value)
     aggregate_freq: int = field(default=1)
+    aggregator: str = field(default=AggregatorType.SECURE_AGGREGATE.value)
 
     def to_dict(self):
         """
@@ -61,7 +68,8 @@ class FedArguments(object):
         the token values by removing their value.
         """
         # filter out fields that are defined as field(init=False)
-        d = dict((field.name, getattr(self, field.name)) for field in fields(self) if field.init)
+        d = dict((field.name, getattr(self, field.name))
+                 for field in fields(self) if field.init)
 
         for k, v in d.items():
             if isinstance(v, Enum):
