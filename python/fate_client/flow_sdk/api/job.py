@@ -53,6 +53,23 @@ class Job(BaseFlowAPI):
         params = filter_invalid_params(**kwargs)
         return self._get(url='/job/query', params=params)
 
+    def add_notes(self, job_id: str, role: str, party_id, notes: str):
+        """
+        Add notes for job
+
+        Args:
+            job_id: job id.
+            role: role, such as: "guest", "host"
+            party_id: party id, such as: "9999", "10000"
+            notes: job notes
+
+        Returns:
+        {'code': 0, 'message': 'success'}
+        """
+        kwargs = locals()
+        params = filter_invalid_params(**kwargs)
+        return self._post(url='/job/notes/add', json=params)
+
     def stop(self, job_id: str = None):
         """
         Stop job
