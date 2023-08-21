@@ -26,7 +26,6 @@ class Union(Component):
                  _name: str,
                  runtime_roles: List[str] = None,
                  input_data_list: List[ArtifactType] = PlaceHolder(),
-                 axis: int = 0
                  ):
         inputs = locals()
         self._process_init_inputs(inputs)
@@ -34,4 +33,3 @@ class Union(Component):
         self._name = _name
         self.runtime_roles = runtime_roles
         self.input_data_list = input_data_list
-        self.axis = axis
