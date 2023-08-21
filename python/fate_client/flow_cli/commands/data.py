@@ -54,7 +54,7 @@ def upload(ctx, **kwargs):
 @data.command("download-component", short_help="Download Component Command")
 @cli_args.NAME_REQUIRED
 @cli_args.NAMESPACE_REQUIRED
-@cli_args.PATH
+@cli_args.PATH_REQUIRED
 @click.pass_context
 def download_component(ctx, **kwargs):
     """
@@ -94,7 +94,7 @@ def dataframe_transformer(ctx, **kwargs):
 @data.command("download", short_help="Download Command")
 @cli_args.NAME_REQUIRED
 @cli_args.NAMESPACE_REQUIRED
-@cli_args.PATH
+@cli_args.PATH_REQUIRED
 @click.pass_context
 def download(ctx, **kwargs):
     """
