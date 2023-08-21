@@ -26,3 +26,4 @@ Cargo.lock
 /jobs/
 /metric/
 /python/build
+/python/dist

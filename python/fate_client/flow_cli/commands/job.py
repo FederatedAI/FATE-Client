@@ -159,9 +159,9 @@ def job_list(ctx, **kwargs):
     prettify(response)
 
 
-@job.command("log", short_help="Log Job Command")
+@job.command("download-log", short_help="Download job log Command")
 @cli_args.JOBID_REQUIRED
-@cli_args.PATH
+@cli_args.PATH_REQUIRED
 @click.pass_context
 def log(ctx, **kwargs):
     """
@@ -170,7 +170,7 @@ def log(ctx, **kwargs):
 
     \b
     - USAGE:
-        flow job log -j JOB_ID -o /data/project/examples/
+        flow job download-log -j JOB_ID -o /data/project/examples/
     """
     client: FlowClient = ctx.obj["client"]
     response = client.job.download_log(**kwargs)
