@@ -22,7 +22,6 @@ class Test(BaseFlowAPI):
     def toy(self, guest_party_id: str, host_party_id: str, guest_user_name: str = "", host_user_name: str = "",
             task_cores: int = 2, timeout: int = 60):
         kwargs = locals()
-        params = filter_invalid_params(**kwargs)
         dag_schema = self.toy_conf(**kwargs)
         return self._post(url='/job/submit', json={'dag_schema': dag_schema})
 
