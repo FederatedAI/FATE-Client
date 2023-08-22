@@ -148,7 +148,7 @@ class Job(BaseFlowAPI):
         _path = kwargs.pop("path", None)
         data = filter_invalid_params(**kwargs)
         resp = self._post(url='/job/log/download', handle_result=False, json=data)
-        extract_dir = os.path.join(_path, 'job_{}_log'.format(job_id))
+        extract_dir = os.path.join(_path, f'{job_id}_logs')
         if _path:
             # download to local dir
             return download_from_request(resp, extract_dir)

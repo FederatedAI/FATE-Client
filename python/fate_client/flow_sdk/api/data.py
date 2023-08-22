@@ -23,7 +23,7 @@ class Data(BaseFlowAPI):
     def upload(self, file: str, head: bool, partitions: int, meta: dict, namespace: str = None, name: str = None,
                extend_sid: bool = None, role: str = None, party_id: str = None):
         """
-        upload file
+        upload data
 
         Args:
             file: file
@@ -47,16 +47,13 @@ class Data(BaseFlowAPI):
         params = filter_invalid_params(**kwargs)
         return self._post(url='/data/component/upload/', json=params)
 
-    def dataframe_transformer(self, namespace: str, name: str, data_warehouse: dict):
+    def dataframe_transformer(self, namespace: str, name: str, data_warehouse: dict, drop: bool = True):
         """
-        upload file
-
         Args:
             namespace:
             name:
             data_warehouse: {"namespace": xxx, "name": xxx}
-            role:
-            party_id:
+            drop: destroy table if the table exist
 
         Returns:
         {'code': 0, 'message': 'success','data':{...}]}
@@ -67,7 +64,7 @@ class Data(BaseFlowAPI):
 
     def download(self, namespace: str = None, name: str = None, path: str = None):
         """
-        download
+        download data
 
         Args:
             namespace:

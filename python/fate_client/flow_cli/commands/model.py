@@ -36,7 +36,7 @@ def model(ctx):
 @cli_args.MODEL_VERSION_REQUIRED
 @cli_args.PARTYID_REQUIRED
 @cli_args.ROLE_IDE_REQUIRED
-@cli_args.PATH
+@cli_args.PATH_REQUIRED
 @click.pass_context
 def export_model(ctx, **kwargs):
     """
