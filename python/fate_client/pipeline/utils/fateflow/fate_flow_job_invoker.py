@@ -18,7 +18,9 @@ import tempfile
 import time
 from datetime import timedelta
 from pathlib import Path
+
 from fate_client.flow_sdk import FlowClient
+
 from ...conf.env_config import FlowConfig
 
 
@@ -166,6 +168,7 @@ class FATEFlowJobInvoker(object):
                 raise ValueError(f"query task={job_id}, role={role}, "
                                  f"party_id={party_id}'s output data is failed, response={response}")
 
+            data_dir = Path(data_dir).joinpath(os.listdir(data_dir)[0])
             output_keys = os.listdir(data_dir)
             if not output_keys:
                 return None
