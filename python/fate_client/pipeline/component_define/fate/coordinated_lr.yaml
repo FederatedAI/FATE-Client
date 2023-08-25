@@ -123,9 +123,10 @@ component:
     init_param:
       type: InitParam
       default:
-        method: zeros
+        method: random_uniform
         fill_val: 0.0
         fit_intercept: true
+        random_state:
       optional: true
       description: Model param init setting.
       type_meta:
@@ -150,10 +151,14 @@ component:
                 title: Fit Intercept
                 default: true
                 type: boolean
+              random_state:
+                title: Random State
+                type: integer
         default:
-          method: zeros
+          method: random_uniform
           fill_val: 0.0
           fit_intercept: true
+          random_state:
         description: Model param init setting.
     threshold:
       type: ConstrainedNumberMeta
