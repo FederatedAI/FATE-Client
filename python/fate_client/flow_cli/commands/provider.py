@@ -20,28 +20,27 @@ from ..utils.cli_utils import prettify, preprocess
 from fate_client.flow_sdk import FlowClient
 
 
-@click.group(short_help="Permission Operations")
+@click.group()
 @click.pass_context
 def provider(ctx):
     """
     \b
-    Provides numbers of data operational commands, including upload, download and etc.
-    For more details, please check out the help text.
+    -description: Provider Operations
     """
     pass
 
 
-@provider.command("register", short_help="Register New Provider Command")
+@provider.command("register")
 @cli_args.CONF_PATH
 @click.pass_context
 def register(ctx, **kwargs):
     """
-    - DESCRIPTION:
-
+    \b
+    -description: register provider
 
     \b
-    - USAGE:
-        flow provider register -c /data/project/xxx.json
+    -usage: flow provider register -c examples/provider/register.json
+
     """
     config_data = preprocess(**kwargs)
     client: FlowClient = ctx.obj["client"]
@@ -49,7 +48,7 @@ def register(ctx, **kwargs):
     prettify(response)
 
 
-@provider.command("query", short_help="query Provider Command")
+@provider.command("query")
 @cli_args.NAME
 @cli_args.DEVICE
 @cli_args.VERSION
@@ -57,33 +56,32 @@ def register(ctx, **kwargs):
 @click.pass_context
 def query(ctx, **kwargs):
     """
-    - DESCRIPTION:
-
+    \b
+    -description: Filtering Providers Based on Conditions
 
     \b
-    - USAGE:
-        flow provider query --name xxx
+    -usage: flow provider register --name fate
+
     """
     client: FlowClient = ctx.obj["client"]
     response = client.provider.query(**kwargs)
     prettify(response)
 
 
-@provider.command("delete", short_help="delete Provider Command")
-# @cli_args.NAME
-# @cli_args.DEVICE
-# @cli_args.VERSION
-# @cli_args.PROVIDER_NAME
-@cli_args.CONF_PATH
+@provider.command("delete")
+@cli_args.NAME
+@cli_args.DEVICE
+@cli_args.VERSION
+@cli_args.PROVIDER_NAME
 @click.pass_context
 def delete(ctx, **kwargs):
     """
-    - DESCRIPTION:
-
+    \b
+    -description: Delete Providers Based on Filtering Conditions.
 
     \b
-    - USAGE:
-        flow provider delete -c /data/project/xxx.json
+    -usage: flow provider delete -n xxx
+
     """
     config_data = preprocess(**kwargs)
     client: FlowClient = ctx.obj["client"]

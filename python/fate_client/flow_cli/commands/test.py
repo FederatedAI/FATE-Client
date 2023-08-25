@@ -20,24 +20,31 @@ from fate_client.flow_cli.utils.cli_utils import prettify
 from fate_client.flow_sdk import FlowClient
 
 
-@click.group(short_help="FATE Flow Test Operations")
+@click.group()
 @click.pass_context
 def test(ctx):
     """
     \b
-    Provides numbers of component operational commands, including metrics, parameters and etc.
-    For more details, please check out the help text.
+    -description: fate test
+
     """
     pass
 
 
-@test.command("toy", short_help="Toy Test Command")
+@test.command("toy")
 @cli_args.GUEST_PARTYID_REQUIRED
 @cli_args.HOST_PARTYID_REQUIRED
 @cli_args.TIMEOUT
 @cli_args.TASK_CORES
 @click.pass_context
 def toy(ctx, **kwargs):
+    """
+    \b
+    -description: Connectivity test.
+
+    \b
+    -usage: flow test toy -gid 9999 -hid 10000
+    """
     flow_sdk = FlowClient(ip=ctx.obj["ip"], port=ctx.obj["http_port"], version=ctx.obj["api_version"],
                           app_id=ctx.obj.get("app_id"), app_token=ctx.obj.get("app_token"))
     submit_result = flow_sdk.test.toy(**kwargs)

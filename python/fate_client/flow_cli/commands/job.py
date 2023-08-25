@@ -20,31 +20,26 @@ from ..utils.cli_utils import load_yaml, prettify
 from fate_client.flow_sdk import FlowClient
 
 
-@click.group(short_help="Job Operations")
+@click.group()
 @click.pass_context
 def job(ctx):
     """
     \b
-    Provides numbers of job operational commands, including submit, stop, query and etc.
-    For more details, please check out the help text.
+    -description: Provides numbers of job operational commands, including submit, stop, query etc. For more details, please check out the help text.
     """
     pass
 
 
-@job.command("submit", short_help="Submit Job Command")
+@job.command("submit")
 @cli_args.CONF_PATH
 @click.pass_context
 def submit(ctx, **kwargs):
     """
-    - DESCRIPTION:
+    \b
+    -description: Submit and create a job.
 
     \b
-    Submit a pipeline job.
-    Used to be 'submit_job'.
-
-    \b
-    - USAGE:
-        flow job submit -c fate_flow/examples/lr/standalone/lr_train_dag.yaml
+    -usage: flow job submit -c examples/lr/train_lr.yaml
     """
     dag_schema = load_yaml(kwargs.get("conf_path"))
     client: FlowClient = ctx.obj["client"]
@@ -52,7 +47,7 @@ def submit(ctx, **kwargs):
     prettify(response)
 
 
-@job.command("query", short_help="query Job Command")
+@job.command("query")
 @cli_args.JOBID
 @cli_args.ROLE_IDE
 @cli_args.PARTYID
@@ -60,83 +55,69 @@ def submit(ctx, **kwargs):
 @click.pass_context
 def query(ctx, **kwargs):
     """
-    - DESCRIPTION:
+    \b
+    -description: Querying jobs through filtering conditions.
 
     \b
-    Query job information by filters.
-    Used to be 'query_job'.
-
-    \b
-    - USAGE:
-        flow job query -j $JOB_ID -r guest -p 9999 -s success
+    -usage: flow job query -j 202308211557455662860 -r guest -p 9999 -s running
     """
     client: FlowClient = ctx.obj["client"]
     response = client.job.query(**kwargs)
     prettify(response)
 
 
-@job.command("add-notes", short_help="Add notes for job")
+@job.command("add-notes")
 @cli_args.JOBID_REQUIRED
-@cli_args.ROLE_REQUIRED
+@cli_args.ROLE_IDE_REQUIRED
 @cli_args.PARTYID_REQUIRED
-@click.option("--notes", type=click.STRING, required=True, help="notes for job")
+@cli_args.NOTES_REQUIRED
 @click.pass_context
 def add_notes(ctx, **kwargs):
     """
-    - DESCRIPTION:
+    \b
+    -description: Add notes for job.
 
     \b
-        Add notes for job
-
-    \b
-    - USAGE:
-       flow job add-notes -j $JOB_ID -r $ROLE -p $PARTY_ID --nodes "xxx"
+    -usage: flow job add-notes -j 202308211557455662860 -r guest -p 9999 --nodes "this is a test"
     """
     client: FlowClient = ctx.obj["client"]
     response = client.job.add_notes(**kwargs)
     prettify(response)
 
 
-
-@job.command("stop", short_help="stop Job Command")
+@job.command("stop")
 @cli_args.JOBID_REQUIRED
 @click.pass_context
 def stop(ctx, **kwargs):
     """
-    - DESCRIPTION:
+    \b
+    -description: Stopping a running job.
 
     \b
-        Stop a specified job.
-
-    \b
-    - USAGE:
-       flow job stop -j $JOB_ID
+    -usage: flow job stop -j 202308211557455662860
     """
     client: FlowClient = ctx.obj["client"]
     response = client.job.stop(**kwargs)
     prettify(response)
 
 
-@job.command("rerun", short_help="rerun Job Command")
+@job.command("rerun")
 @cli_args.JOBID_REQUIRED
 @click.pass_context
 def rerun(ctx, **kwargs):
     """
-    - DESCRIPTION:
+    \b
+    -description: Rerunning a failed job.
 
     \b
-        rerun a job when it was failed.
-
-    \b
-    - USAGE:
-       flow job rerun -j $JOB_ID
+    -usage: flow job rerun -j 202308211557455662860
     """
     client: FlowClient = ctx.obj["client"]
     response = client.job.rerun(**kwargs)
     prettify(response)
 
 
-@job.command("list", short_help="stop Job Command")
+@job.command("list")
 @cli_args.JOBID
 @cli_args.ROLE_IDE
 @cli_args.PARTYID
@@ -146,83 +127,76 @@ def rerun(ctx, **kwargs):
 @click.pass_context
 def job_list(ctx, **kwargs):
     """
-    - DESCRIPTION:
+    \b
+    -description: Fetching a list of jobs based on conditions.
 
     \b
-        get List job.
-    \b
-    - USAGE:
-        flow job list -j xxx -r guest - p 9999 -tn xxx  -l 30
+    -usage: flow job list -j 202308211557455662860 -r guest - p 9999
     """
     client: FlowClient = ctx.obj["client"]
     response = client.job.query_job_list(**kwargs)
     prettify(response)
 
 
-@job.command("download-log", short_help="Download job log Command")
+@job.command("download-log")
 @cli_args.JOBID_REQUIRED
 @cli_args.PATH_REQUIRED
 @click.pass_context
 def log(ctx, **kwargs):
     """
-    - DESCRIPTION:
-        Download Log Files of A Specified Job.
+    \b
+    -description: Downloading job logs.
 
     \b
-    - USAGE:
-        flow job download-log -j JOB_ID -o /data/project/examples/
+    -usage: flow job download-log -j 202308211557455662860 -o /data/project/examples/
     """
     client: FlowClient = ctx.obj["client"]
     response = client.job.download_log(**kwargs)
     prettify(response)
 
 
-@job.command("clean-queue", short_help="Clean Queue Job Command")
+@job.command("clean-queue")
 @click.pass_context
 def clean_queue(ctx):
     """
-    - DESCRIPTION:
-        Clean waiting job.
-        Used to be 'clean_queue'.
+    \b
+    -description： Cleaning up the queued job queue.
 
     \b
-    - USAGE:
-        flow job clean-queue
+    -usage: flow job clean-queue
     """
     client: FlowClient = ctx.obj["client"]
     response = client.job.queue_clean()
     prettify(response)
 
 
-@job.command("clean", short_help="Clean Job Command")
+@job.command("clean")
 @cli_args.JOBID_REQUIRED
 @click.pass_context
 def clean(ctx, **kwargs):
     """
-    - DESCRIPTION:
-        Clean processor, data table and metric data.
-        Used to be 'clean_job'.
+    \b
+    -description: Cleaning up job output data.
 
     \b
-    - USAGE:
-        flow job clean -j $JOB_ID
+    -usage: flow job clean -j 202308211557455662860
     """
     client: FlowClient = ctx.obj["client"]
     response = client.job.job_clean(**kwargs)
     prettify(response)
 
 
-@job.command("dependency", short_help="Clean Job Command")
+@job.command("dependency")
 @cli_args.JOBID_REQUIRED
 @cli_args.ROLE_IDE_REQUIRED
 @cli_args.PARTYID_REQUIRED
 @click.pass_context
 def dependency(ctx, **kwargs):
     """
-    - DESCRIPTION:
+    -description: Dependency relationships between tasks within a job.
 
     \b
-    - USAGE:
+    -usage: flow job dependency -j 202308211557455662860 -r guest -p 9999
 
     """
     client: FlowClient = ctx.obj["client"]

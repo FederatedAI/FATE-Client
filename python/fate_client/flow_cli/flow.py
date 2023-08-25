@@ -19,7 +19,7 @@ import click
 from ruamel import yaml
 from pathlib import Path
 from fate_client.flow_sdk import FlowClient
-from fate_client.flow_cli.commands import client, job, data, log, model, output, permission, provider, service, site, table, task, queue, test
+from fate_client.flow_cli.commands import client, job, data, log, model, output, permission, provider, service, site, table, task, test
 from fate_client.flow_cli.utils.cli_utils import prettify, connect_service
 
 
@@ -63,7 +63,7 @@ def flow_cli(ctx):
         )
 
 
-@flow_cli.command('init', short_help='Flow CLI Init Command')
+@flow_cli.command('init')
 @click.option('--ip', type=click.STRING, help='Fate flow server ip address.')
 @click.option('--port', type=click.INT, help='Fate flow server port.')
 @click.option('--app-id', type=click.STRING, help='APP key for sign requests.')
@@ -136,7 +136,7 @@ def initialization(**kwargs):
             )
 
 
-@flow_cli.command('version', short_help='Flow CLI Version Command')
+@flow_cli.command('version')
 def get_version():
     import fate_client
     print(fate_client.__version__)
@@ -150,7 +150,6 @@ flow_cli.add_command(model.model)
 flow_cli.add_command(output.output)
 flow_cli.add_command(permission.permission)
 flow_cli.add_command(provider.provider)
-flow_cli.add_command(queue.queue)
 flow_cli.add_command(service.server)
 flow_cli.add_command(site.site)
 flow_cli.add_command(table.table)

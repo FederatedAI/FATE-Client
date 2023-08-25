@@ -58,7 +58,7 @@ class Model(BaseFlowAPI):
         return self._post(url='/model/export', json=params)
 
 
-    def import_model(self, model_id: str, model_version: str, files: str):
+    def import_model(self, model_id: str, model_version: str, path: str):
         """
 
         Args:
@@ -68,7 +68,7 @@ class Model(BaseFlowAPI):
         """
         kwargs = locals()
         params = filter_invalid_params(**kwargs)
-        files = {'file': open(files, 'rb')}
+        files = {'file': open(path, 'rb')}
         return self._post(url='/model/import', data=params, files=files, handle_result=False)
 
     def delete_model(self):

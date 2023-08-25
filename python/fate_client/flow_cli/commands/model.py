@@ -20,18 +20,17 @@ from ..utils.cli_utils import load_yaml, preprocess,prettify
 from fate_client.flow_sdk import FlowClient
 
 
-@click.group(short_help="Model Operations")
+@click.group()
 @click.pass_context
 def model(ctx):
     """
     \b
-    Provides numbers of data operational commands, including upload, download and etc.
-    For more details, please check out the help text.
+    -description: Model Operations
     """
     pass
 
 
-@model.command("export", short_help="Export Model Command")
+@model.command("export")
 @cli_args.MODEL_ID_REQUIRED
 @cli_args.MODEL_VERSION_REQUIRED
 @cli_args.PARTYID_REQUIRED
@@ -41,30 +40,28 @@ def model(ctx):
 def export_model(ctx, **kwargs):
     """
     \b
-    - DESCRIPTION:
-        Export the model to a file or storage engine.
+    -description: Export the model to a file.
 
     \b
-    - USAGE:
-        flow model export -c fate_flow/examples/export_model.json
+    -usage: flow model export --model-id xxx --model-version xxx -p 9999 -r guest -o ./model/
     """
     client: FlowClient = ctx.obj["client"]
     response = client.model.export(**kwargs)
     prettify(response)
 
 
-@model.command("import", short_help="Import Model Command")
-@cli_args.CONF_PATH
+@model.command("import")
+@cli_args.MODEL_ID_REQUIRED
+@cli_args.MODEL_VERSION_REQUIRED
+@cli_args.INPUT_PATH_REQUIRED
 @click.pass_context
 def import_model(ctx, **kwargs):
     """
     \b
-    - DESCRIPTION:
-        Import the model to a file or storage engine.
+    -description: Import the model to storage engine.
 
     \b
-    - USAGE:
-        flow model import -c /data/project/xxx.json
+    -usage: flow model import --model-id xxx --model-version xxx -i $input_path
     """
     config_data = preprocess(**kwargs)
     client: FlowClient = ctx.obj["client"]
@@ -72,7 +69,7 @@ def import_model(ctx, **kwargs):
     prettify(response)
 
 
-@model.command("delete", short_help="Delete Model Command")
+@model.command("delete")
 @cli_args.MODEL_ID_REQUIRED
 @cli_args.MODEL_VERSION_REQUIRED
 @cli_args.ROLE_IDE
@@ -83,12 +80,10 @@ def import_model(ctx, **kwargs):
 def delete_model(ctx, **kwargs):
     """
     \b
-    - DESCRIPTION:
-        Delete the model to a file or storage engine.
+    -description: Delete Models Based on Conditions
 
     \b
-    - USAGE:
-        flow model delete --model-id xxx  --model-version xxx
+    -usage: flow model delete --model-id xxx  --model-version xxx
     """
     client: FlowClient = ctx.obj["client"]
     response = client.model.delete_model(**kwargs)
