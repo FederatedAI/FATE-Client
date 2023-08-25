@@ -18,19 +18,7 @@ from ..utils.params_utils import filter_invalid_params
 
 
 class Service(BaseFlowAPI):
-    def delete(self, server_name: str = None, service_name: str = None):
-        """
-
-        Args:
-            server_name:
-            service_name:
-
-        Returns:
-        {'code': 0, 'message': 'success','data':None}
-        """
+    def get_fateflow_info(self):
         kwargs = locals()
         params = filter_invalid_params(**kwargs)
-        return self._post(url='/service/delete', params=params)
-
-
-
+        return self._get(url='/server/fateflow', params=params)

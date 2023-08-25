@@ -40,7 +40,7 @@ class Task(BaseFlowAPI):
         params = filter_invalid_params(**kwargs)
         return self._get(url='/job/task/query', params=params)
 
-    def query_task_list(self, limit: int = 0, page: int = 0, job_id: str = None, role: str = None,
+    def query_task_list(self, limit: int = None, page: int = None, job_id: str = None, role: str = None,
                         party_id: str = None, task_name: str = None, order_by: str = None, order: str = None):
         """
         task query info

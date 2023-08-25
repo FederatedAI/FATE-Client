@@ -36,7 +36,7 @@ class Log(BaseFlowAPI):
         """
         kwargs = locals()
         params = filter_invalid_params(**kwargs)
-        return self._get(url='/count', params=params)
+        return self._get(url='/log/count', params=params)
 
     def query(self, log_type: str = None, job_id: bool = None, role: str = None, party_id: str = None,
               task_name: int = None, begin: int = None, end: int = None, instance_id: str = None):
@@ -57,4 +57,4 @@ class Log(BaseFlowAPI):
         """
         kwargs = locals()
         params = filter_invalid_params(**kwargs)
-        return self._get(url='/query', params=params)
+        return self._get(url='/log/query', params=params)
