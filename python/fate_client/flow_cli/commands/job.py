@@ -75,10 +75,10 @@ def query(ctx, **kwargs):
 def add_notes(ctx, **kwargs):
     """
     \b
-    - DESCRIPTION: Add notes for job.
+    -description: Add notes for job.
 
     \b
-    - USAGE: flow job add-notes -j 202308211557455662860 -r guest -p 9999 --nodes "this is a test"
+    -usage: flow job add-notes -j 202308211557455662860 -r guest -p 9999 --nodes "this is a test"
     """
     client: FlowClient = ctx.obj["client"]
     response = client.job.add_notes(**kwargs)
@@ -91,10 +91,10 @@ def add_notes(ctx, **kwargs):
 def stop(ctx, **kwargs):
     """
     \b
-    - DESCRIPTION: Stopping a running job.
+    -description: Stopping a running job.
 
     \b
-    - USAGE: flow job stop -j 202308211557455662860
+    -usage: flow job stop -j 202308211557455662860
     """
     client: FlowClient = ctx.obj["client"]
     response = client.job.stop(**kwargs)
@@ -107,10 +107,10 @@ def stop(ctx, **kwargs):
 def rerun(ctx, **kwargs):
     """
     \b
-    - DESCRIPTION: Rerunning a failed job.
+    -description: Rerunning a failed job.
 
     \b
-    - USAGE: flow job rerun -j 202308211557455662860
+    -usage: flow job rerun -j 202308211557455662860
     """
     client: FlowClient = ctx.obj["client"]
     response = client.job.rerun(**kwargs)

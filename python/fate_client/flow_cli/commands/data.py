@@ -56,7 +56,6 @@ def download_component(ctx, **kwargs):
     """
     \b
     -description: Asynchronously downloading data through download component.
-    Synchronous
 
     \b
     -usage: flow data download-component --name 1bfaa4e6-4317-11ee-be20-16b977118319 --namespace upload -o /data/xxx
