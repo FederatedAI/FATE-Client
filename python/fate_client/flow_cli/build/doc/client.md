@@ -9,7 +9,7 @@ flow client create-client [OPTIONS]
 
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
-| app_name | - | `--app-name` | yes | TEXT | App name for the client |
+| app_name | - | `--app-name` | yes | str | App name for the client |
 
 **Usage**
 ```bash
@@ -25,7 +25,7 @@ flow client delete-client [OPTIONS]
 
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
-| app_id | - | `--app-id` | yes | TEXT | App ID for the client |
+| app_id | - | `--app-id` | yes | str | App ID for the client |
 
 **Usage**
 ```bash
@@ -41,8 +41,8 @@ flow client query-client [OPTIONS]
 
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
-| app_id | - | `--app-id` | no | TEXT | App ID for the client |
-| app_name | - | `--app-name` | no | TEXT | App name for the client |
+| app_id | - | `--app-id` | no | str | App ID for the client |
+| app_name | - | `--app-name` | no | str | App name for the client |
 
 **Usage**
 ```bash
@@ -58,7 +58,7 @@ flow client create-site [OPTIONS]
 
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
-| party_id | `-p` | `--party-id` | yes | TEXT | Site ID |
+| party_id | `-p` | `--party-id` | yes | str | Site ID |
 
 **Usage**
 ```bash
@@ -74,7 +74,7 @@ flow client delete-site [OPTIONS]
 
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
-| party_id | `-p` | `--party-id` | yes | TEXT | Site ID |
+| party_id | `-p` | `--party-id` | yes | str | Site ID |
 
 **Usage**
 ```bash
@@ -90,7 +90,7 @@ flow client query-site [OPTIONS]
 
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
-| party_id | `-p` | `--party-id` | yes | TEXT | Site ID |
+| party_id | `-p` | `--party-id` | yes | str | Site ID |
 
 **Usage**
 ```bash
@@ -106,9 +106,9 @@ flow client create-partner [OPTIONS]
 
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
-| party_id | `-p` | `--party-id` | yes | TEXT | Site ID |
-| app_id | - | `--app-id` | yes | TEXT | App ID for the client |
-| app_token | - | `--app-token` | yes | TEXT | App token for the site |
+| party_id | `-p` | `--party-id` | yes | str | Site ID |
+| app_id | - | `--app-id` | yes | str | App ID for the client |
+| app_token | - | `--app-token` | yes | str | App token for the site |
 
 **Usage**
 ```bash
@@ -124,7 +124,7 @@ flow client delete-partner [OPTIONS]
 
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
-| party_id | `-p` | `--party-id` | yes | TEXT | Site ID |
+| party_id | `-p` | `--party-id` | yes | str | Site ID |
 
 **Usage**
 ```bash
@@ -140,7 +140,7 @@ flow client query-partner [OPTIONS]
 
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
-| party_id | `-p` | `--party-id` | no | TEXT | Site ID |
+| party_id | `-p` | `--party-id` | no | str | Site ID |
 
 **Usage**
 ```bash

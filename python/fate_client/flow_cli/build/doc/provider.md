@@ -9,7 +9,7 @@ flow provider register [OPTIONS]
 
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
-| conf_path | `-c` | `--conf-path` | yes | PATH | Configuration file path |
+| conf_path | `-c` | `--conf-path` | yes | path | Configuration file path |
 
 **Usage**
 ```bash
@@ -25,10 +25,10 @@ flow provider query [OPTIONS]
 
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
-| name | `-n` | `--name` | no | TEXT | Name of the data table |
-| device | - | `--device` | no | TEXT | Component running mode |
-| version | - | `--version` | no | TEXT | Component version |
-| provider_name | - | `--provider-name` | no | TEXT | Component provider name |
+| name | `-n` | `--name` | no | str | Name of the data table |
+| device | - | `--device` | no | str | Component running mode |
+| version | - | `--version` | no | str | Component version |
+| provider_name | - | `--provider-name` | no | str | Component provider name |
 
 **Usage**
 ```bash
@@ -44,10 +44,10 @@ flow provider delete [OPTIONS]
 
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
-| name | `-n` | `--name` | no | TEXT | Name of the data table |
-| device | - | `--device` | no | TEXT | Component running mode |
-| version | - | `--version` | no | TEXT | Component version |
-| provider_name | - | `--provider-name` | no | TEXT | Component provider name |
+| name | `-n` | `--name` | no | str | Name of the data table |
+| device | - | `--device` | no | str | Component running mode |
+| version | - | `--version` | no | str | Component version |
+| provider_name | - | `--provider-name` | no | str | Component provider name |
 
 **Usage**
 ```bash

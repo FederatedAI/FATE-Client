@@ -9,8 +9,8 @@ flow permission grant [OPTIONS]
 
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
-| app_id | - | `--app-id` | yes | TEXT | App ID for the client |
-| role | `-r` | `--role` | yes | TEXT | Permission name |
+| app_id | - | `--app-id` | yes | str | App ID for the client |
+| role | `-r` | `--role` | yes | str | Permission name |
 
 **Usage**
 ```bash
@@ -26,8 +26,8 @@ flow permission delete [OPTIONS]
 
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
-| app_id | - | `--app-id` | yes | TEXT | App ID for the client |
-| role | `-r` | `--role` | yes | TEXT | Permission name |
+| app_id | - | `--app-id` | yes | str | App ID for the client |
+| role | `-r` | `--role` | yes | str | Permission name |
 
 **Usage**
 ```bash
@@ -43,7 +43,7 @@ flow permission query [OPTIONS]
 
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
-| app_id | - | `--app-id` | yes | TEXT | App ID for the client |
+| app_id | - | `--app-id` | yes | str | App ID for the client |
 
 **Usage**
 ```bash
@@ -59,7 +59,7 @@ flow permission grant-resource [OPTIONS]
 
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
-| conf_path | `-c` | `--conf-path` | yes | PATH | Configuration file path |
+| conf_path | `-c` | `--conf-path` | yes | path | Configuration file path |
 
 **Usage**
 ```bash
@@ -75,7 +75,7 @@ flow permission delete-resource [OPTIONS]
 
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
-| conf_path | `-c` | `--conf-path` | yes | PATH | Configuration file path |
+| conf_path | `-c` | `--conf-path` | yes | path | Configuration file path |
 
 **Usage**
 ```bash
@@ -91,7 +91,7 @@ flow permission query-resource [OPTIONS]
 
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
-| party_id | `-p` | `--party-id` | yes | TEXT | Site ID |
+| party_id | `-p` | `--party-id` | yes | str | Site ID |
 
 **Usage**
 ```bash

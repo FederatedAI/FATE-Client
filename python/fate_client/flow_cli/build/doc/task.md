@@ -9,13 +9,13 @@ flow task query [OPTIONS]
 
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
-| job_id | `-j` | `--job-id` | no | TEXT | Job ID |
-| role | `-r` | `--role` | no | TEXT | Role of the participant: guest/host/arbiter/local |
-| party_id | `-p` | `--party-id` | no | TEXT | Site ID |
-| task_name | `-tn` | `--task-name` | no | TEXT | Task name |
-| status | `-s` | `--status` | no | TEXT | Status of the job or task |
-| task_id | `-tid` | `--task-id` | no | TEXT | Task ID |
-| task_version | `-tv` | `--task-version` | no | TEXT | Task version |
+| job_id | `-j` | `--job-id` | no | str | Job ID |
+| role | `-r` | `--role` | no | str | Role of the participant: guest/host/arbiter/local |
+| party_id | `-p` | `--party-id` | no | str | Site ID |
+| task_name | `-tn` | `--task-name` | no | str | Task name |
+| status | `-s` | `--status` | no | str | Status of the job or task |
+| task_id | `-tid` | `--task-id` | no | str | Task ID |
+| task_version | `-tv` | `--task-version` | no | str | Task version |
 
 **Usage**
 ```bash
@@ -31,11 +31,11 @@ flow task list [OPTIONS]
 
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
-| job_id | `-j` | `--job-id` | no | TEXT | Job ID |
-| role | `-r` | `--role` | no | TEXT | Role of the participant: guest/host/arbiter/local |
-| party_id | `-p` | `--party-id` | no | TEXT | Site ID |
-| task_name | `-tn` | `--task-name` | no | TEXT | Task name |
-| limit | `-l` | `--limit` | no | INTEGER | Limit of rows or entries |
+| job_id | `-j` | `--job-id` | no | str | Job ID |
+| role | `-r` | `--role` | no | str | Role of the participant: guest/host/arbiter/local |
+| party_id | `-p` | `--party-id` | no | str | Site ID |
+| task_name | `-tn` | `--task-name` | no | str | Task name |
+| limit | `-l` | `--limit` | no | integer | Limit of rows or entries |
 
 **Usage**
 ```bash

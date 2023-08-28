@@ -41,7 +41,8 @@ def get_params(help_str):
         lines = desc.strip().split('\n')
         for line in lines:
             required, type, desc, command_params = parse_param(line)
-            params_list.append((required, type, desc, command_params))
+            if required or  type or desc or command_params:
+                params_list.append((required, type, desc, command_params))
     return params_list
 
 
@@ -70,7 +71,9 @@ def params_type_desc(lines):
             _item = line.split(_type)
             _desc = _item[-1].strip()
             command_params = lines[:-1] + [_item[0].strip()]
-            return _type, _desc, command_params
+            if _type == "TEXT":
+                _type = "STR"
+            return _type.lower(), _desc, command_params
 
 
 def write_command(f, group_commands, group_cli):
@@ -92,8 +95,8 @@ def write_command(f, group_commands, group_cli):
 
 
 def write_options(f, params_list):
-    f.write(f"**Options**\n")
-    if params_list:
+    if params_list and len(params_list):
+        f.write(f"**Options**\n")
         f.write("\n| parameters | short-format | long-format | required | type | description |\n")
         f.write("| :-------- |:-----|:-------------| :--- | :----- |------|\n")
         # for params in params_list:

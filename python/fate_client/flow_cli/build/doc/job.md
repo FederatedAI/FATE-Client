@@ -9,7 +9,7 @@ flow job submit [OPTIONS]
 
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
-| conf_path | `-c` | `--conf-path` | yes | PATH | Configuration file path |
+| conf_path | `-c` | `--conf-path` | yes | path | Configuration file path |
 
 **Usage**
 ```bash
@@ -25,10 +25,10 @@ flow job query [OPTIONS]
 
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
-| job_id | `-j` | `--job-id` | no | TEXT | Job ID |
-| role | `-r` | `--role` | no | TEXT | Role of the participant: guest/host/arbiter/local |
-| party_id | `-p` | `--party-id` | no | TEXT | Site ID |
-| status | `-s` | `--status` | no | TEXT | Status of the job or task |
+| job_id | `-j` | `--job-id` | no | str | Job ID |
+| role | `-r` | `--role` | no | str | Role of the participant: guest/host/arbiter/local |
+| party_id | `-p` | `--party-id` | no | str | Site ID |
+| status | `-s` | `--status` | no | str | Status of the job or task |
 
 **Usage**
 ```bash
@@ -36,7 +36,7 @@ flow job query -j 202308211557455662860 -r guest -p 9999 -s running
 ```
 
 ### add-notes
-
+Add notes for job.
 ```bash
 flow job add-notes [OPTIONS]
 ```
@@ -44,18 +44,18 @@ flow job add-notes [OPTIONS]
 
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
-| job_id | `-j` | `--job-id` | yes | TEXT | Job ID |
-| role | `-r` | `--role` | no | TEXT | Role of the participant: guest/host/arbiter/local |
-| party_id | `-p` | `--party-id` | yes | TEXT | Site ID |
-| notes | - | `--notes` | yes | TEXT | Tags and customizable information for job |
+| job_id | `-j` | `--job-id` | yes | str | Job ID |
+| role | `-r` | `--role` | no | str | Role of the participant: guest/host/arbiter/local |
+| party_id | `-p` | `--party-id` | yes | str | Site ID |
+| notes | - | `--notes` | yes | str | Tags and customizable information for job |
 
 **Usage**
 ```bash
-
+flow job add-notes -j 202308211557455662860 -r guest -p 9999 --nodes "this is a test"
 ```
 
 ### stop
-
+Stopping a running job.
 ```bash
 flow job stop [OPTIONS]
 ```
@@ -63,15 +63,15 @@ flow job stop [OPTIONS]
 
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
-| job_id | `-j` | `--job-id` | yes | TEXT | Job ID |
+| job_id | `-j` | `--job-id` | yes | str | Job ID |
 
 **Usage**
 ```bash
-
+flow job stop -j 202308211557455662860
 ```
 
 ### rerun
-
+Rerunning a failed job.
 ```bash
 flow job rerun [OPTIONS]
 ```
@@ -79,11 +79,11 @@ flow job rerun [OPTIONS]
 
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
-| job_id | `-j` | `--job-id` | yes | TEXT | Job ID |
+| job_id | `-j` | `--job-id` | yes | str | Job ID |
 
 **Usage**
 ```bash
-
+flow job rerun -j 202308211557455662860
 ```
 
 ### list
@@ -95,12 +95,12 @@ flow job list [OPTIONS]
 
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
-| job_id | `-j` | `--job-id` | no | TEXT | Job ID |
-| role | `-r` | `--role` | no | TEXT | Role of the participant: guest/host/arbiter/local |
-| party_id | `-p` | `--party-id` | no | TEXT | Site ID |
-| task_name | `-tn` | `--task-name` | no | TEXT | Task name |
-| status | `-s` | `--status` | no | TEXT | Status of the job or task |
-| limit | `-l` | `--limit` | no | INTEGER | Limit of rows or entries |
+| job_id | `-j` | `--job-id` | no | str | Job ID |
+| role | `-r` | `--role` | no | str | Role of the participant: guest/host/arbiter/local |
+| party_id | `-p` | `--party-id` | no | str | Site ID |
+| task_name | `-tn` | `--task-name` | no | str | Task name |
+| status | `-s` | `--status` | no | str | Status of the job or task |
+| limit | `-l` | `--limit` | no | integer | Limit of rows or entries |
 
 **Usage**
 ```bash
@@ -116,8 +116,8 @@ flow job download-log [OPTIONS]
 
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
-| job_id | `-j` | `--job-id` | yes | TEXT | Job ID |
-| path | `-o` | `--path` | yes | PATH | Directory or file path on the client |
+| job_id | `-j` | `--job-id` | yes | str | Job ID |
+| path | `-o` | `--path` | yes | path | Directory or file path on the client |
 
 **Usage**
 ```bash
@@ -129,10 +129,6 @@ flow job download-log -j 202308211557455662860 -o /data/project/examples/
 ```bash
 flow job clean-queue [OPTIONS]
 ```
-**Options**
-
-| parameters | short-format | long-format | required | type | description |
-| :-------- |:-----|:-------------| :--- | :----- |------|
 
 **Usage**
 ```bash
@@ -148,7 +144,7 @@ flow job clean [OPTIONS]
 
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
-| job_id | `-j` | `--job-id` | yes | TEXT | Job ID |
+| job_id | `-j` | `--job-id` | yes | str | Job ID |
 
 **Usage**
 ```bash
@@ -164,9 +160,9 @@ flow job dependency [OPTIONS]
 
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
-| job_id | `-j` | `--job-id` | yes | TEXT | Job ID |
-| role | `-r` | `--role` | no | TEXT | Role of the participant: guest/host/arbiter/local |
-| party_id | `-p` | `--party-id` | yes | TEXT | Site ID |
+| job_id | `-j` | `--job-id` | yes | str | Job ID |
+| role | `-r` | `--role` | no | str | Role of the participant: guest/host/arbiter/local |
+| party_id | `-p` | `--party-id` | yes | str | Site ID |
 
 **Usage**
 ```bash
