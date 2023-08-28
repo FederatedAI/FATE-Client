@@ -25,8 +25,7 @@ from fate_client.flow_sdk import FlowClient
 def data(ctx):
     """
     \b
-    Provides numbers of data operational commands, including upload, download, transformer and etc.
-    For more details, please check out the help text.
+    -description: Provides numbers of data operational commands, including upload, download, transformer and etc. For more details, please check out the help text.
     """
     pass
 

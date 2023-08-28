@@ -25,8 +25,7 @@ from fate_client.flow_sdk import FlowClient
 def task(ctx):
     """
     \b
-    Provides numbers of task operational commands, including list and query.
-    For more details, please check out the help text.
+    -description: Provides numbers of task operational commands, including list and query. For more details, please check out the help text.
     """
     pass
 
