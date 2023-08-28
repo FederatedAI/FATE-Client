@@ -9,6 +9,7 @@ flow server info [OPTIONS]
 
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
+
 **Usage**
 ```bash
 flow server info

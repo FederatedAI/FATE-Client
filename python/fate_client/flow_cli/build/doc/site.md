@@ -9,6 +9,7 @@ flow site query [OPTIONS]
 
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
+
 **Usage**
 ```bash
 flow site query

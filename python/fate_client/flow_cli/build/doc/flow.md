@@ -13,6 +13,7 @@ flow init [OPTIONS]
 | port | - | `--port` | no | INTEGER | Fate flow server port. |
 | app_id | - | `--app-id` | no | TEXT | APP key for sign requests. |
 | app_token | - | `--app-token` | no | TEXT | Secret key for sign requests. |
+
 **Usage**
 ```bash
 flow init --ip 127.0.0.1 --port 9380
@@ -27,6 +28,7 @@ flow version [OPTIONS]
 
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
+
 **Usage**
 ```bash
 flow version

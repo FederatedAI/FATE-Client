@@ -14,6 +14,7 @@ flow log count [OPTIONS]
 | role | `-r` | `--role` | no | TEXT | Role of the participant: guest/host/arbiter/local |
 | party_id | `-p` | `--party-id` | no | TEXT | Site ID |
 | instance_id | - | `--instance-id` | no | TEXT | Instance ID of the FATE Flow service |
+
 **Usage**
 ```bash
 flow log count -j 202308211557455662860 -r guest -p 9999 --log-type schedule_info
@@ -34,6 +35,7 @@ flow log query [OPTIONS]
 | party_id | `-p` | `--party-id` | no | TEXT | Site ID |
 | task_name | `-tn` | `--task-name` | no | TEXT | Task name |
 | instance_id | - | `--instance-id` | no | TEXT | Instance ID of the FATE Flow service |
+
 **Usage**
 ```bash
 flow log query -j 202308251856000656610 -r guest -p 9999  --log-type schedule_info
