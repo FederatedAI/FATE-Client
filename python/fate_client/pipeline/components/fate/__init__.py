@@ -23,6 +23,7 @@ from .evaluation import Evaluation
 from .feature_scale import FeatureScale
 from .hetero_feature_binning import HeteroFeatureBinning
 from .hetero_feature_selection import HeteroFeatureSelection
+from .one_hot_encoder import OneHotEncoder
 from .psi import PSI
 from .reader import Reader
 from .sample import Sample
