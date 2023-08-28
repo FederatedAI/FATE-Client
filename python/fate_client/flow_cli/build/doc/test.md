@@ -13,6 +13,7 @@ flow test toy [OPTIONS]
 | host_party_id | `-hid` | `--host-party-id` | yes | TEXT | Site ID of the host |
 | timeout | `-t` | `--timeout` | no | INTEGER | Timeout limit |
 | task_cores | - | `--task-cores` | no | INTEGER | Task cores |
+
 **Usage**
 ```bash
 flow test toy -gid 9999 -hid 10000

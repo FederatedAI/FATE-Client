@@ -11,6 +11,7 @@ flow permission grant [OPTIONS]
 | :-------- |:-----|:-------------| :--- | :----- |------|
 | app_id | - | `--app-id` | yes | TEXT | App ID for the client |
 | role | `-r` | `--role` | yes | TEXT | Permission name |
+
 **Usage**
 ```bash
 flow permission grant --app-id xxx  -r xxx
@@ -27,6 +28,7 @@ flow permission delete [OPTIONS]
 | :-------- |:-----|:-------------| :--- | :----- |------|
 | app_id | - | `--app-id` | yes | TEXT | App ID for the client |
 | role | `-r` | `--role` | yes | TEXT | Permission name |
+
 **Usage**
 ```bash
 flow permission delete --app-id xxx --role client
@@ -42,6 +44,7 @@ flow permission query [OPTIONS]
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
 | app_id | - | `--app-id` | yes | TEXT | App ID for the client |
+
 **Usage**
 ```bash
 flow permission query --app-id xxx
@@ -57,6 +60,7 @@ flow permission grant-resource [OPTIONS]
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
 | conf_path | `-c` | `--conf-path` | yes | PATH | Configuration file path |
+
 **Usage**
 ```bash
 flow permission grant-resource -c examples/permission/grant.json
@@ -72,6 +76,7 @@ flow permission delete-resource [OPTIONS]
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
 | conf_path | `-c` | `--conf-path` | yes | PATH | Configuration file path |
+
 **Usage**
 ```bash
 flow permission delete-resource -c examples/permission/delete.json
@@ -87,6 +92,7 @@ flow permission query-resource [OPTIONS]
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
 | party_id | `-p` | `--party-id` | yes | TEXT | Site ID |
+
 **Usage**
 ```bash
 

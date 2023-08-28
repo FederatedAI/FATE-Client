@@ -10,6 +10,7 @@ flow client create-client [OPTIONS]
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
 | app_name | - | `--app-name` | yes | TEXT | App name for the client |
+
 **Usage**
 ```bash
 flow client create-client --app-name xxx
@@ -25,6 +26,7 @@ flow client delete-client [OPTIONS]
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
 | app_id | - | `--app-id` | yes | TEXT | App ID for the client |
+
 **Usage**
 ```bash
 flow client delete-client --app-id xxx
@@ -41,6 +43,7 @@ flow client query-client [OPTIONS]
 | :-------- |:-----|:-------------| :--- | :----- |------|
 | app_id | - | `--app-id` | no | TEXT | App ID for the client |
 | app_name | - | `--app-name` | no | TEXT | App name for the client |
+
 **Usage**
 ```bash
 flow client query-client  --app-id xxx --app-name xxx
@@ -56,6 +59,7 @@ flow client create-site [OPTIONS]
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
 | party_id | `-p` | `--party-id` | yes | TEXT | Site ID |
+
 **Usage**
 ```bash
 flow client create-site -p xxx
@@ -71,6 +75,7 @@ flow client delete-site [OPTIONS]
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
 | party_id | `-p` | `--party-id` | yes | TEXT | Site ID |
+
 **Usage**
 ```bash
 flow client delete-site -p xxx
@@ -86,6 +91,7 @@ flow client query-site [OPTIONS]
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
 | party_id | `-p` | `--party-id` | yes | TEXT | Site ID |
+
 **Usage**
 ```bash
 flow client query-site -p xxx
@@ -103,6 +109,7 @@ flow client create-partner [OPTIONS]
 | party_id | `-p` | `--party-id` | yes | TEXT | Site ID |
 | app_id | - | `--app-id` | yes | TEXT | App ID for the client |
 | app_token | - | `--app-token` | yes | TEXT | App token for the site |
+
 **Usage**
 ```bash
 flow create create-partner -p xxx
@@ -118,6 +125,7 @@ flow client delete-partner [OPTIONS]
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
 | party_id | `-p` | `--party-id` | yes | TEXT | Site ID |
+
 **Usage**
 ```bash
 flow client delete-partner -p xxx
@@ -133,6 +141,7 @@ flow client query-partner [OPTIONS]
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
 | party_id | `-p` | `--party-id` | no | TEXT | Site ID |
+
 **Usage**
 ```bash
 flow client query-partner -p xxx

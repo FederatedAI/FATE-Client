@@ -10,6 +10,7 @@ flow provider register [OPTIONS]
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
 | conf_path | `-c` | `--conf-path` | yes | PATH | Configuration file path |
+
 **Usage**
 ```bash
 flow provider register -c examples/provider/register.json
@@ -28,6 +29,7 @@ flow provider query [OPTIONS]
 | device | - | `--device` | no | TEXT | Component running mode |
 | version | - | `--version` | no | TEXT | Component version |
 | provider_name | - | `--provider-name` | no | TEXT | Component provider name |
+
 **Usage**
 ```bash
 flow provider register --name fate
@@ -46,6 +48,7 @@ flow provider delete [OPTIONS]
 | device | - | `--device` | no | TEXT | Component running mode |
 | version | - | `--version` | no | TEXT | Component version |
 | provider_name | - | `--provider-name` | no | TEXT | Component provider name |
+
 **Usage**
 ```bash
 flow provider delete -n xxx

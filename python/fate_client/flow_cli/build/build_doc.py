@@ -12,12 +12,12 @@ types = ["TEXT", "INTEGER", "PATH"]
 
 BASE_DIR = "./doc"
 USAGE_PATTERN = r"-(.*)usage:\s+(.*)"
-DESCRIPTION = r"-(.*)description:\s+(.*)"
+DESCRIPTION_PATTERN = r"-(.*)description:\s+(.*)"
 PARAMS_PATTERN = r"Options:(.*?)(?=\s*--help)"
 
 
 def get_description(help_str):
-    match = re.search(DESCRIPTION, help_str)
+    match = re.search(DESCRIPTION_PATTERN, help_str)
     desc = ""
     if match:
         desc = match.group(2)
@@ -77,7 +77,6 @@ def write_command(f, group_commands, group_cli):
     commands = group_commands
     if isinstance(group_commands, dict):
         commands = group_commands.values()
-        print(commands)
     for cli in commands:
         with click.Context(cli) as ctx:
             _cli_comm = group_cli + " " + cli.name + " [OPTIONS]"
@@ -124,7 +123,7 @@ def write_options(f, params_list):
 
 
 def write_usage(f, usage):
-    f.write(f"**Usage**\n")
+    f.write(f"\n**Usage**\n")
     f.write(f"```bash\n{usage}\n```\n\n")
 
 

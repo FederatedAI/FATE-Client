@@ -13,6 +13,7 @@ flow output query-metric-key [OPTIONS]
 | role | `-r` | `--role` | no | TEXT | Role of the participant: guest/host/arbiter/local |
 | party_id | `-p` | `--party-id` | yes | TEXT | Site ID |
 | task_name | `-tn` | `--task-name` | yes | TEXT | Task name |
+
 **Usage**
 ```bash
 flow output query-metric-key -j xxx -r guest -p 9999 -tn lr_0
@@ -31,6 +32,7 @@ flow output query-metric [OPTIONS]
 | role | `-r` | `--role` | no | TEXT | Role of the participant: guest/host/arbiter/local |
 | party_id | `-p` | `--party-id` | yes | TEXT | Site ID |
 | task_name | `-tn` | `--task-name` | yes | TEXT | Task name |
+
 **Usage**
 ```bash
 flow output query-metric -j xxx -r guest -p 9999 -tn lr_0
@@ -49,6 +51,7 @@ flow output delete-metric [OPTIONS]
 | role | `-r` | `--role` | no | TEXT | Role of the participant: guest/host/arbiter/local |
 | party_id | `-p` | `--party-id` | yes | TEXT | Site ID |
 | task_name | `-tn` | `--task-name` | yes | TEXT | Task name |
+
 **Usage**
 ```bash
 flow output delete-metric -j xxx -r guest -p 9999 -tn lr_0
@@ -67,6 +70,7 @@ flow output query-model [OPTIONS]
 | role | `-r` | `--role` | no | TEXT | Role of the participant: guest/host/arbiter/local |
 | party_id | `-p` | `--party-id` | yes | TEXT | Site ID |
 | task_name | `-tn` | `--task-name` | yes | TEXT | Task name |
+
 **Usage**
 ```bash
 flow output query-model -j xxx -r guest -p 9999 -tn lr_0
@@ -86,6 +90,7 @@ flow output download-model [OPTIONS]
 | party_id | `-p` | `--party-id` | yes | TEXT | Site ID |
 | task_name | `-tn` | `--task-name` | yes | TEXT | Task name |
 | path | `-o` | `--path` | yes | PATH | Directory or file path on the client |
+
 **Usage**
 ```bash
 flow output download-model -j $JOB_ID -r guest -p 9999 -tn lr_0 -o /data/project/xxx
@@ -104,6 +109,7 @@ flow output delete-model [OPTIONS]
 | role | `-r` | `--role` | no | TEXT | Role of the participant: guest/host/arbiter/local |
 | party_id | `-p` | `--party-id` | yes | TEXT | Site ID |
 | task_name | `-tn` | `--task-name` | yes | TEXT | Task name |
+
 **Usage**
 ```bash
 flow output delete-model -j $JOB_ID -r guest -p 9999 -tn lr_0
@@ -123,6 +129,7 @@ flow output download-data [OPTIONS]
 | party_id | `-p` | `--party-id` | yes | TEXT | Site ID |
 | task_name | `-tn` | `--task-name` | yes | TEXT | Task name |
 | path | `-o` | `--path` | yes | PATH | Directory or file path on the client |
+
 **Usage**
 ```bash
 flow output download-data -j xxx -r guest -p 9999 -tn lr_0 -o /data/project/xx
@@ -141,6 +148,7 @@ flow output query-data-table [OPTIONS]
 | role | `-r` | `--role` | no | TEXT | Role of the participant: guest/host/arbiter/local |
 | party_id | `-p` | `--party-id` | yes | TEXT | Site ID |
 | task_name | `-tn` | `--task-name` | yes | TEXT | Task name |
+
 **Usage**
 ```bash
 flow output query-data-table -j xxx -r guest -p 9999 -tn lr_0
@@ -159,6 +167,7 @@ flow output display-data [OPTIONS]
 | role | `-r` | `--role` | no | TEXT | Role of the participant: guest/host/arbiter/local |
 | party_id | `-p` | `--party-id` | yes | TEXT | Site ID |
 | task_name | `-tn` | `--task-name` | yes | TEXT | Task name |
+
 **Usage**
 ```bash
 flow output display-data -j xxx -r guest -p 9999 -tn lr_0

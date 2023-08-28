@@ -16,6 +16,7 @@ flow task query [OPTIONS]
 | status | `-s` | `--status` | no | TEXT | Status of the job or task |
 | task_id | `-tid` | `--task-id` | no | TEXT | Task ID |
 | task_version | `-tv` | `--task-version` | no | TEXT | Task version |
+
 **Usage**
 ```bash
 flow task query -j xxx -r guest -p 999 -tn xxx
@@ -35,6 +36,7 @@ flow task list [OPTIONS]
 | party_id | `-p` | `--party-id` | no | TEXT | Site ID |
 | task_name | `-tn` | `--task-name` | no | TEXT | Task name |
 | limit | `-l` | `--limit` | no | INTEGER | Limit of rows or entries |
+
 **Usage**
 ```bash
 flow task list -j xxx -r guest -p 9999

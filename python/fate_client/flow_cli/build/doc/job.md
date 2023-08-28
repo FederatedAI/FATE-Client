@@ -10,6 +10,7 @@ flow job submit [OPTIONS]
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
 | conf_path | `-c` | `--conf-path` | yes | PATH | Configuration file path |
+
 **Usage**
 ```bash
 flow job submit -c examples/lr/train_lr.yaml
@@ -28,6 +29,7 @@ flow job query [OPTIONS]
 | role | `-r` | `--role` | no | TEXT | Role of the participant: guest/host/arbiter/local |
 | party_id | `-p` | `--party-id` | no | TEXT | Site ID |
 | status | `-s` | `--status` | no | TEXT | Status of the job or task |
+
 **Usage**
 ```bash
 flow job query -j 202308211557455662860 -r guest -p 9999 -s running
@@ -46,6 +48,7 @@ flow job add-notes [OPTIONS]
 | role | `-r` | `--role` | no | TEXT | Role of the participant: guest/host/arbiter/local |
 | party_id | `-p` | `--party-id` | yes | TEXT | Site ID |
 | notes | - | `--notes` | yes | TEXT | Tags and customizable information for job |
+
 **Usage**
 ```bash
 
@@ -61,6 +64,7 @@ flow job stop [OPTIONS]
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
 | job_id | `-j` | `--job-id` | yes | TEXT | Job ID |
+
 **Usage**
 ```bash
 
@@ -76,6 +80,7 @@ flow job rerun [OPTIONS]
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
 | job_id | `-j` | `--job-id` | yes | TEXT | Job ID |
+
 **Usage**
 ```bash
 
@@ -96,6 +101,7 @@ flow job list [OPTIONS]
 | task_name | `-tn` | `--task-name` | no | TEXT | Task name |
 | status | `-s` | `--status` | no | TEXT | Status of the job or task |
 | limit | `-l` | `--limit` | no | INTEGER | Limit of rows or entries |
+
 **Usage**
 ```bash
 flow job list -j 202308211557455662860 -r guest - p 9999
@@ -112,6 +118,7 @@ flow job download-log [OPTIONS]
 | :-------- |:-----|:-------------| :--- | :----- |------|
 | job_id | `-j` | `--job-id` | yes | TEXT | Job ID |
 | path | `-o` | `--path` | yes | PATH | Directory or file path on the client |
+
 **Usage**
 ```bash
 flow job download-log -j 202308211557455662860 -o /data/project/examples/
@@ -126,6 +133,7 @@ flow job clean-queue [OPTIONS]
 
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
+
 **Usage**
 ```bash
 flow job clean-queue
@@ -141,6 +149,7 @@ flow job clean [OPTIONS]
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
 | job_id | `-j` | `--job-id` | yes | TEXT | Job ID |
+
 **Usage**
 ```bash
 flow job clean -j 202308211557455662860
@@ -158,6 +167,7 @@ flow job dependency [OPTIONS]
 | job_id | `-j` | `--job-id` | yes | TEXT | Job ID |
 | role | `-r` | `--role` | no | TEXT | Role of the participant: guest/host/arbiter/local |
 | party_id | `-p` | `--party-id` | yes | TEXT | Site ID |
+
 **Usage**
 ```bash
 flow job dependency -j 202308211557455662860 -r guest -p 9999

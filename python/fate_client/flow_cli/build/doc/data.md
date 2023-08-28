@@ -10,6 +10,7 @@ flow data upload [OPTIONS]
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
 | conf_path | `-c` | `--conf-path` | yes | PATH | Configuration file path |
+
 **Usage**
 ```bash
 flow data upload -c examples/upload/upload_guest.json
@@ -27,6 +28,7 @@ flow data download-component [OPTIONS]
 | name | `-n` | `--name` | yes | TEXT | Name of the data table |
 | namespace | `-ns` | `--namespace` | yes | TEXT | Namespace of the data table |
 | path | `-o` | `--path` | yes | PATH | Directory or file path on the client |
+
 **Usage**
 ```bash
 flow data download-component --name 1bfaa4e6-4317-11ee-be20-16b977118319 --namespace upload -o /data/xxx
@@ -42,6 +44,7 @@ flow data transformer [OPTIONS]
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
 | conf_path | `-c` | `--conf-path` | yes | PATH | Configuration file path |
+
 **Usage**
 ```bash
 flow data transformer -c examples/transformer/transformer_guest.json
@@ -59,6 +62,7 @@ flow data download [OPTIONS]
 | name | `-n` | `--name` | yes | TEXT | Name of the data table |
 | namespace | `-ns` | `--namespace` | yes | TEXT | Namespace of the data table |
 | path | `-o` | `--path` | yes | PATH | Directory or file path on the client |
+
 **Usage**
 ```bash
 flow data download --name 1bfaa4e6-4317-11ee-be20-16b977118319 --namespace upload -o /data/xxx

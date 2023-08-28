@@ -12,6 +12,7 @@ flow table query [OPTIONS]
 | namespace | `-ns` | `--namespace` | yes | TEXT | Namespace of the data table |
 | name | `-n` | `--name` | yes | TEXT | Name of the data table |
 | display | `-d` | `--display` | no | TEXT | Whether to return preview data |
+
 **Usage**
 ```bash
 flow table query --name xxx --namespace xxx
@@ -28,6 +29,7 @@ flow table delete [OPTIONS]
 | :-------- |:-----|:-------------| :--- | :----- |------|
 | namespace | `-ns` | `--namespace` | yes | TEXT | Namespace of the data table |
 | name | `-n` | `--name` | yes | TEXT | Name of the data table |
+
 **Usage**
 ```bash
 flow table delete --name xxx --namespace xxx
