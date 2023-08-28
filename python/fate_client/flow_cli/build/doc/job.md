@@ -36,7 +36,7 @@ flow job query -j 202308211557455662860 -r guest -p 9999 -s running
 ```
 
 ### add-notes
-
+Add notes for job.
 ```bash
 flow job add-notes [OPTIONS]
 ```
@@ -51,11 +51,11 @@ flow job add-notes [OPTIONS]
 
 **Usage**
 ```bash
-
+flow job add-notes -j 202308211557455662860 -r guest -p 9999 --nodes "this is a test"
 ```
 
 ### stop
-
+Stopping a running job.
 ```bash
 flow job stop [OPTIONS]
 ```
@@ -67,11 +67,11 @@ flow job stop [OPTIONS]
 
 **Usage**
 ```bash
-
+flow job stop -j 202308211557455662860
 ```
 
 ### rerun
-
+Rerunning a failed job.
 ```bash
 flow job rerun [OPTIONS]
 ```
@@ -83,7 +83,7 @@ flow job rerun [OPTIONS]
 
 **Usage**
 ```bash
-
+flow job rerun -j 202308211557455662860
 ```
 
 ### list
