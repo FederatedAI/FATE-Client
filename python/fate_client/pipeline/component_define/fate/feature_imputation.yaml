@@ -1,0 +1,150 @@
+component:
+  name: feature_imputation
+  description: ''
+  provider: fate
+  version: 2.0.0-alpha
+  labels: [ ]
+  roles:
+    - guest
+    - host
+  parameters:
+    method:
+      type: type
+      default: random
+      optional: true
+      description: imputation method, choose from {'min', 'max', 'mean', 'random',
+        'consts', 'none'},'none' means no imputation, default is 'random'
+      type_meta:
+        title: type
+        type: string
+    col_fill_method:
+      type: typing.Dict[str, str]
+      default:
+      optional: true
+      description: fill method for each column, any column unspecified will be filled
+        by values computed with `method`
+      type_meta:
+        title: typing.Dict[str, str]
+        type: object
+        additionalProperties:
+          type: string
+        default:
+        description: fill method for each column, any column unspecified will be filled
+          by values computed with `method`
+    fill_const:
+      type: typing.Union[float, int]
+      default: 0.0
+      optional: true
+      description: fill constant for `consts` method
+      type_meta:
+        title: typing.Union[float, int]
+        anyOf:
+          - type: number
+          - type: integer
+        default: 0.0
+        description: fill constant for `consts` method
+    missing_val:
+      type: list
+      default:
+      optional: true
+      description: values to be treated as missing
+      type_meta:
+        title: list
+        type: array
+        items: { }
+        default:
+        description: values to be treated as missing
+    use_anonymous:
+      type: bool
+      default: false
+      optional: true
+      description: bool, whether interpret keys in `col_fill_method` as anonymous
+        column names
+      type_meta:
+        title: bool
+        type: boolean
+        default: false
+        description: bool, whether interpret keys in `col_fill_method` as anonymous
+          column names
+  input_artifacts:
+    data:
+      train_data:
+        types:
+          - dataframe
+        optional: false
+        stages:
+          - train
+        roles:
+          - guest
+          - host
+        description: ''
+        is_multi: false
+      test_data:
+        types:
+          - dataframe
+        optional: false
+        stages:
+          - predict
+        roles:
+          - guest
+          - host
+        description: ''
+        is_multi: false
+    model:
+      input_model:
+        types:
+          - json_model
+        optional: false
+        stages:
+          - predict
+        roles:
+          - guest
+          - host
+        description: ''
+        is_multi: false
+  output_artifacts:
+    data:
+      train_output_data:
+        types:
+          - dataframe
+        optional: false
+        stages:
+          - train
+        roles:
+          - guest
+          - host
+        description: ''
+        is_multi: false
+      test_output_data:
+        types:
+          - dataframe
+        optional: false
+        stages:
+          - predict
+        roles:
+          - guest
+          - host
+        description: ''
+        is_multi: false
+    model:
+      output_model:
+        types:
+          - json_model
+        optional: false
+        stages:
+          - train
+        roles:
+          - guest
+          - host
+        description: ''
+        is_multi: false
+    metric:
+      metric:
+        types:
+          - json_metric
+        optional: false
+        stages: [ ]
+        roles: [ ]
+        description: metric, invisible for user
+        is_multi: false
+schema_version: v1
