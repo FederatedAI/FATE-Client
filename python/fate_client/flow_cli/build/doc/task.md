@@ -1,0 +1,42 @@
+## task
+Provides numbers of task operational commands, including list and query. For more details, please check out the help text.
+### query
+Querying Tasks by Filtering Conditions.
+```bash
+flow task query [OPTIONS]
+```
+**Options**
+
+| parameters | short-format | long-format | required | type | description |
+| :-------- |:-----|:-------------| :--- | :----- |------|
+| job_id | `-j` | `--job-id` | no | TEXT | Job ID |
+| role | `-r` | `--role` | no | TEXT | Role of the participant: guest/host/arbiter/local |
+| party_id | `-p` | `--party-id` | no | TEXT | Site ID |
+| task_name | `-tn` | `--task-name` | no | TEXT | Task name |
+| status | `-s` | `--status` | no | TEXT | Status of the job or task |
+| task_id | `-tid` | `--task-id` | no | TEXT | Task ID |
+| task_version | `-tv` | `--task-version` | no | TEXT | Task version |
+**Usage**
+```bash
+flow task query -j xxx -r guest -p 999 -tn xxx
+```
+
+### list
+Fetching Task List by Filtering Conditions.
+```bash
+flow task list [OPTIONS]
+```
+**Options**
+
+| parameters | short-format | long-format | required | type | description |
+| :-------- |:-----|:-------------| :--- | :----- |------|
+| job_id | `-j` | `--job-id` | no | TEXT | Job ID |
+| role | `-r` | `--role` | no | TEXT | Role of the participant: guest/host/arbiter/local |
+| party_id | `-p` | `--party-id` | no | TEXT | Site ID |
+| task_name | `-tn` | `--task-name` | no | TEXT | Task name |
+| limit | `-l` | `--limit` | no | INTEGER | Limit of rows or entries |
+**Usage**
+```bash
+flow task list -j xxx -r guest -p 9999
+```
+
