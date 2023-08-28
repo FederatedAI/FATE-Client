@@ -9,7 +9,7 @@ flow data upload [OPTIONS]
 
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
-| conf_path | `-c` | `--conf-path` | yes | PATH | Configuration file path |
+| conf_path | `-c` | `--conf-path` | yes | path | Configuration file path |
 
 **Usage**
 ```bash
@@ -25,9 +25,9 @@ flow data download-component [OPTIONS]
 
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
-| name | `-n` | `--name` | yes | TEXT | Name of the data table |
-| namespace | `-ns` | `--namespace` | yes | TEXT | Namespace of the data table |
-| path | `-o` | `--path` | yes | PATH | Directory or file path on the client |
+| name | `-n` | `--name` | yes | str | Name of the data table |
+| namespace | `-ns` | `--namespace` | yes | str | Namespace of the data table |
+| path | `-o` | `--path` | yes | path | Directory or file path on the client |
 
 **Usage**
 ```bash
@@ -43,7 +43,7 @@ flow data transformer [OPTIONS]
 
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
-| conf_path | `-c` | `--conf-path` | yes | PATH | Configuration file path |
+| conf_path | `-c` | `--conf-path` | yes | path | Configuration file path |
 
 **Usage**
 ```bash
@@ -59,9 +59,9 @@ flow data download [OPTIONS]
 
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
-| name | `-n` | `--name` | yes | TEXT | Name of the data table |
-| namespace | `-ns` | `--namespace` | yes | TEXT | Namespace of the data table |
-| path | `-o` | `--path` | yes | PATH | Directory or file path on the client |
+| name | `-n` | `--name` | yes | str | Name of the data table |
+| namespace | `-ns` | `--namespace` | yes | str | Namespace of the data table |
+| path | `-o` | `--path` | yes | path | Directory or file path on the client |
 
 **Usage**
 ```bash

@@ -9,11 +9,11 @@ flow model export [OPTIONS]
 
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
-| model_id | `-mid` | `--model-id` | yes | TEXT | Model ID |
-| model_version | `-mv` | `--model-version` | yes | TEXT | Model version |
-| party_id | `-p` | `--party-id` | yes | TEXT | Site ID |
-| role | `-r` | `--role` | no | TEXT | Role of the participant: guest/host/arbiter/local |
-| path | `-o` | `--path` | yes | PATH | Directory or file path on the client |
+| model_id | `-mid` | `--model-id` | yes | str | Model ID |
+| model_version | `-mv` | `--model-version` | yes | str | Model version |
+| party_id | `-p` | `--party-id` | yes | str | Site ID |
+| role | `-r` | `--role` | no | str | Role of the participant: guest/host/arbiter/local |
+| path | `-o` | `--path` | yes | path | Directory or file path on the client |
 
 **Usage**
 ```bash
@@ -29,9 +29,9 @@ flow model import [OPTIONS]
 
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
-| model_id | `-mid` | `--model-id` | yes | TEXT | Model ID |
-| model_version | `-mv` | `--model-version` | yes | TEXT | Model version |
-| path | `-i` | `--path` | yes | PATH | Directory or file path on the client |
+| model_id | `-mid` | `--model-id` | yes | str | Model ID |
+| model_version | `-mv` | `--model-version` | yes | str | Model version |
+| path | `-i` | `--path` | yes | path | Directory or file path on the client |
 
 **Usage**
 ```bash
@@ -47,12 +47,12 @@ flow model delete [OPTIONS]
 
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
-| model_id | `-mid` | `--model-id` | yes | TEXT | Model ID |
-| model_version | `-mv` | `--model-version` | yes | TEXT | Model version |
-| role | `-r` | `--role` | no | TEXT | Role of the participant: guest/host/arbiter/local |
-| party_id | `-p` | `--party-id` | no | TEXT | Site ID |
-| task_name | `-tn` | `--task-name` | no | TEXT | Task name |
-| output_key | - | `--output-key` | no | TEXT | Primary key for output data or model of the task |
+| model_id | `-mid` | `--model-id` | yes | str | Model ID |
+| model_version | `-mv` | `--model-version` | yes | str | Model version |
+| role | `-r` | `--role` | no | str | Role of the participant: guest/host/arbiter/local |
+| party_id | `-p` | `--party-id` | no | str | Site ID |
+| task_name | `-tn` | `--task-name` | no | str | Task name |
+| output_key | - | `--output-key` | no | str | Primary key for output data or model of the task |
 
 **Usage**
 ```bash

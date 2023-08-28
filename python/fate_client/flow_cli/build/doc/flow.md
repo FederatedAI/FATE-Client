@@ -9,10 +9,10 @@ flow init [OPTIONS]
 
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
-| ip | - | `--ip` | no | TEXT | Fate flow server ip address. |
-| port | - | `--port` | no | INTEGER | Fate flow server port. |
-| app_id | - | `--app-id` | no | TEXT | APP key for sign requests. |
-| app_token | - | `--app-token` | no | TEXT | Secret key for sign requests. |
+| ip | - | `--ip` | no | str | Fate flow server ip address. |
+| port | - | `--port` | no | integer | Fate flow server port. |
+| app_id | - | `--app-id` | no | str | APP key for sign requests. |
+| app_token | - | `--app-token` | no | str | Secret key for sign requests. |
 
 **Usage**
 ```bash
@@ -24,10 +24,6 @@ Get fate flow client version
 ```bash
 flow version [OPTIONS]
 ```
-**Options**
-
-| parameters | short-format | long-format | required | type | description |
-| :-------- |:-----|:-------------| :--- | :----- |------|
 
 **Usage**
 ```bash

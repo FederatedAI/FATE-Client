@@ -9,10 +9,10 @@ flow test toy [OPTIONS]
 
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
-| guest_party_id | `-gid` | `--guest-party-id` | yes | TEXT | Site ID of the guest |
-| host_party_id | `-hid` | `--host-party-id` | yes | TEXT | Site ID of the host |
-| timeout | `-t` | `--timeout` | no | INTEGER | Timeout limit |
-| task_cores | - | `--task-cores` | no | INTEGER | Task cores |
+| guest_party_id | `-gid` | `--guest-party-id` | yes | str | Site ID of the guest |
+| host_party_id | `-hid` | `--host-party-id` | yes | str | Site ID of the host |
+| timeout | `-t` | `--timeout` | no | integer | Timeout limit |
+| task_cores | - | `--task-cores` | no | integer | Task cores |
 
 **Usage**
 ```bash

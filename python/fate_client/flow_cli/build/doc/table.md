@@ -9,9 +9,9 @@ flow table query [OPTIONS]
 
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
-| namespace | `-ns` | `--namespace` | yes | TEXT | Namespace of the data table |
-| name | `-n` | `--name` | yes | TEXT | Name of the data table |
-| display | `-d` | `--display` | no | TEXT | Whether to return preview data |
+| namespace | `-ns` | `--namespace` | yes | str | Namespace of the data table |
+| name | `-n` | `--name` | yes | str | Name of the data table |
+| display | `-d` | `--display` | no | str | Whether to return preview data |
 
 **Usage**
 ```bash
@@ -27,8 +27,8 @@ flow table delete [OPTIONS]
 
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
-| namespace | `-ns` | `--namespace` | yes | TEXT | Namespace of the data table |
-| name | `-n` | `--name` | yes | TEXT | Name of the data table |
+| namespace | `-ns` | `--namespace` | yes | str | Namespace of the data table |
+| name | `-n` | `--name` | yes | str | Name of the data table |
 
 **Usage**
 ```bash

@@ -9,11 +9,11 @@ flow log count [OPTIONS]
 
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
-| log_type | - | `--log-type` | yes | TEXT | Log level or type |
-| job_id | `-j` | `--job-id` | yes | TEXT | Job ID |
-| role | `-r` | `--role` | no | TEXT | Role of the participant: guest/host/arbiter/local |
-| party_id | `-p` | `--party-id` | no | TEXT | Site ID |
-| instance_id | - | `--instance-id` | no | TEXT | Instance ID of the FATE Flow service |
+| log_type | - | `--log-type` | yes | str | Log level or type |
+| job_id | `-j` | `--job-id` | yes | str | Job ID |
+| role | `-r` | `--role` | no | str | Role of the participant: guest/host/arbiter/local |
+| party_id | `-p` | `--party-id` | no | str | Site ID |
+| instance_id | - | `--instance-id` | no | str | Instance ID of the FATE Flow service |
 
 **Usage**
 ```bash
@@ -29,12 +29,12 @@ flow log query [OPTIONS]
 
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
-| log_type | - | `--log-type` | yes | TEXT | Log level or type |
-| job_id | `-j` | `--job-id` | yes | TEXT | Job ID |
-| role | `-r` | `--role` | no | TEXT | Role of the participant: guest/host/arbiter/local |
-| party_id | `-p` | `--party-id` | no | TEXT | Site ID |
-| task_name | `-tn` | `--task-name` | no | TEXT | Task name |
-| instance_id | - | `--instance-id` | no | TEXT | Instance ID of the FATE Flow service |
+| log_type | - | `--log-type` | yes | str | Log level or type |
+| job_id | `-j` | `--job-id` | yes | str | Job ID |
+| role | `-r` | `--role` | no | str | Role of the participant: guest/host/arbiter/local |
+| party_id | `-p` | `--party-id` | no | str | Site ID |
+| task_name | `-tn` | `--task-name` | no | str | Task name |
+| instance_id | - | `--instance-id` | no | str | Instance ID of the FATE Flow service |
 
 **Usage**
 ```bash
