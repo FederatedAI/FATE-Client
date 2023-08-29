@@ -20,7 +20,7 @@ from ...interface import ArtifactType
 
 
 class OneHotEncoder(Component):
-    yaml_define_path = "./component_define/fate/feature_scale.yaml"
+    yaml_define_path = "./component_define/fate/one_hot_encoder.yaml"
 
     def __init__(self,
                  _name: str,
