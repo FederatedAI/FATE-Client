@@ -20,6 +20,11 @@ import click
 from ruamel import yaml
 
 default_config = Path(__file__).parent.parent.joinpath("settings.yaml").resolve()
+default_ip = "127.0.0.1"
+default_port = 9380
+
+WARNING = '\033[93m'
+ENDC = '\033[0m'
 
 
 @click.group(name="pipeline")
@@ -51,6 +56,12 @@ def _init_pipeline(**kwargs):
         flow_config["port"] = port
 
     if flow_config:
+        curr_ip = config["flow_service"].get("ip")
+        if curr_ip != default_ip:
+            print(f"{WARNING}Warning: Flow server ip address already configured: {curr_ip}{ENDC}")
+        curr_port = config["flow_service"].get("port")
+        if curr_port != default_port:
+            print(f"{WARNING}Warning: Flow server port already configured: {curr_port}{ENDC}")
         config["flow_service"].update(flow_config)
     elif path:
         with Path(path).open("r") as fin:
