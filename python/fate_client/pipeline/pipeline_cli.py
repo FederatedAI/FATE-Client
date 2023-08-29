@@ -23,7 +23,7 @@ default_config = Path(__file__).parent.parent.joinpath("settings.yaml").resolve(
 default_ip = "127.0.0.1"
 default_port = 9380
 
-WARNING = '\033[93m'
+WARNING = '\033[91m'
 ENDC = '\033[0m'
 
 
