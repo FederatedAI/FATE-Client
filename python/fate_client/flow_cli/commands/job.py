@@ -121,7 +121,6 @@ def rerun(ctx, **kwargs):
 @cli_args.JOBID
 @cli_args.ROLE_IDE
 @cli_args.PARTYID
-@cli_args.TASK_NAME
 @cli_args.STATUS
 @cli_args.LIMIT
 @click.pass_context
