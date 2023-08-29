@@ -14,11 +14,12 @@
 #  limitations under the License.
 #
 
-import click
 from pathlib import Path
+
+import click
 from ruamel import yaml
 
-default_config = Path(__file__).parent.joinpath("pipeline_config.yaml").resolve()
+default_config = Path(__file__).parent.parent.joinpath("settings.yaml").resolve()
 
 
 @click.group(name="pipeline")
@@ -26,20 +27,17 @@ def pipeline_group():
     ...
 
 
-@pipeline_group.group("init", help="pipeline init")
-def init_group():
+@pipeline_group.command(name="init", help="pipeline init")
+@click.option("--ip", type=click.STRING, help="Fate Flow server ip address.")
+@click.option("--port", type=click.INT, help="Fate Flow server port.")
+@click.option("--path", type=click.STRING, help="config pipeline by file directly")
+def _init_pipeline(**kwargs):
     """
     pipeline config
     """
-    pass
-
-
-@init_group.command(name="fate_flow")
-@click.option("--ip", type=click.STRING, help="Fate Flow server ip address.")
-@click.option("--port", type=click.INT, help="Fate Flow server port.")
-def _init_flow_service(**kwargs):
     ip = kwargs.get("ip")
     port = kwargs.get("port")
+    path = kwargs.get("path")
 
     config_path = default_config
 
@@ -53,7 +51,10 @@ def _init_flow_service(**kwargs):
         flow_config["port"] = port
 
     if flow_config:
-        config["fate_flow"].update(flow_config)
+        config["flow_service"].update(flow_config)
+    elif path:
+        with Path(path).open("r") as fin:
+            config = yaml.safe_load(fin)
 
     with default_config.open("w") as fout:
         yaml.dump(config, fout, Dumper=yaml.RoundTripDumper)
@@ -61,33 +62,34 @@ def _init_flow_service(**kwargs):
     print("Pipeline configuration succeeded.")
 
 
-@init_group.command(name="standalone")
-@click.option("--job_dir", type=click.STRING, help="job working directory for standalone pipeline jobs")
-def _init_standalone(**kwargs):
-    job_dir = kwargs.get("job_dir")
+@pipeline_group.command(name="site-info", help="pipeline site info")
+@click.option("--role", type=click.STRING, help="local role")
+@click.option("--party", type=click.STRING, help="local party id.")
+def _init_pipeline(**kwargs):
+    """
+    pipeline config
+    """
+    role = kwargs.get("role")
+    party = kwargs.get("party")
 
     config_path = default_config
+
     with Path(config_path).open("r") as fin:
         config = yaml.safe_load(fin)
 
-    if job_dir:
-        config["standalone"]["job_dir"] = job_dir
+    site_info_config = dict()
+    if role:
+        site_info_config["local_role"] = role
+    if party:
+        site_info_config["local_party_id"] = party
+
+    if site_info_config:
+        config["pipeline"]["site_info"].update(site_info_config)
 
     with default_config.open("w") as fout:
         yaml.dump(config, fout, Dumper=yaml.RoundTripDumper)
 
-    print("Pipeline configuration succeeded.")
-
-
-@init_group.command(name="config_file")
-@click.option("--path", type=click.STRING, help="config pipeline by file directly")
-def _config(**kwargs):
-    path = kwargs.get("path")
-    with Path(path).open("r") as fin:
-        config = yaml.safe_load(fin)
-
-    with default_config.open("w") as fout:
-        yaml.dump(config, fout, Dumper=yaml.RoundTripDumper)
+    print("Pipeline site info configuration succeeded.")
 
 
 @pipeline_group.command(name="show")
