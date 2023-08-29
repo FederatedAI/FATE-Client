@@ -96,3 +96,4 @@ PROVIDER_NAME = click.option("--provider-name", type=click.STRING, help=PROVIDER
 HOST_REQUIRED = click.option("--host", type=click.STRING, help=HOST_DESC)
 PORT_REQUIRED = click.option("--port", type=click.STRING, help=PORT_DESC)
 
+SYNC = click.option("--sync", type=click.STRING, default=True, help=PORT_DESC)

@@ -78,7 +78,7 @@ def add_notes(ctx, **kwargs):
     -description: Add notes for job.
 
     \b
-    -usage: flow job add-notes -j 202308211557455662860 -r guest -p 9999 --nodes "this is a test"
+    -usage: flow job add-notes -j 202308211557455662860 -r guest -p 9999 --notes "this is a test"
     """
     client: FlowClient = ctx.obj["client"]
     response = client.job.add_notes(**kwargs)
@@ -131,7 +131,7 @@ def job_list(ctx, **kwargs):
     -description: Fetching a list of jobs based on conditions.
 
     \b
-    -usage: flow job list -j 202308211557455662860 -r guest - p 9999
+    -usage: flow job list -j 202308211557455662860 -r guest -p 9999
     """
     client: FlowClient = ctx.obj["client"]
     response = client.job.query_job_list(**kwargs)
