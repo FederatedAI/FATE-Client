@@ -25,8 +25,7 @@ from fate_client.flow_sdk import FlowClient
 def data(ctx):
     """
     \b
-    Provides numbers of data operational commands, including upload, download, transformer and etc.
-    For more details, please check out the help text.
+    -description: Provides numbers of data operational commands, including upload, download, transformer and etc. For more details, please check out the help text.
     """
     pass
 
@@ -57,7 +56,6 @@ def download_component(ctx, **kwargs):
     """
     \b
     -description: Asynchronously downloading data through download component.
-    Synchronous
 
     \b
     -usage: flow data download-component --name 1bfaa4e6-4317-11ee-be20-16b977118319 --namespace upload -o /data/xxx
