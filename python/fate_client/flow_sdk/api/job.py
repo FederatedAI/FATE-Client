@@ -193,4 +193,4 @@ class Job(BaseFlowAPI):
         """
         kwargs = locals()
         data = filter_invalid_params(**kwargs)
-        return self._get(url='/dag/dependency', params=data)
+        return self._get(url='/job/dag/dependency', params=data)

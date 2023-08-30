@@ -62,7 +62,7 @@ class Data(BaseFlowAPI):
         params = filter_invalid_params(**kwargs)
         return self._post(url='/data/component/dataframe/transformer', json=params)
 
-    def download(self, namespace: str = None, name: str = None, path: str = None, sync: str = None):
+    def download(self, namespace: str = None, name: str = None, path: str = None, types: str = None):
         """
         download data
 
@@ -76,7 +76,7 @@ class Data(BaseFlowAPI):
         kwargs = locals()
         params = filter_invalid_params(**kwargs)
         resp = self._get(url='/data/download', params=params, handle_result=False)
-        if sync:
+        if types == "sync":
             return download_from_request(resp, path)
         else:
             return resp

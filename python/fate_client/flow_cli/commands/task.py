@@ -45,7 +45,7 @@ def query(ctx, **kwargs):
     -description: Querying Tasks by Filtering Conditions.
 
     \b
-    -usage: flow task query -j xxx -r guest -p 999 -tn xxx
+    -usage: flow task query -j xxx -r guest -p 9999 -tn xxx
     """
     client: FlowClient = ctx.obj["client"]
     response = client.task.query(**kwargs)

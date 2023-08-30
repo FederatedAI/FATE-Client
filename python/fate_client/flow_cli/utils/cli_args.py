@@ -20,7 +20,7 @@ from fate_client.flow_cli.utils.args_desc import CONF_PATH_DESC, LIMIT_DESC, JOB
     HOST_PARTY_ID_DESC, TASK_NAME_DESC, TASK_ID_DESC, TASK_VERSION_DESC, STATUS_DESC, CLIENT_PATH_DESC, NAME_DESC, \
     NAMESPACE_DESC, DISPLAY_DESC, MODEL_ID_DESC, MODEL_VERSION_DESC, SERVICE_NAME_DESC, SERVER_NAME_DESC, TIMEOUT_DESC, \
     TASK_CORES_DESC, LOG_TYPE_DESC, INSTANCE_ID_DESC, OUTPUT_KEY_DESC, DEVICE_DESC, VERSION_DESC, URI_DESC, METHOD_DESC, \
-    PARAMS_DESC, DATA_DESC, PROTOCOL_DESC, PROVIDER_NAME_DESC, HOST_DESC, PORT_DESC, NODES_DESC
+    PARAMS_DESC, DATA_DESC, PROTOCOL_DESC, PROVIDER_NAME_DESC, HOST_DESC, PORT_DESC, NODES_DESC, TYPES_DESC
 
 role_ide_list = ["guest", "host", "arbiter", "local"]
 role_choices_list = ["site", "client", "super_client"]
@@ -96,4 +96,5 @@ PROVIDER_NAME = click.option("--provider-name", type=click.STRING, help=PROVIDER
 HOST_REQUIRED = click.option("--host", type=click.STRING, help=HOST_DESC)
 PORT_REQUIRED = click.option("--port", type=click.STRING, help=PORT_DESC)
 
-SYNC = click.option("--sync", type=click.STRING, default=True, help=PORT_DESC)
+down_type_list = ["sync", "async"]
+TYPES = click.option("--types", type=click.Choice(down_type_list), default="sync", help=TYPES_DESC)
