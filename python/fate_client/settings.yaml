@@ -10,22 +10,4 @@ pipeline:
   console_display_log:
   site_info:
     local_role: guest
-    local_party_id: 9999
-
-  standalone:
-    job_dir:
-    logger:
-      level: "DEBUG"
-      debug_mode: false
-    device:
-      type: "CPU"
-    mlmd:
-      type: pipeline
-      metadata:
-        db:
-    computing:
-      type: standalone
-    federation_engine:
-      type: standalone
-
-
+    local_party_id: '9999'
