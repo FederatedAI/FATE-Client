@@ -12,7 +12,8 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-from typing import List
+
+from typing import List, Union
 
 from ..component_base import Component
 from ...conf.types import PlaceHolder
@@ -36,6 +37,7 @@ class CoordinatedLR(Component):
                  train_data: ArtifactType = PlaceHolder(),
                  cv_data: ArtifactType = PlaceHolder(),
                  cv_param: dict = PlaceHolder(),
+                 class_weight: Union[dict, str] = None,
                  output_cv_data: bool = True,
                  validate_data: ArtifactType = PlaceHolder(),
                  test_data: ArtifactType = PlaceHolder(),
@@ -55,6 +57,7 @@ class CoordinatedLR(Component):
         self.learning_rate_scheduler = learning_rate_scheduler
         self.init_param = init_param
         self.threshold = threshold
+        self.class_weight = class_weight
         self.train_data = train_data
         self.validate_data = validate_data
         self.test_data = test_data

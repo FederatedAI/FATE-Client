@@ -123,9 +123,10 @@ component:
     init_param:
       type: InitParam
       default:
-        method: zeros
+        method: random_uniform
         fill_val: 0.0
         fit_intercept: true
+        random_state:
       optional: true
       description: Model param init setting.
       type_meta:
@@ -150,10 +151,14 @@ component:
                 title: Fit Intercept
                 default: true
                 type: boolean
+              random_state:
+                title: Random State
+                type: integer
         default:
-          method: zeros
+          method: random_uniform
           fill_val: 0.0
           fit_intercept: true
+          random_state:
         description: Model param init setting.
     threshold:
       type: ConstrainedNumberMeta
@@ -165,6 +170,15 @@ component:
         minimum: 0.0
         maximum: 1.0
         type: number
+    class_weight:
+      type: type
+      default:
+      optional: true
+      description: "weight of each class, accept 'balanced' or dict of format {label:\
+        \ weight},default None to use weight from dataframe"
+      type_meta:
+        title: type
+        type: string
     cv_param:
       type: CVParam
       default:
