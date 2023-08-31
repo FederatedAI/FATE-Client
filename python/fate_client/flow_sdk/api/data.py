@@ -45,7 +45,7 @@ class Data(BaseFlowAPI):
         if not os.path.exists(file):
             raise Exception(f"{file} is not exist, please check the file path")
         params = filter_invalid_params(**kwargs)
-        return self._post(url='/data/component/upload/', json=params)
+        return self._post(url='/data/component/upload', json=params)
 
     def dataframe_transformer(self, namespace: str, name: str, data_warehouse: dict, drop: bool = True):
         """
