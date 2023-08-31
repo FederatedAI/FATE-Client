@@ -171,14 +171,19 @@ component:
         maximum: 1.0
         type: number
     class_weight:
-      type: type
+      type: typing.Union[fate.components.core.params._fields.StringChoice, dict]
       default:
       optional: true
       description: "weight of each class, accept 'balanced' or dict of format {label:\
         \ weight},default None to use weight from dataframe"
       type_meta:
-        title: type
-        type: string
+        title: typing.Union[fate.components.core.params._fields.StringChoice, dict]
+        anyOf:
+          - type: string
+          - type: object
+        default:
+        description: "weight of each class, accept 'balanced' or dict of format {label:\
+          \ weight},default None to use weight from dataframe"
     cv_param:
       type: CVParam
       default:
