@@ -135,7 +135,7 @@ def query_resource(ctx, **kwargs):
 
 
     \b
-    flow permission query-resource  -p 9999
+    -usage: flow permission query-resource  -p 9999
 
     """
     client: FlowClient = ctx.obj["client"]

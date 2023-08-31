@@ -138,7 +138,7 @@ def create_partner(ctx, **kwargs):
     -description: Establishing Partnership with a Site
 
     \b
-    -usage: flow create create-partner -p xxx
+    -usage: flow create create-partner -p xxx --app-id xxx --app-token xxx
     """
     client: FlowClient = ctx.obj["client"]
     response = client.client_.create_partner(**kwargs)
