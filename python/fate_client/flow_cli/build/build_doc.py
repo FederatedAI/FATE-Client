@@ -41,12 +41,16 @@ def get_params(help_str):
         lines = desc.strip().split('\n')
         for line in lines:
             required, type, desc, command_params = parse_param(line)
-            if required or  type or desc or command_params:
+            if required and not type and not desc and not command_params:
+                params_list[-1] = ('yes', params_list[-1][1], params_list[-1][2], params_list[-1][3])
+                continue
+            if required or type or desc or command_params:
                 params_list.append((required, type, desc, command_params))
     return params_list
 
 
 def parse_param(param_str):
+    required = None
     try:
         params = param_str.split(",")
         required = is_required(params)
@@ -54,7 +58,10 @@ def parse_param(param_str):
             type, desc, command_params = params_type_desc(params)
             return required, type, desc, command_params
     except:
-        return None, None, None, None
+        if required == "yes":
+            return required, None, None, None
+        else:
+            return None, None, None, None
 
 
 def is_required(lines):
@@ -150,7 +157,6 @@ def make_markdown():
             with open(_doc_file, "w") as f:
                 f.write(f"## {group.name}\n")
                 if group_title:
-
                     f.write(get_description(group_title) + "\n")
                 group_cli = comm + " " + group.name
                 group_commands = group.commands

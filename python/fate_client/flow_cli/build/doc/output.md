@@ -10,7 +10,7 @@ flow output query-metric-key [OPTIONS]
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
 | job_id | `-j` | `--job-id` | yes | str | Job ID |
-| role | `-r` | `--role` | no | str | Role of the participant: guest/host/arbiter/local |
+| role | `-r` | `--role` | yes | str | Role of the participant: guest/host/arbiter/local |
 | party_id | `-p` | `--party-id` | yes | str | Site ID |
 | task_name | `-tn` | `--task-name` | yes | str | Task name |
 
@@ -29,7 +29,7 @@ flow output query-metric [OPTIONS]
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
 | job_id | `-j` | `--job-id` | yes | str | Job ID |
-| role | `-r` | `--role` | no | str | Role of the participant: guest/host/arbiter/local |
+| role | `-r` | `--role` | yes | str | Role of the participant: guest/host/arbiter/local |
 | party_id | `-p` | `--party-id` | yes | str | Site ID |
 | task_name | `-tn` | `--task-name` | yes | str | Task name |
 
@@ -48,7 +48,7 @@ flow output delete-metric [OPTIONS]
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
 | job_id | `-j` | `--job-id` | yes | str | Job ID |
-| role | `-r` | `--role` | no | str | Role of the participant: guest/host/arbiter/local |
+| role | `-r` | `--role` | yes | str | Role of the participant: guest/host/arbiter/local |
 | party_id | `-p` | `--party-id` | yes | str | Site ID |
 | task_name | `-tn` | `--task-name` | yes | str | Task name |
 
@@ -67,7 +67,7 @@ flow output query-model [OPTIONS]
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
 | job_id | `-j` | `--job-id` | yes | str | Job ID |
-| role | `-r` | `--role` | no | str | Role of the participant: guest/host/arbiter/local |
+| role | `-r` | `--role` | yes | str | Role of the participant: guest/host/arbiter/local |
 | party_id | `-p` | `--party-id` | yes | str | Site ID |
 | task_name | `-tn` | `--task-name` | yes | str | Task name |
 
@@ -86,7 +86,7 @@ flow output download-model [OPTIONS]
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
 | job_id | `-j` | `--job-id` | yes | str | Job ID |
-| role | `-r` | `--role` | no | str | Role of the participant: guest/host/arbiter/local |
+| role | `-r` | `--role` | yes | str | Role of the participant: guest/host/arbiter/local |
 | party_id | `-p` | `--party-id` | yes | str | Site ID |
 | task_name | `-tn` | `--task-name` | yes | str | Task name |
 | path | `-o` | `--path` | yes | path | Directory or file path on the client |
@@ -106,7 +106,7 @@ flow output delete-model [OPTIONS]
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
 | job_id | `-j` | `--job-id` | yes | str | Job ID |
-| role | `-r` | `--role` | no | str | Role of the participant: guest/host/arbiter/local |
+| role | `-r` | `--role` | yes | str | Role of the participant: guest/host/arbiter/local |
 | party_id | `-p` | `--party-id` | yes | str | Site ID |
 | task_name | `-tn` | `--task-name` | yes | str | Task name |
 
@@ -125,7 +125,7 @@ flow output download-data [OPTIONS]
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
 | job_id | `-j` | `--job-id` | yes | str | Job ID |
-| role | `-r` | `--role` | no | str | Role of the participant: guest/host/arbiter/local |
+| role | `-r` | `--role` | yes | str | Role of the participant: guest/host/arbiter/local |
 | party_id | `-p` | `--party-id` | yes | str | Site ID |
 | task_name | `-tn` | `--task-name` | yes | str | Task name |
 | path | `-o` | `--path` | yes | path | Directory or file path on the client |
@@ -145,7 +145,7 @@ flow output query-data-table [OPTIONS]
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
 | job_id | `-j` | `--job-id` | yes | str | Job ID |
-| role | `-r` | `--role` | no | str | Role of the participant: guest/host/arbiter/local |
+| role | `-r` | `--role` | yes | str | Role of the participant: guest/host/arbiter/local |
 | party_id | `-p` | `--party-id` | yes | str | Site ID |
 | task_name | `-tn` | `--task-name` | yes | str | Task name |
 
@@ -164,7 +164,7 @@ flow output display-data [OPTIONS]
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
 | job_id | `-j` | `--job-id` | yes | str | Job ID |
-| role | `-r` | `--role` | no | str | Role of the participant: guest/host/arbiter/local |
+| role | `-r` | `--role` | yes | str | Role of the participant: guest/host/arbiter/local |
 | party_id | `-p` | `--party-id` | yes | str | Site ID |
 | task_name | `-tn` | `--task-name` | yes | str | Task name |
 

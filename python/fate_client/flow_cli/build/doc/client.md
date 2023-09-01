@@ -112,7 +112,7 @@ flow client create-partner [OPTIONS]
 
 **Usage**
 ```bash
-flow create create-partner -p xxx
+flow create create-partner -p xxx --app-id xxx --app-token xxx
 ```
 
 ### delete-partner

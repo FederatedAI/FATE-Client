@@ -19,7 +19,7 @@ flow task query [OPTIONS]
 
 **Usage**
 ```bash
-flow task query -j xxx -r guest -p 999 -tn xxx
+flow task query -j xxx -r guest -p 9999 -tn xxx
 ```
 
 ### list

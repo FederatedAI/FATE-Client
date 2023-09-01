@@ -45,13 +45,13 @@ flow job add-notes [OPTIONS]
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
 | job_id | `-j` | `--job-id` | yes | str | Job ID |
-| role | `-r` | `--role` | no | str | Role of the participant: guest/host/arbiter/local |
+| role | `-r` | `--role` | yes | str | Role of the participant: guest/host/arbiter/local |
 | party_id | `-p` | `--party-id` | yes | str | Site ID |
 | notes | - | `--notes` | yes | str | Tags and customizable information for job |
 
 **Usage**
 ```bash
-flow job add-notes -j 202308211557455662860 -r guest -p 9999 --nodes "this is a test"
+flow job add-notes -j 202308211557455662860 -r guest -p 9999 --notes "this is a test"
 ```
 
 ### stop
@@ -98,13 +98,12 @@ flow job list [OPTIONS]
 | job_id | `-j` | `--job-id` | no | str | Job ID |
 | role | `-r` | `--role` | no | str | Role of the participant: guest/host/arbiter/local |
 | party_id | `-p` | `--party-id` | no | str | Site ID |
-| task_name | `-tn` | `--task-name` | no | str | Task name |
 | status | `-s` | `--status` | no | str | Status of the job or task |
 | limit | `-l` | `--limit` | no | integer | Limit of rows or entries |
 
 **Usage**
 ```bash
-flow job list -j 202308211557455662860 -r guest - p 9999
+flow job list -j 202308211557455662860 -r guest -p 9999
 ```
 
 ### download-log
@@ -161,7 +160,7 @@ flow job dependency [OPTIONS]
 | parameters | short-format | long-format | required | type | description |
 | :-------- |:-----|:-------------| :--- | :----- |------|
 | job_id | `-j` | `--job-id` | yes | str | Job ID |
-| role | `-r` | `--role` | no | str | Role of the participant: guest/host/arbiter/local |
+| role | `-r` | `--role` | yes | str | Role of the participant: guest/host/arbiter/local |
 | party_id | `-p` | `--party-id` | yes | str | Site ID |
 
 **Usage**
