@@ -90,6 +90,3 @@ PROTOCOL = click.option("--protocol", type=click.STRING, help=PROTOCOL_DESC)
 PROVIDER_NAME = click.option("--provider-name", type=click.STRING, help=PROVIDER_NAME_DESC)
 HOST_REQUIRED = click.option("--host", type=click.STRING, help=HOST_DESC)
 PORT_REQUIRED = click.option("--port", type=click.STRING, help=PORT_DESC)
-
-down_type_list = ["sync", "async"]
-TYPES = click.option("--types", type=click.Choice(down_type_list), default="sync", help=TYPES_DESC)

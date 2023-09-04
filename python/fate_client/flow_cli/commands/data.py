@@ -86,7 +86,6 @@ def dataframe_transformer(ctx, **kwargs):
 @cli_args.NAME_REQUIRED
 @cli_args.NAMESPACE_REQUIRED
 @cli_args.PATH_REQUIRED
-@cli_args.TYPES
 @click.pass_context
 def download(ctx, **kwargs):
     """
