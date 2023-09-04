@@ -20,7 +20,7 @@ from fate_client.flow_cli.utils.args_desc import CONF_PATH_DESC, LIMIT_DESC, JOB
     HOST_PARTY_ID_DESC, TASK_NAME_DESC, TASK_ID_DESC, TASK_VERSION_DESC, STATUS_DESC, CLIENT_PATH_DESC, NAME_DESC, \
     NAMESPACE_DESC, DISPLAY_DESC, MODEL_ID_DESC, MODEL_VERSION_DESC, SERVICE_NAME_DESC, SERVER_NAME_DESC, TIMEOUT_DESC, \
     TASK_CORES_DESC, LOG_TYPE_DESC, INSTANCE_ID_DESC, OUTPUT_KEY_DESC, DEVICE_DESC, VERSION_DESC, URI_DESC, METHOD_DESC, \
-    PARAMS_DESC, DATA_DESC, PROTOCOL_DESC, PROVIDER_NAME_DESC, HOST_DESC, PORT_DESC, NODES_DESC
+    PARAMS_DESC, DATA_DESC, PROTOCOL_DESC, PROVIDER_NAME_DESC, HOST_DESC, PORT_DESC, NODES_DESC, TYPES_DESC
 
 role_ide_list = ["guest", "host", "arbiter", "local"]
 role_choices_list = ["site", "client", "super_client"]
@@ -31,12 +31,8 @@ LIMIT = click.option("-l", "--limit", type=click.INT, default=10, help=LIMIT_DES
 JOBID = click.option("-j", "--job-id", type=click.STRING, help=JOB_ID_DESC)
 JOBID_REQUIRED = click.option("-j", "--job-id", type=click.STRING, required=True, help=JOB_ID_DESC)
 ROLE_IDE = click.option("-r", "--role", type=click.Choice(role_ide_list), metavar="TEXT", help=ROLE_DESC)
-ROLE_IDE_REQUIRED = click.option(
-    "-r", "--role", type=click.Choice(role_ide_list), required=True, metavar="TEXT", help=ROLE_DESC
-)
-ROLE_REQUIRED = click.option(
-    "-r", "--role", type=click.Choice(role_choices_list), required=True, metavar="TEXT", help=PERMISSION_ROLE_DESC
-)
+ROLE_IDE_REQUIRED = click.option("-r", "--role", type=click.Choice(role_ide_list), required=True, metavar="TEXT", help=ROLE_DESC)
+ROLE_REQUIRED = click.option("-r", "--role", type=click.Choice(role_choices_list), required=True, metavar="TEXT", help=PERMISSION_ROLE_DESC)
 
 PARTYID = click.option("-p", "--party-id", type=click.STRING, help=PARTY_ID_DESC)
 PARTYID_REQUIRED = click.option("-p", "--party-id", type=click.STRING, required=True, help=PARTY_ID_DESC)
@@ -77,8 +73,7 @@ SERVICE_NAME_REQUIRED = click.option("--service-name", type=click.STRING, requir
 SERVER_NAME = click.option("--server-name", type=click.STRING, help=SERVER_NAME_DESC)
 SERVER_NAME_REQUIRED = click.option("--server-name", type=click.STRING, required=True, help=SERVER_NAME_DESC)
 TIMEOUT = click.option("-t", "--timeout", type=click.INT, default=300, help=TIMEOUT_DESC)
-TASK_CORES = click.option("--task-cores", type=click.INT, default=2,
-                          help=TASK_CORES_DESC)
+TASK_CORES = click.option("--task-cores", type=click.INT, default=2,help=TASK_CORES_DESC)
 
 LOG_TYPE_REQUIRED = click.option("--log-type", type=click.STRING, required=True, help=LOG_TYPE_DESC)
 INSTANCE_ID = click.option("--instance-id", type=click.STRING, help=INSTANCE_ID_DESC)
@@ -95,4 +90,3 @@ PROTOCOL = click.option("--protocol", type=click.STRING, help=PROTOCOL_DESC)
 PROVIDER_NAME = click.option("--provider-name", type=click.STRING, help=PROVIDER_NAME_DESC)
 HOST_REQUIRED = click.option("--host", type=click.STRING, help=HOST_DESC)
 PORT_REQUIRED = click.option("--port", type=click.STRING, help=PORT_DESC)
-

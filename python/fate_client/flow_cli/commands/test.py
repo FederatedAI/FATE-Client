@@ -13,6 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 #
+import os
 import time
 import click
 from fate_client.flow_cli.utils import cli_args
@@ -35,7 +36,7 @@ def test(ctx):
 @cli_args.GUEST_PARTYID_REQUIRED
 @cli_args.HOST_PARTYID_REQUIRED
 @cli_args.TIMEOUT
-@cli_args.TASK_CORES
+# @cli_args.TASK_CORES
 @click.pass_context
 def toy(ctx, **kwargs):
     """
@@ -67,14 +68,17 @@ def toy(ctx, **kwargs):
 
 
 def check_log(flow_sdk, party_id, job_id, job_status):
-    _path = "../../fate_flow/logs/toy"
+    _path = "../../../fate_flow/logs/toy"
     r = flow_sdk.job.download_log(job_id=job_id, path=_path)
     if r["code"] == 0:
-        log_msg = flow_sdk.test.check_toy(party_id, job_status, r["directory"])
-        try:
-            for msg in log_msg:
-                print(msg)
-        except BaseException as e:
-            print(f"auto check log failed, please check {r['directory']}")
+        print(f"check logs info directory:{r['directory']}")
+    #     if job_status == "success":
+    #         return
+    #     log_msg = flow_sdk.test.check_toy(party_id, job_status, r["directory"])
+    #     try:
+    #         for msg in log_msg:
+    #             print(msg)
+    #     except BaseException as e:
+    #         print(f"auto check log failed, please check {r['directory']}")
     else:
         print(f"get log failed, please check PROJECT_BASE/logs/{job_id} on the fateflow server machine")

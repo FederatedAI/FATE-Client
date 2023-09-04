@@ -60,7 +60,7 @@ def query(ctx, **kwargs):
     -description: Filtering Providers Based on Conditions
 
     \b
-    -usage: flow provider register --name fate
+    -usage: flow provider query --name fate
 
     """
     client: FlowClient = ctx.obj["client"]
@@ -83,9 +83,8 @@ def delete(ctx, **kwargs):
     -usage: flow provider delete -n xxx
 
     """
-    config_data = preprocess(**kwargs)
     client: FlowClient = ctx.obj["client"]
-    response = client.provider.delete(**config_data)
+    response = client.provider.delete(**kwargs)
     prettify(response)
 
 

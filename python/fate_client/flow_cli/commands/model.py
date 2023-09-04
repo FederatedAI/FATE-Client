@@ -63,9 +63,9 @@ def import_model(ctx, **kwargs):
     \b
     -usage: flow model import --model-id xxx --model-version xxx -i $input_path
     """
-    config_data = preprocess(**kwargs)
+    # config_data = preprocess(**kwargs)
     client: FlowClient = ctx.obj["client"]
-    response = client.model.import_model(**config_data)
+    response = client.model.import_model(**kwargs)
     prettify(response)
 
 

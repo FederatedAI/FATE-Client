@@ -46,6 +46,7 @@ NAME_DESC = "Name of the data table"
 DATA_WAREHOUSE_DESC = "Data output, content like: {name: xxx, namespace: xxx}"
 DROP_DESC = "Whether to destroy data if it already exists"
 DOWNLOAD_HEADER_DESC = "Whether to download the data's head as the first row"
+TYPES_DESC = "Down types:sync,async"
 
 # output
 FILTERS_DESC = "Filter conditions"

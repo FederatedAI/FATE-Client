@@ -32,7 +32,7 @@ flow provider query [OPTIONS]
 
 **Usage**
 ```bash
-flow provider register --name fate
+flow provider query --name fate
 ```
 
 ### delete

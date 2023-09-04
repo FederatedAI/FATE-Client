@@ -95,6 +95,6 @@ flow permission query-resource [OPTIONS]
 
 **Usage**
 ```bash
-
+flow permission query-resource  -p 9999
 ```
 

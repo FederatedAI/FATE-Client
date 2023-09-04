@@ -12,7 +12,7 @@ flow model export [OPTIONS]
 | model_id | `-mid` | `--model-id` | yes | str | Model ID |
 | model_version | `-mv` | `--model-version` | yes | str | Model version |
 | party_id | `-p` | `--party-id` | yes | str | Site ID |
-| role | `-r` | `--role` | no | str | Role of the participant: guest/host/arbiter/local |
+| role | `-r` | `--role` | yes | str | Role of the participant: guest/host/arbiter/local |
 | path | `-o` | `--path` | yes | path | Directory or file path on the client |
 
 **Usage**
