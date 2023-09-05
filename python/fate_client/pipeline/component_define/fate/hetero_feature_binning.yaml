@@ -2,7 +2,7 @@ component:
   name: hetero_feature_binning
   description: ''
   provider: fate
-  version: 2.0.0-alpha
+  version: 2.0.0-beta
   labels: [ ]
   roles:
     - guest
@@ -161,6 +161,15 @@ component:
         title: ConstrainedNumberMeta
         exclusiveMinimum: 0
         type: number
+    key_length:
+      type: ConstrainedNumberMeta
+      default: 1024
+      optional: true
+      description: key length
+      type_meta:
+        title: ConstrainedNumberMeta
+        minimum: 0
+        type: integer
   input_artifacts:
     data:
       train_data:
