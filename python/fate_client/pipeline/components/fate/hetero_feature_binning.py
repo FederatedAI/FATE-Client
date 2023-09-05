@@ -39,6 +39,7 @@ class HeteroFeatureBinning(Component):
                  local_only: bool = False,
                  relative_error: float = 1e-6,
                  adjustment_factor: float = 0.5,
+                 key_length: int = 1024,
                  train_data: ArtifactType = PlaceHolder(),
                  test_data: ArtifactType = PlaceHolder(),
                  input_model: ArtifactType = PlaceHolder()
@@ -64,3 +65,4 @@ class HeteroFeatureBinning(Component):
         self.train_data = train_data
         self.test_data = test_data
         self.input_model = input_model
+        self.key_length = key_length
