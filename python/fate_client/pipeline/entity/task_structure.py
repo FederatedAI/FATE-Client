@@ -13,7 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 from pydantic import BaseModel
-from typing import Dict, Optional, Union, Any, List
+from typing import Dict, Optional, Any, List
 
 
 class InputArtifact(BaseModel):
@@ -39,11 +39,6 @@ class TaskRuntimeInputSpec(BaseModel):
 
 class TaskRuntimeOutputSpec(BaseModel):
     artifacts: Dict[str, OutputArtifact]
-
-
-class MLMDSpec(BaseModel):
-    type: str
-    metadata: Dict[str, Any]
 
 
 class LOGGERSpec(BaseModel):
@@ -80,7 +75,6 @@ class FederationEngineSpec(BaseModel):
 
 
 class RuntimeConfSpec(BaseModel):
-    mlmd: MLMDSpec
     logger: LOGGERSpec
     device: DeviceSpec
     computing: ComputingEngineSpec

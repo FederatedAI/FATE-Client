@@ -13,12 +13,13 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 import copy
+import uuid
+
 from ..conf.types import SupportRole, PlaceHolder, ArtifactSourceType, InputArtifactType, OutputArtifactType
 from ..conf.job_configuration import TaskConf
-from ..utils.standalone.id_gen import get_uuid
 from ..entity.component_structures import load_component_spec
 from ..interface import TaskOutputArtifactChannel, DataWarehouseChannel, ModelWarehouseChannel
-from ..entity.dag_structures import RuntimeTaskOutputChannelSpec, DataWarehouseChannelSpec, ModelWarehouseChannelSpec
+from ..entity.dag_structures import DataWarehouseChannelSpec, ModelWarehouseChannelSpec
 
 
 class Component(object):
@@ -116,7 +117,7 @@ class Component(object):
         if role not in self.__party_instance:
             self.__party_instance[role] = dict()
 
-        index = get_uuid()
+        index = str(uuid.uuid1())
 
         inst = copy.deepcopy(self)
         inst.party_instance = {}
