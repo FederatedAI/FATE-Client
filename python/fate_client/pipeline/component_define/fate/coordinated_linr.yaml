@@ -160,15 +160,34 @@ component:
           fit_intercept: true
           random_state:
         description: Model param init setting.
-    key_length:
-      type: ConstrainedNumberMeta
-      default: 1024
+    he_param:
+      type: HEParam
+      default:
+        kind: paillier
+        key_length: 1024
       optional: true
-      description: key length
+      description: homomorphic encryption param
       type_meta:
-        title: ConstrainedNumberMeta
-        minimum: 0
-        type: integer
+        title: HEParam
+        $ref: '#/definitions/abc__HEParam'
+        definitions:
+          abc__HEParam:
+            title: HEParam
+            type: object
+            properties:
+              kind:
+                title: Kind
+                type: string
+              key_length:
+                title: Key Length
+                default: 1024
+                type: integer
+            required:
+              - kind
+        default:
+          kind: paillier
+          key_length: 1024
+        description: homomorphic encryption param
     floating_point_precision:
       type: ConstrainedNumberMeta
       default: 23

@@ -37,7 +37,7 @@ class CoordinatedLinR(Component):
                  output_cv_data: bool = True,
                  cv_param: dict = PlaceHolder(),
                  floating_point_precision: int = 23,
-                 key_length: int = 1024,
+                 he_param: dict = PlaceHolder(),
                  validate_data: ArtifactType = PlaceHolder(),
                  test_data: ArtifactType = PlaceHolder(),
                  input_model: ArtifactType = PlaceHolder(),
@@ -65,4 +65,4 @@ class CoordinatedLinR(Component):
         self.output_cv_data = output_cv_data
         self.warm_start_model = warm_start_model
         self.floating_point_precision = floating_point_precision
-        self.key_length = key_length
+        self.he_param = he_param
