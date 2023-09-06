@@ -72,12 +72,6 @@ class PlaceHolder(object):
     ...
 
 
-class UriTypes(object):
-    LOCAL = "file"
-    SQL = "sql"
-    LMDB = "lmdb"
-
-
 class SupportRole(object):
     LOCAL = "local"
     GUEST = "guest"

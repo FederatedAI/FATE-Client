@@ -241,6 +241,8 @@ class FATEFlowJobInvoker(object):
                         columns = line.strip().split(",")
                     else:
                         cols = line.strip().split(",", -1)
+                        print('cols are {}'.format(cols))
+                        print('json str are {}'.format(",".join(cols[len(columns) - 2: -1])[1:-1].replace("\'", "\"")))
                         predict_detail = json.loads(",".join(cols[len(columns) - 2: -1])[1:-1].replace("\'", "\""))
                         value = cols[: len(columns) - 2] + [predict_detail] + cols[-1:]
                         data.append(value)

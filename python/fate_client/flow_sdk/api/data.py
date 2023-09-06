@@ -45,7 +45,7 @@ class Data(BaseFlowAPI):
         if not os.path.exists(file):
             raise Exception(f"{file} is not exist, please check the file path")
         params = filter_invalid_params(**kwargs)
-        return self._post(url='/data/component/upload/', json=params)
+        return self._post(url='/data/component/upload', json=params)
 
     def dataframe_transformer(self, namespace: str, name: str, data_warehouse: dict, drop: bool = True):
         """
@@ -76,10 +76,7 @@ class Data(BaseFlowAPI):
         kwargs = locals()
         params = filter_invalid_params(**kwargs)
         resp = self._get(url='/data/download', params=params, handle_result=False)
-        if path:
-            return download_from_request(resp, path)
-        else:
-            return resp
+        return download_from_request(resp, path)
 
     def download_component(self, namespace: str = None, name: str = None, path: str = None):
         """

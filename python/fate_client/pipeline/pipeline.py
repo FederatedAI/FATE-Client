@@ -14,10 +14,10 @@
 #  limitations under the License.
 import copy
 from ruamel import yaml
-from .executor import StandaloneExecutor, FateFlowExecutor
+from .executor import FateFlowExecutor
 from .entity import DAG
 from .entity.dag_structures import JobConfSpec, ModelWarehouseConfSpec
-from .entity import FateFlowTaskInfo, StandaloneTaskInfo
+from .entity import FateFlowTaskInfo
 from .entity.runtime_entity import Roles
 from .conf.env_config import SiteInfo
 from .conf.types import SupportRole, PlaceHolder, InputArtifactType
@@ -271,17 +271,6 @@ class Pipeline(object):
             raise ValueError(f"Component {item} has not been added in pipeline")
 
         return self._tasks[item]
-
-
-class StandalonePipeline(Pipeline):
-    def __init__(self, *args):
-        super(StandalonePipeline, self).__init__(StandaloneExecutor(), *args)
-
-    def get_task_info(self, task):
-        if isinstance(task, Component):
-            task = task.task_name
-
-        return StandaloneTaskInfo(task_name=task, model_info=self._model_info)
 
 
 class FateFlowPipeline(Pipeline):

@@ -57,8 +57,7 @@ class Model(BaseFlowAPI):
         params = filter_invalid_params(**kwargs)
         return self._post(url='/model/export', json=params)
 
-
-    def import_model(self, model_id: str, model_version: str, files: str):
+    def import_model(self, model_id: str, model_version: str, path: str):
         """
 
         Args:
@@ -68,10 +67,11 @@ class Model(BaseFlowAPI):
         """
         kwargs = locals()
         params = filter_invalid_params(**kwargs)
-        files = {'file': open(files, 'rb')}
+        files = {'file': open(path, 'rb')}
         return self._post(url='/model/import', data=params, files=files, handle_result=False)
 
-    def delete_model(self):
+    def delete_model(self, model_id: str, model_version: str, role: str = None,
+                     party_id: str = None, task_name: str = None, output_key: str = None):
         """
 
         Args:
@@ -81,8 +81,7 @@ class Model(BaseFlowAPI):
         """
         kwargs = locals()
         params = filter_invalid_params(**kwargs)
-        return self._post(url='/model/delete', params=params)
-
+        return self._post(url='/model/delete', json=params)
 
     def store(self):
         """
@@ -94,7 +93,7 @@ class Model(BaseFlowAPI):
         """
         kwargs = locals()
         params = filter_invalid_params(**kwargs)
-        return self._post(url='/model/store', params=params)
+        return self._post(url='/model/store', json=params)
 
     def restore(self):
         """
@@ -106,4 +105,4 @@ class Model(BaseFlowAPI):
         """
         kwargs = locals()
         params = filter_invalid_params(**kwargs)
-        return self._post(url='/model/restore', params=params)
+        return self._post(url='/model/restore', json=params)

@@ -12,19 +12,33 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-from .data_manager import get_data_manager
-from .model_manager import get_model_manager
-from .metric_manager import get_metric_manager
-from .status_manager import get_status_manager
-from .task_conf_manager import get_task_conf_manager
-from .resource_manager import StandaloneResourceManager
+#
+import click
+
+from ..utils import cli_args
+from ..utils.cli_utils import preprocess, prettify
+from fate_client.flow_sdk import FlowClient
 
 
-__all__ = [
-    "get_data_manager",
-    "get_model_manager",
-    "get_metric_manager",
-    "get_status_manager",
-    "get_task_conf_manager",
-    "StandaloneResourceManager"
-]
+@click.group()
+@click.pass_context
+def server(ctx):
+    """
+    \b
+    -description: Third-party Service Related Operations
+    """
+    pass
+
+
+@server.command("info")
+@click.pass_context
+def flow_server_info(ctx):
+    """
+    -description: Fetching Current FATE FLow server (Cluster) Information
+
+    \b
+    -usage: flow server info
+    """
+    client: FlowClient = ctx.obj["client"]
+    response = client.service.get_fateflow_info()
+    prettify(response)

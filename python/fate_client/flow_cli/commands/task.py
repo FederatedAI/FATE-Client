@@ -20,18 +20,17 @@ from ..utils.cli_utils import prettify
 from fate_client.flow_sdk import FlowClient
 
 
-@click.group(short_help="Task Operations")
+@click.group()
 @click.pass_context
 def task(ctx):
     """
     \b
-    Provides numbers of task operational commands, including list and query.
-    For more details, please check out the help text.
+    -description: Provides numbers of task operational commands, including list and query. For more details, please check out the help text.
     """
     pass
 
 
-@task.command("query", short_help="Query Task Command")
+@task.command("query")
 @cli_args.JOBID
 @cli_args.ROLE_IDE
 @cli_args.PARTYID
@@ -42,38 +41,31 @@ def task(ctx):
 @click.pass_context
 def query(ctx, **kwargs):
     """
-    - DESCRIPTION:
+    \b
+    -description: Querying Tasks by Filtering Conditions.
 
     \b
-        Query Task Command.
-
-    \b
-    - USAGE:
-        flow task query -j xxx -r guest -p 999 -tn xxx -s success
-
+    -usage: flow task query -j xxx -r guest -p 9999 -tn xxx
     """
     client: FlowClient = ctx.obj["client"]
     response = client.task.query(**kwargs)
     prettify(response)
 
 
-@task.command("list", short_help="List Task Command")
+@task.command("list")
 @cli_args.JOBID
 @cli_args.ROLE_IDE
 @cli_args.PARTYID
-@cli_args.TASK_ID
 @cli_args.TASK_NAME
-@cli_args.STATUS
 @cli_args.LIMIT
 @click.pass_context
 def query_list(ctx, **kwargs):
     """
-    - DESCRIPTION:
-        List Task description
+    \b
+    -description: Fetching Task List by Filtering Conditions.
 
     \b
-    - USAGE:
-        flow task list -j xxx -r guest -p 999 -tid xxx -tn xxx -s success -l 25
+    -usage: flow task list -j xxx -r guest -p 9999
     """
     client: FlowClient = ctx.obj["client"]
     response = client.task.query_task_list(**kwargs)
