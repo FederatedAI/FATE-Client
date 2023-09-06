@@ -56,29 +56,20 @@ def toy(ctx, **kwargs):
             if r["code"] == 0 and len(r["data"]):
                 job_status = r["data"][0]["status"]
                 print(f"toy test job {job_id} is {job_status}")
-                if job_status in {"success", "failed", "canceled"}:
-                    check_log(flow_sdk, kwargs["guest_party_id"], job_id, job_status)
+                if job_status in {"failed", "canceled"}:
+                    warn_print(job_id)
                     break
             time.sleep(1)
         else:
-            print(f"check job status timeout")
-            check_log(flow_sdk, kwargs["guest_party_id"], job_id, job_status)
+            print(f"timeout...")
+            warn_print(job_id)
+            try:
+                flow_sdk.job.stop(job_id=job_id)
+            except:
+                pass
     else:
         prettify(submit_result)
 
 
-def check_log(flow_sdk, party_id, job_id, job_status):
-    _path = "../../../fate_flow/logs/toy"
-    r = flow_sdk.job.download_log(job_id=job_id, path=_path)
-    if r["code"] == 0:
-        print(f"check logs info directory:{r['directory']}")
-    #     if job_status == "success":
-    #         return
-    #     log_msg = flow_sdk.test.check_toy(party_id, job_status, r["directory"])
-    #     try:
-    #         for msg in log_msg:
-    #             print(msg)
-    #     except BaseException as e:
-    #         print(f"auto check log failed, please check {r['directory']}")
-    else:
-        print(f"get log failed, please check PROJECT_BASE/logs/{job_id} on the fateflow server machine")
+def warn_print(job_id):
+    print(f"You can use the command of 'flow job download-log -j {job_id} -o $download_dir' to download the logs.")
