@@ -19,12 +19,10 @@ from pydantic import BaseModel
 from typing import Dict, List, Union
 
 from ..conf.types import (
-    ArtifactType,
     Stage,
     InputDataKeyType,
     ArtifactSourceType,
     InputArtifactType,
-    OutputArtifactType
 )
 
 from ..entity.dag_structures import (
