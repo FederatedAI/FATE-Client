@@ -20,7 +20,6 @@ from datetime import timedelta
 from pathlib import Path
 
 from fate_client.flow_sdk import FlowClient
-
 from ...conf.env_config import FlowConfig
 
 
@@ -241,8 +240,6 @@ class FATEFlowJobInvoker(object):
                         columns = line.strip().split(",")
                     else:
                         cols = line.strip().split(",", -1)
-                        print('cols are {}'.format(cols))
-                        print('json str are {}'.format(",".join(cols[len(columns) - 2: -1])[1:-1].replace("\'", "\"")))
                         predict_detail = json.loads(",".join(cols[len(columns) - 2: -1])[1:-1].replace("\'", "\""))
                         value = cols[: len(columns) - 2] + [predict_detail] + cols[-1:]
                         data.append(value)
