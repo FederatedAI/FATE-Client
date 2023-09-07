@@ -59,6 +59,8 @@ def toy(ctx, **kwargs):
                 if job_status in {"failed", "canceled"}:
                     warn_print(job_id)
                     break
+                if job_status in {"success"}:
+                    break
             time.sleep(1)
         else:
             print(f"timeout...")
