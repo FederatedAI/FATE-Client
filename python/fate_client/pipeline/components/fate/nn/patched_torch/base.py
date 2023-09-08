@@ -4,19 +4,19 @@ from torch.nn import Sequential as tSequential
 import json
 
 
-
 def convert_tuples_to_lists(data):
     if isinstance(data, tuple):
         return list(data)
     elif isinstance(data, list):
         return [convert_tuples_to_lists(item) for item in data]
     elif isinstance(data, dict):
-        return {key: convert_tuples_to_lists(value) for key, value in data.items()}
+        return {key: convert_tuples_to_lists(
+            value) for key, value in data.items()}
     else:
         return data
 
 
-class FateTorch(object):
+class PatchedTorchModule(object):
 
     def __init__(self):
         t.nn.Module.__init__(self)
@@ -24,24 +24,24 @@ class FateTorch(object):
         self.optimizer = None
 
     def to_dict(self):
-        ret_dict ={
+        ret_dict = {
             'module_name': 'torch.nn',
-            'item_name':  str(type(self).__name__),
+            'item_name': str(type(self).__name__),
             'kwargs': convert_tuples_to_lists(self.param_dict)
         }
         return ret_dict
 
 
-class FateTorchOptimizer(object):
+class PatchedTorchOptimizer(object):
 
     def __init__(self):
         self.param_dict = dict()
         self.torch_class = None
 
     def to_dict(self):
-        ret_dict ={
+        ret_dict = {
             'module_name': 'torch.optim',
-            'item_name':  type(self).__name__,
+            'item_name': type(self).__name__,
             'kwargs': convert_tuples_to_lists(self.param_dict)
         }
         return ret_dict
@@ -50,7 +50,7 @@ class FateTorchOptimizer(object):
 
         if isinstance(
                 params,
-                FateTorch) or isinstance(
+                PatchedTorchModule) or isinstance(
                 params,
                 Sequential):
             params.add_optimizer(self)
@@ -71,7 +71,7 @@ class FateTorchOptimizer(object):
             return
         if isinstance(
                 input_,
-                FateTorch) or isinstance(
+                PatchedTorchModule) or isinstance(
                 input_,
                 Sequential):
             input_.add_optimizer(self)
@@ -103,14 +103,12 @@ class Sequential(tSequential):
             ordered_name = idx
             layer_confs[ordered_name] = self._modules[k].to_dict()
             idx += 1
-        ret_dict ={
-            'module_name': 'fate.components.components.nn.fate_torch.base',
-            'item_name':  load_seq.__name__,
+        ret_dict = {
+            'module_name': 'fate.components.components.nn.patched_torch.base',
+            'item_name': load_seq.__name__,
             'kwargs': {'seq_conf': layer_confs}
         }
         return ret_dict
 
     def to_json(self):
         return json.dumps(self.to_dict(), indent=4)
-
-        
