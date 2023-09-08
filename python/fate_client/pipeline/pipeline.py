@@ -285,7 +285,7 @@ class FateFlowPipeline(Pipeline):
                                           meta: dict,
                                           extend_sid=True,
                                           partitions=4,
-                                          site_name: str = None
+                                          site_name: str = None,
                                           **kwargs):
         data_warehouse = self._executor.upload(file=file,
                                                head=head,
