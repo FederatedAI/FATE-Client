@@ -104,7 +104,7 @@ class Sequential(tSequential):
             layer_confs[ordered_name] = self._modules[k].to_dict()
             idx += 1
         ret_dict = {
-            'module_name': 'fate.components.components.nn.fate_torch.base',
+            'module_name': 'fate.components.components.nn.patched_torch.base',
             'item_name': load_seq.__name__,
             'kwargs': {'seq_conf': layer_confs}
         }
