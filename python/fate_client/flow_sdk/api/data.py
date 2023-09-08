@@ -47,13 +47,15 @@ class Data(BaseFlowAPI):
         params = filter_invalid_params(**kwargs)
         return self._post(url='/data/component/upload', json=params)
 
-    def dataframe_transformer(self, namespace: str, name: str, data_warehouse: dict, drop: bool = True):
+    def dataframe_transformer(self, namespace: str, name: str, data_warehouse: dict, drop: bool = True,
+                              site_name: str = None):
         """
         Args:
             namespace:
             name:
             data_warehouse: {"namespace": xxx, "name": xxx}
             drop: destroy table if the table exist
+            site_name: site name
 
         Returns:
         {'code': 0, 'message': 'success','data':{...}]}
