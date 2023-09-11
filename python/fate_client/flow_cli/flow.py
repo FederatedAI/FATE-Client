@@ -108,7 +108,7 @@ def initialization(**kwargs):
             prettify(
                 {
                     'code': 100,
-                    'retmsg': 'Fate Flow CLI initialization failed, Please try again.'
+                    'retmsg': 'Fate Flow CLI initialization failed,can not connect service. Please check  ip or port right.'
                 }
             )
             return
