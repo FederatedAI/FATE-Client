@@ -100,6 +100,7 @@ class FateFlowExecutor(object):
     def transform_to_dataframe(namespace: str,
                                name: str,
                                data_warehouse: dict,
+                               site_name: str,
                                role: str,
                                party_id: str):
         flow_job_invoker = FATEFlowJobInvoker()
@@ -107,6 +108,7 @@ class FateFlowExecutor(object):
         flow_job_invoker.transform_to_dataframe(namespace=namespace,
                                                 name=name,
                                                 data_warehouse=data_warehouse,
+                                                site_name=site_name,
                                                 role=role,
                                                 party_id=party_id
                                                 )
