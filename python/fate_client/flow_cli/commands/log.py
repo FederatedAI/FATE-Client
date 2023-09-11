@@ -20,31 +20,30 @@ from ..utils.cli_utils import preprocess,prettify
 from fate_client.flow_sdk import FlowClient
 
 
-@click.group(short_help="Log Operations")
+@click.group()
 @click.pass_context
 def log(ctx):
     """
     \b
-    Provides numbers of data operational commands, including upload, download and etc.
-    For more details, please check out the help text.
+    -description: Operations related to job logs.
     """
     pass
 
 
-@log.command("count", short_help="Count Log Command")
-@cli_args.JOBID
-# @cli_args.ROLE
-# @cli_args.PARTYID
-# @cli_args.TABLE_NAME
+@log.command("count")
+@cli_args.LOG_TYPE_REQUIRED
+@cli_args.JOBID_REQUIRED
+@cli_args.ROLE_IDE
+@cli_args.PARTYID
+@cli_args.INSTANCE_ID
 @click.pass_context
 def count(ctx, **kwargs):
     """
-    - DESCRIPTION:
+    \b
+    -description: Fetching the total number of lines in the log.
 
     \b
-
-    \b
-    - USAGE:
+    -usage: flow log count -j 202308211557455662860 -r guest -p 9999 --log-type schedule_info
 
     """
     client: FlowClient = ctx.obj["client"]
@@ -53,25 +52,22 @@ def count(ctx, **kwargs):
 
 
 @log.command("query", short_help="Log query Command")
-@cli_args.TABLE_NAME
-@cli_args.NAMESPACE
-@cli_args.CONF_PATH
+@cli_args.LOG_TYPE_REQUIRED
+@cli_args.JOBID_REQUIRED
+@cli_args.ROLE_IDE
+@cli_args.PARTYID
+@cli_args.TASK_NAME
+@cli_args.INSTANCE_ID
 @click.pass_context
 def query(ctx, **kwargs):
     """
-    - DESCRIPTION:
+    \b
+    -description： Query logs.
 
     \b
-        Download Data Table.
-
-    \b
-    - USAGE:
-        flow log query -t $TABLE_NAME  -n $NAMESPACE -c $CONF_PATH
+    -usage: flow log query -j 202308251856000656610 -r guest -p 9999  --log-type schedule_info
     """
+
     client: FlowClient = ctx.obj["client"]
     response = client.log.query(**kwargs)
     prettify(response)
-
-
-
-

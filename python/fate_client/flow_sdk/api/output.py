@@ -13,6 +13,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 #
+import os
+
 from ..utils.base_utils import BaseFlowAPI
 from ..utils.params_utils import filter_invalid_params
 from ..utils.io_utils import download_from_request
@@ -88,7 +90,7 @@ class Output(BaseFlowAPI):
         params = filter_invalid_params(**kwargs)
         return self._get(url='/output/model/query', params=params)
 
-    def down_model(self, job_id: str, role: str, party_id: str, task_name: str):
+    def download_model(self, job_id: str, role: str, party_id: str, task_name: str, path: str = None):
         """
 
         Args:
@@ -96,6 +98,7 @@ class Output(BaseFlowAPI):
             role:
             party_id:
             task_name:
+            path:
 
 
         Returns:
@@ -103,7 +106,12 @@ class Output(BaseFlowAPI):
         """
         kwargs = locals()
         params = filter_invalid_params(**kwargs)
-        return self._get(url='/output/model/download', params=params)
+        resp = self._get(url='/output/model/download', params=params, handle_result=False)
+        if path:
+            extract_dir = os.path.join(path, f'output_model_{job_id}_{role}_{party_id}_{task_name}')
+            return download_from_request(resp, extract_dir)
+        else:
+            return resp
 
     def delete_model(self, job_id: str, role: str, party_id: str, task_name: str):
         """
@@ -122,8 +130,9 @@ class Output(BaseFlowAPI):
         params = filter_invalid_params(**kwargs)
         return self._post(url='/output/model/delete', json=params)
 
-    def download_data(self, job_id: str, role: str, party_id: str, task_name: str, output_key: str = None,
-                      path: str = None):
+    def download_data(
+            self, job_id: str, role: str, party_id: str, task_name: str, output_key: str = None, path: str = None
+    ):
         """
 
         Args:
@@ -132,7 +141,7 @@ class Output(BaseFlowAPI):
             party_id:
             task_name:
             output_key:
-            download_dir: download path
+            path: download path
 
 
         Returns:
@@ -143,6 +152,39 @@ class Output(BaseFlowAPI):
         params = filter_invalid_params(**kwargs)
         resp = self._get(url='/output/data/download', params=params, handle_result=False)
         if path:
-            return download_from_request(resp, path)
+            extract_dir = os.path.join(path, f'output_data_{job_id}_{role}_{party_id}_{task_name}')
+            return download_from_request(resp, extract_dir)
         else:
             return resp
+
+    def data_table(self, job_id: str, role: str, party_id: str, task_name: str):
+        """
+
+        Args:
+            job_id:
+            role:
+            party_id:
+            task_name:
+
+        Returns:
+
+        """
+        kwargs = locals()
+        params = filter_invalid_params(**kwargs)
+        return self._get(url='/output/data/table', params=params)
+
+    def data_display(self, job_id: str, role: str, party_id: str, task_name: str):
+        """
+
+        Args:
+            job_id:
+            role:
+            party_id:
+            task_name:
+
+        Returns:
+
+        """
+        kwargs = locals()
+        params = filter_invalid_params(**kwargs)
+        return self._get(url='/output/data/display', params=params)

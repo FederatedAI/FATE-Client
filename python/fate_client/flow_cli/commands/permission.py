@@ -21,74 +21,123 @@ from ..utils import cli_args
 from ..utils.cli_utils import load_yaml, preprocess, prettify
 
 
-@click.group(short_help="Permission Operations")
+@click.group()
 @click.pass_context
 def permission(ctx):
     """
     \b
-    Provides numbers of data operational commands, including upload, download and etc.
-    For more details, please check out the help text.
+    -description: Permission Operations
     """
     pass
 
 
-@permission.command("grant", short_help="Grant permission Command")
+@permission.command("grant")
 @cli_args.APP_ID_REQUIRED
 @cli_args.ROLE_REQUIRED
 @click.pass_context
 def grant(ctx, **kwargs):
     """
-    - DESCRIPTION:
+    \b
+    -description: Grant permission
 
 
     \b
-    grant component | dataset privilege
+    -usage: flow permission grant --app-id xxx  -r xxx
 
-    \b
-    - USAGE:
-        flow permission grant -app_id $APP_ID  -r site
     """
     client: FlowClient = ctx.obj["client"]
     response = client.permission.grant(**kwargs)
     prettify(response)
 
 
-@permission.command("delete", short_help="Delete Privilege Command")
+@permission.command("delete")
 @cli_args.APP_ID_REQUIRED
 @cli_args.ROLE_REQUIRED
 @click.pass_context
 def delete(ctx, **kwargs):
     """
-    - DESCRIPTION:
+    \b
+    -description: Delete permission
 
 
     \b
-    delete component | dataset privilege
+    -usage: flow permission delete --app-id xxx --role client
 
-    \b
-    - USAGE:
-        flow permission delete  -app_id $APP_ID  -r site
     """
     client: FlowClient = ctx.obj["client"]
     response = client.permission.delete(**kwargs)
     prettify(response)
 
 
-@permission.command("query", short_help="Query Privilege Command")
+@permission.command("query")
 @cli_args.APP_ID_REQUIRED
 @click.pass_context
 def query(ctx, **kwargs):
     """
-    - DESCRIPTION:
+    \b
+    -description: Query permission
 
 
     \b
-    query component | dataset privilege
+    -usage: flow permission query --app-id xxx
 
-    \b
-    - USAGE:
-        flow permission query  -app_id $APP_ID
     """
     client: FlowClient = ctx.obj["client"]
     response = client.permission.query(**kwargs)
+    prettify(response)
+
+
+@permission.command("grant-resource")
+@cli_args.CONF_PATH
+@click.pass_context
+def grant_resource(ctx, **kwargs):
+    """
+    \b
+    -description: Granting Permissions to components, Datasets, etc.
+
+
+    \b
+    -usage: flow permission grant-resource -c examples/permission/grant.json
+
+    """
+    config_data = preprocess(**kwargs)
+    client: FlowClient = ctx.obj["client"]
+    response = client.permission.grant_resource(**config_data)
+    prettify(response)
+
+
+@permission.command("delete-resource")
+@cli_args.CONF_PATH
+@click.pass_context
+def delete_resource(ctx, **kwargs):
+    """
+    \b
+    -description: Delete Permissions of components, Datasets, etc.
+
+
+    \b
+    -usage: flow permission delete-resource -c examples/permission/delete.json
+
+    """
+    config_data = preprocess(**kwargs)
+    client: FlowClient = ctx.obj["client"]
+    response = client.permission.delete_resource(**config_data)
+    prettify(response)
+
+
+@permission.command("query-resource")
+@cli_args.PARTYID_REQUIRED
+@click.pass_context
+def query_resource(ctx, **kwargs):
+    """
+    \b
+    -description: Query Permissions of components, Datasets, etc.
+
+
+    \b
+    -usage: flow permission query-resource  -p 9999
+
+    """
+    client: FlowClient = ctx.obj["client"]
+    response = client.permission.query_resource(**kwargs)
     prettify(response)

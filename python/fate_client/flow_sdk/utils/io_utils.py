@@ -14,26 +14,42 @@
 #  limitations under the License.
 import os
 import tarfile
+import traceback
 import uuid
 from tempfile import TemporaryDirectory
 
 
 def download_from_request(http_response, download_path):
-    if http_response.headers.get('content-type') == 'application/json':
-        return http_response.json()
     try:
-        with TemporaryDirectory() as output_tmp_dir:
-            path = os.path.join(output_tmp_dir, str(uuid.uuid1()))
-            with open(path, 'wb') as fw:
-                for chunk in http_response.iter_content(1024):
-                    if chunk:
-                        fw.write(chunk)
-            tar = tarfile.open(path, "r:gz")
-            file_names = tar.getnames()
-            for file_name in file_names:
-                tar.extract(file_name, download_path)
-            tar.close()
-            return {"code": 0, "message": f"download success, please check the path: {download_path}"}
+        if http_response.headers.get('content-type') == 'application/json':
+            return http_response.json()
+        if http_response.headers.get('content-type') == 'application/gzip':
+            with TemporaryDirectory() as output_tmp_dir:
+                path = os.path.join(output_tmp_dir, str(uuid.uuid1()))
+                with open(path, 'wb') as fw:
+                    for chunk in http_response.iter_content(1024):
+                        if chunk:
+                            fw.write(chunk)
+                tar = tarfile.open(path, "r:gz")
+                file_names = tar.getnames()
+                for file_name in file_names:
+                    tar.extract(file_name, download_path)
+                tar.close()
+        if http_response.headers.get('content-type') == 'application/x-tar':
+            with TemporaryDirectory() as output_tmp_dir:
+                path = os.path.join(output_tmp_dir, str(uuid.uuid1()))
+                with open(path, 'wb') as fw:
+                    for chunk in http_response.iter_content(1024):
+                        if chunk:
+                            fw.write(chunk)
+                tar = tarfile.open(path, "r:tar")
+                tar.extractall(path=download_path)
+                tar.close()
+        return {
+            "code": 0,
+            "directory": download_path,
+            "message": f"download success, please check the path: {download_path}"
+        }
     except Exception as e:
+        traceback.format_exc()
         return {"code": 100, "message": f"download failed, {str(e)}"}
-

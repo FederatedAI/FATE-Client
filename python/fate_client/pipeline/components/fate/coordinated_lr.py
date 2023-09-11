@@ -36,6 +36,8 @@ class CoordinatedLR(Component):
                  train_data: ArtifactType = PlaceHolder(),
                  cv_data: ArtifactType = PlaceHolder(),
                  cv_param: dict = PlaceHolder(),
+                 floating_point_precision: int = 23,
+                 he_param: dict = PlaceHolder(),
                  output_cv_data: bool = True,
                  validate_data: ArtifactType = PlaceHolder(),
                  test_data: ArtifactType = PlaceHolder(),
@@ -63,3 +65,5 @@ class CoordinatedLR(Component):
         self.cv_param = cv_param
         self.output_cv_data = output_cv_data
         self.warm_start_model = warm_start_model
+        self.floating_point_precision = floating_point_precision
+        self.he_param = he_param

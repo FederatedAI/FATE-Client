@@ -2,7 +2,7 @@ component:
   name: coordinated_linr
   description: ''
   provider: fate
-  version: 2.0.0-alpha
+  version: 2.0.0-beta
   labels: [ ]
   roles:
     - guest
@@ -123,9 +123,10 @@ component:
     init_param:
       type: InitParam
       default:
-        method: zeros
+        method: random_uniform
         fill_val: 0.0
         fit_intercept: true
+        random_state:
       optional: true
       description: Model param init setting.
       type_meta:
@@ -150,11 +151,52 @@ component:
                 title: Fit Intercept
                 default: true
                 type: boolean
+              random_state:
+                title: Random State
+                type: integer
         default:
-          method: zeros
+          method: random_uniform
           fill_val: 0.0
           fit_intercept: true
+          random_state:
         description: Model param init setting.
+    he_param:
+      type: HEParam
+      default:
+        kind: paillier
+        key_length: 1024
+      optional: true
+      description: homomorphic encryption param
+      type_meta:
+        title: HEParam
+        $ref: '#/definitions/abc__HEParam'
+        definitions:
+          abc__HEParam:
+            title: HEParam
+            type: object
+            properties:
+              kind:
+                title: Kind
+                type: string
+              key_length:
+                title: Key Length
+                default: 1024
+                type: integer
+            required:
+              - kind
+        default:
+          kind: paillier
+          key_length: 1024
+        description: homomorphic encryption param
+    floating_point_precision:
+      type: ConstrainedNumberMeta
+      default: 23
+      optional: true
+      description: 'floating point precision, '
+      type_meta:
+        title: ConstrainedNumberMeta
+        minimum: 0
+        type: integer
     cv_param:
       type: CVParam
       default:

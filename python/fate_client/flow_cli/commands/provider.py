@@ -16,53 +16,51 @@
 import click
 
 from ..utils import cli_args
-from ..utils.cli_utils import load_yaml, preprocess, prettify
+from ..utils.cli_utils import prettify, preprocess
 from fate_client.flow_sdk import FlowClient
 
 
-@click.group(short_help="Permission Operations")
+@click.group()
 @click.pass_context
 def provider(ctx):
     """
     \b
-    Provides numbers of data operational commands, including upload, download and etc.
-    For more details, please check out the help text.
+    -description: Provider Operations
     """
     pass
 
 
-@provider.command("register", short_help="Register New Provider Command")
+@provider.command("register")
 @cli_args.CONF_PATH
 @click.pass_context
 def register(ctx, **kwargs):
     """
-    - DESCRIPTION:
-
+    \b
+    -description: register provider
 
     \b
-    - USAGE:
+    -usage: flow provider register -c examples/provider/register.json
 
     """
-    config_data, dsl_data = preprocess(**kwargs)
+    config_data = preprocess(**kwargs)
     client: FlowClient = ctx.obj["client"]
-    if "conf_path" in config_data.keys(): config_data.pop("conf_path")
     response = client.provider.register(**config_data)
     prettify(response)
 
 
-@provider.command("query", short_help="query Provider Command")
-@click.option("-n", "--name", type=click.STRING, help="Name.")
-@click.option("-d", "--device", type=click.STRING, help="Device.")
-@click.option("-v", "--version", type=click.STRING, help="Version.")
-@click.option("-p", "--provider_name", type=click.STRING, help="Provider name.")
+@provider.command("query")
+@cli_args.NAME
+@cli_args.DEVICE
+@cli_args.VERSION
+@cli_args.PROVIDER_NAME
 @click.pass_context
 def query(ctx, **kwargs):
     """
-    - DESCRIPTION:
-
+    \b
+    -description: Filtering Providers Based on Conditions
 
     \b
-    - USAGE:
+    -usage: flow provider query --name fate
 
     """
     client: FlowClient = ctx.obj["client"]
@@ -70,19 +68,19 @@ def query(ctx, **kwargs):
     prettify(response)
 
 
-@provider.command("delete", short_help="delete Provider Command")
-@click.option("-n", "--name", type=click.STRING,help="Namespace.")
-@click.option("-d", "--device", type=click.STRING,help="Device.")
-@click.option("-v", "--version", type=click.STRING,help="Version.")
-@click.option("-p", "--provider-name", type=click.STRING,help="Provider name.")
+@provider.command("delete")
+@cli_args.NAME
+@cli_args.DEVICE
+@cli_args.VERSION
+@cli_args.PROVIDER_NAME
 @click.pass_context
 def delete(ctx, **kwargs):
     """
-    - DESCRIPTION:
-
+    \b
+    -description: Delete Providers Based on Filtering Conditions.
 
     \b
-    - USAGE:
+    -usage: flow provider delete -n xxx
 
     """
     client: FlowClient = ctx.obj["client"]

@@ -66,7 +66,7 @@ def preprocess(**kwargs):
         conf_path = os.path.abspath(kwargs.get('conf_path'))
         with open(conf_path, 'r') as conf_fp:
             config_data = json.load(conf_fp)
-    return config_data, None
+    return config_data
 
 
 def connect_service(ip, port, timeout=3):

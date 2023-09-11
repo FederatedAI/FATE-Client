@@ -13,11 +13,10 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 from .dag import DAG
-from .task_info import FateFlowTaskInfo, StandaloneTaskInfo
+from .task_info import FateFlowTaskInfo
 
 
 __all__ = [
     "DAG",
     "FateFlowTaskInfo",
-    "StandaloneTaskInfo"
 ]

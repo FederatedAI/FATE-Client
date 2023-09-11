@@ -13,6 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 #
+import os
 from ..utils.base_utils import BaseFlowAPI
 from ..utils.params_utils import filter_invalid_params
 from ..utils.io_utils import download_from_request
@@ -22,7 +23,7 @@ class Data(BaseFlowAPI):
     def upload(self, file: str, head: bool, partitions: int, meta: dict, namespace: str = None, name: str = None,
                extend_sid: bool = None, role: str = None, party_id: str = None):
         """
-        upload file
+        upload data
 
         Args:
             file: file
@@ -41,19 +42,20 @@ class Data(BaseFlowAPI):
         {'code': 0, 'message': 'success','data':{...}]}
         """
         kwargs = locals()
+        if not os.path.exists(file):
+            raise Exception(f"{file} is not exist, please check the file path")
         params = filter_invalid_params(**kwargs)
-        return self._post(url='/data/component/upload/', json=params)
+        return self._post(url='/data/component/upload', json=params)
 
-    def dataframe_transformer(self, namespace: str, name: str, data_warehouse: dict):
+    def dataframe_transformer(self, namespace: str, name: str, data_warehouse: dict, drop: bool = True,
+                              site_name: str = None):
         """
-        upload file
-
         Args:
             namespace:
             name:
             data_warehouse: {"namespace": xxx, "name": xxx}
-            role:
-            party_id:
+            drop: destroy table if the table exist
+            site_name: site name
 
         Returns:
         {'code': 0, 'message': 'success','data':{...}]}
@@ -64,7 +66,7 @@ class Data(BaseFlowAPI):
 
     def download(self, namespace: str = None, name: str = None, path: str = None):
         """
-        download
+        download data
 
         Args:
             namespace:
@@ -76,10 +78,7 @@ class Data(BaseFlowAPI):
         kwargs = locals()
         params = filter_invalid_params(**kwargs)
         resp = self._get(url='/data/download', params=params, handle_result=False)
-        if path:
-            return download_from_request(resp, path)
-        else:
-            return resp
+        return download_from_request(resp, path)
 
     def download_component(self, namespace: str = None, name: str = None, path: str = None):
         """

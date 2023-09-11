@@ -62,14 +62,45 @@ class Permission(BaseFlowAPI):
         params = filter_invalid_params(**kwargs)
         return self._get(url='/permission/query', params=params)
 
-    def role_query(self):
+    def query_role(self):
         """
-        query role permission
+        query role
         Returns:
         {'code': 0, 'message': 'success','data':[...]}
         """
         kwargs = locals()
         params = filter_invalid_params(**kwargs)
         return self._get(url='/permission/role/query', params=params)
+
+    def grant_resource(self, party_id: str, component: str = None, dataset: dict = None):
+        """
+        grant resource
+        Returns:
+        {'code': 0, 'message': 'success','data':[...]}
+        """
+        kwargs = locals()
+        params = filter_invalid_params(**kwargs)
+        return self._post(url='/permission/resource/grant', json=params)
+
+    def delete_resource(self, party_id: str, component: str = None, dataset: dict = None):
+        """
+        delete resource
+        Returns:
+        {'code': 0, 'message': 'success','data':[...]}
+        """
+        kwargs = locals()
+        params = filter_invalid_params(**kwargs)
+        return self._post(url='/permission/resource/delete', json=params)
+
+    def query_resource(self, party_id: str, component: str = None, dataset: dict = None):
+        """
+        delete resource
+        Returns:
+        {'code': 0, 'message': 'success','data':[...]}
+        """
+        kwargs = locals()
+        params = filter_invalid_params(**kwargs)
+        return self._get(url='/permission/resource/query', params=params)
+
 
 

@@ -20,143 +20,71 @@ from ..utils.cli_utils import load_yaml, preprocess,prettify
 from fate_client.flow_sdk import FlowClient
 
 
-@click.group(short_help="Model Operations")
+@click.group()
 @click.pass_context
 def model(ctx):
     """
     \b
-    Provides numbers of data operational commands, including upload, download and etc.
-    For more details, please check out the help text.
+    -description: Model Operations
     """
     pass
 
 
-@model.command("deploy", short_help="Deploy model")
-@click.option("--cpn-list", type=click.STRING,
-              help="User inputs a string to specify component list")
-@click.option("--cpn-path", type=click.Path(exists=True),
-              help="User specifies a file path which records the component list.")
-@click.option("--dsl-path", type=click.Path(exists=True),
-              help="User specified predict dsl file")
-@click.option("--cpn-step-index", type=click.STRING, multiple=True,
-              help="Specify a checkpoint model to replace the pipeline model. "
-                   "Use : to separate component name and step index (E.g. --cpn-step-index cpn_a:123)")
-@click.option("--cpn-step-name", type=click.STRING, multiple=True,
-              help="Specify a checkpoint model to replace the pipeline model. "
-                   "Use : to separate component name and step name (E.g. --cpn-step-name cpn_b:foobar)")
-@click.pass_context
-def deploy(ctx, **kwargs):
-    """
-    - DESCRIPTION:
-        Deploy model.
-
-    \b
-    - USAGE:
-        flow model deploy --model-id $MODEL_ID --model-version $MODEL_VERSION
-    """
-    client: FlowClient = ctx.obj["client"]
-    response = client.model.deploy(**kwargs)
-    prettify(response)
-
-
-@model.command("load", short_help="Load Model Command")
-@cli_args.JOBID
-@click.option("-c", "--conf-path", type=click.Path(exists=True),
-              help="Configuration file path.")
-@click.pass_context
-def load(ctx, **kwargs):
-    """
-    - DESCRIPTION:
-
-    \b
-        Download Data Table.
-
-    \b
-    - USAGE:
-        flow data download -c fateflow/examples/download/download_table.json
-    """
-    client: FlowClient = ctx.obj["model"]
-    response = client.model.load(**kwargs)
-    prettify(response)
-
-
-@model.command("migrate", short_help="Migrate Model Command")
-@cli_args.CONF_PATH
-@click.pass_context
-def migrate(ctx, **kwargs):
-    """
-    \b
-    - DESCRIPTION:
-        Migrate Model Command.
-
-    \b
-    - USAGE:
-        flow model migrate -c fate_flow/examples/migrate_model.json
-    """
-    client: FlowClient = ctx.obj["client"]
-    response = client.model.migrate(**kwargs)
-    prettify(response)
-
-
-@model.command("export", short_help="Export Model Command")
-@cli_args.CONF_PATH
+@model.command("export")
+@cli_args.MODEL_ID_REQUIRED
+@cli_args.MODEL_VERSION_REQUIRED
+@cli_args.PARTYID_REQUIRED
+@cli_args.ROLE_IDE_REQUIRED
+@cli_args.PATH_REQUIRED
 @click.pass_context
 def export_model(ctx, **kwargs):
     """
     \b
-    - DESCRIPTION:
-        Export the model to a file or storage engine.
+    -description: Export the model to a file.
 
     \b
-    - USAGE:
-        flow model export -c fate_flow/examples/export_model.json
-        # flow model export -c fate_flow/examples/store_model.json --to-database
+    -usage: flow model export --model-id xxx --model-version xxx -p 9999 -r guest -o ./model/
     """
-    config_data, dsl_data = preprocess(**kwargs)
     client: FlowClient = ctx.obj["client"]
-    response = client.model.export(**config_data)
+    response = client.model.export(**kwargs)
     prettify(response)
 
 
-@model.command("store", short_help="Migrate Model Command")
-@cli_args.CONF_PATH
-@click.option('--from-database', is_flag=True, default=False,
-              help="If specified and there is a valid database environment, fate flow will import model from database "
-                   "which you specified in configuration file.")
+@model.command("import")
+@cli_args.MODEL_ID_REQUIRED
+@cli_args.MODEL_VERSION_REQUIRED
+@cli_args.INPUT_PATH_REQUIRED
 @click.pass_context
-def store(ctx, **kwargs):
+def import_model(ctx, **kwargs):
     """
     \b
-    - DESCRIPTION:
-        Export the model to a file or storage engine.
+    -description: Import the model to storage engine.
 
     \b
-    - USAGE:
-        flow model export -c fate_flow/examples/export_model.json
-        flow model export -c fate_flow/examples/store_model.json --to-database
+    -usage: flow model import --model-id xxx --model-version xxx -i $input_path
     """
+    # config_data = preprocess(**kwargs)
     client: FlowClient = ctx.obj["client"]
-    response = client.model.store(**kwargs)
+    response = client.model.import_model(**kwargs)
     prettify(response)
 
 
-@model.command("restore", short_help="Migrate Model Command")
-@cli_args.CONF_PATH
-@click.option('--from-database', is_flag=True, default=False,
-              help="If specified and there is a valid database environment, fate flow will import model from database "
-                   "which you specified in configuration file.")
+@model.command("delete")
+@cli_args.MODEL_ID_REQUIRED
+@cli_args.MODEL_VERSION_REQUIRED
+@cli_args.ROLE_IDE
+@cli_args.PARTYID
+@cli_args.TASK_NAME
+@cli_args.OUTPUT_KEY
 @click.pass_context
-def restore(ctx, **kwargs):
+def delete_model(ctx, **kwargs):
     """
     \b
-    - DESCRIPTION:
-        Export the model to a file or storage engine.
+    -description: Delete Models Based on Conditions
 
     \b
-    - USAGE:
-        flow model export -c fate_flow/examples/export_model.json
-        flow model export -c fate_flow/examples/store_model.json --to-database
+    -usage: flow model delete --model-id xxx  --model-version xxx
     """
     client: FlowClient = ctx.obj["client"]
-    response = client.model.restore(**kwargs)
+    response = client.model.delete_model(**kwargs)
     prettify(response)

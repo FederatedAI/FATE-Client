@@ -13,6 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 #
+import os
 from typing import Dict, Union
 
 from requests.models import Response
@@ -51,6 +52,23 @@ class Job(BaseFlowAPI):
         kwargs = locals()
         params = filter_invalid_params(**kwargs)
         return self._get(url='/job/query', params=params)
+
+    def add_notes(self, job_id: str, role: str, party_id, notes: str):
+        """
+        Add notes for job
+
+        Args:
+            job_id: job id.
+            role: role, such as: "guest", "host"
+            party_id: party id, such as: "9999", "10000"
+            notes: job notes
+
+        Returns:
+        {'code': 0, 'message': 'success'}
+        """
+        kwargs = locals()
+        params = filter_invalid_params(**kwargs)
+        return self._post(url='/job/notes/add', json=params)
 
     def stop(self, job_id: str = None):
         """
@@ -130,9 +148,10 @@ class Job(BaseFlowAPI):
         _path = kwargs.pop("path", None)
         data = filter_invalid_params(**kwargs)
         resp = self._post(url='/job/log/download', handle_result=False, json=data)
+        extract_dir = os.path.join(_path, f'{job_id}_logs')
         if _path:
             # download to local dir
-            return download_from_request(resp, _path)
+            return download_from_request(resp, extract_dir)
         else:
             # return data stream
             return resp
@@ -174,4 +193,4 @@ class Job(BaseFlowAPI):
         """
         kwargs = locals()
         data = filter_invalid_params(**kwargs)
-        return self._get(url='/dag/dependency', params=data)
+        return self._get(url='/job/dag/dependency', params=data)

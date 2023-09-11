@@ -20,50 +20,46 @@ from ..utils.cli_utils import load_yaml, preprocess, prettify
 from fate_client.flow_sdk import FlowClient
 
 
-@click.group(short_help="FATE Flow Server Operations")
+@click.group()
 @click.pass_context
 def table(ctx):
     """
     \b
-    Provides numbers of component operational commands, including metrics, parameters and etc.
-    For more details, please check out the help text.
+    -description: Data Table Operations, such as Querying and Deleting, and more
     """
     pass
 
 
-@table.command("query", short_help="Table query Command")
+@table.command("query")
 @cli_args.NAMESPACE_REQUIRED
-@cli_args.TABLE_NAME_REQUIRED
-@cli_args.TABLE_DISPLAY
+@cli_args.NAME_REQUIRED
+@cli_args.DISPLAY
 @click.pass_context
 def query(ctx, **kwargs):
     """
-    - DESCRIPTION:
-
+    \b
+    -description: Query data table.
 
     \b
-    - USAGE:
-        flow table query -n $NAMESPACE -t $TABLE_NAME
+    -usage: flow table query --name xxx --namespace xxx
     """
-    # config_data, dsl_data = preprocess(**kwargs)
     client: FlowClient = ctx.obj["client"]
     response = client.table.query(**kwargs)
     prettify(response)
 
-@table.command("delete", short_help="Table delete Command")
+
+@table.command("delete")
 @cli_args.NAMESPACE_REQUIRED
-@cli_args.TABLE_NAME_REQUIRED
+@cli_args.NAME_REQUIRED
 @click.pass_context
 def delete(ctx, **kwargs):
     """
-    - DESCRIPTION:
-
+    \b
+    -description: Delete data table.
 
     \b
-    - USAGE:
-        flow table delete -n $NAMESPACE -t $TABLE_NAME
+    -usage: flow table delete --name xxx --namespace xxx
     """
-    # config_data, dsl_data = preprocess(**kwargs)
     client: FlowClient = ctx.obj["client"]
     response = client.table.delete(**kwargs)
     prettify(response)

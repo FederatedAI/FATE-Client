@@ -2,23 +2,12 @@ component:
   name: union
   description: ''
   provider: fate
-  version: 2.0.0-alpha
+  version: 2.0.0-beta
   labels: [ ]
   roles:
     - guest
     - host
-  parameters:
-    axis:
-      type: ConstrainedNumberMeta
-      default: 0
-      optional: false
-      description: axis along which concatenation is performed, 0 for row-wise, 1
-        for column-wise
-      type_meta:
-        title: ConstrainedNumberMeta
-        minimum: 0
-        maximum: 1
-        type: integer
+  parameters: { }
   input_artifacts:
     data:
       input_data_list:

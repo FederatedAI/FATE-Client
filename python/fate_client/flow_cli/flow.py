@@ -19,7 +19,7 @@ import click
 from ruamel import yaml
 from pathlib import Path
 from fate_client.flow_sdk import FlowClient
-from fate_client.flow_cli.commands import client, job, data, log, model, output, permission, provider, service, site, table, task, queue,test
+from fate_client.flow_cli.commands import client, job, data, log, model, output, permission, provider, server, site, table, task, test
 from fate_client.flow_cli.utils.cli_utils import prettify, connect_service
 
 
@@ -63,7 +63,7 @@ def flow_cli(ctx):
         )
 
 
-@flow_cli.command('init', short_help='Flow CLI Init Command')
+@flow_cli.command('init')
 @click.option('--ip', type=click.STRING, help='Fate flow server ip address.')
 @click.option('--port', type=click.INT, help='Fate flow server port.')
 @click.option('--app-id', type=click.STRING, help='APP key for sign requests.')
@@ -72,15 +72,10 @@ def flow_cli(ctx):
               help='If specified, initialization settings would be reset to none. Users should init flow again.')
 def initialization(**kwargs):
     """
-    - DESCRIPTION:
-        Flow CLI Init Command. provide ip and port of a valid fate flow server.
-        If the server enables client authentication, you need to configure app-id and app-token
-
-
-    - USAGE:
-        flow init --ip 127.0.0.1 --port 9380
-        flow init --app-id xxx --app-token
-
+    \b
+    -description: Flow CLI Init Command. provide ip and port of a valid fate flow server.If the server enables client authentication, you need to configure app-id and app-token
+    \b
+    -usage: flow init --ip 127.0.0.1 --port 9380
     """
 
     with open(config_path, 'r') as fin:
@@ -136,6 +131,19 @@ def initialization(**kwargs):
             )
 
 
+@flow_cli.command('version')
+def get_version():
+    """
+    \b
+    -description: Get fate flow client version
+    \b
+    -usage: flow version
+
+    """
+    import fate_client
+    print(fate_client.__version__)
+
+
 flow_cli.add_command(client.client)
 flow_cli.add_command(job.job)
 flow_cli.add_command(data.data)
@@ -144,8 +152,7 @@ flow_cli.add_command(model.model)
 flow_cli.add_command(output.output)
 flow_cli.add_command(permission.permission)
 flow_cli.add_command(provider.provider)
-flow_cli.add_command(queue.queue)
-flow_cli.add_command(service.service)
+flow_cli.add_command(server.server)
 flow_cli.add_command(site.site)
 flow_cli.add_command(table.table)
 flow_cli.add_command(task.task)

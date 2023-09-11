@@ -16,33 +16,29 @@
 import click
 
 from ..utils import cli_args
-from ..utils.cli_utils import load_yaml, preprocess, prettify
+from ..utils.cli_utils import preprocess, prettify
 from fate_client.flow_sdk import FlowClient
 
 
-@click.group(short_help="FATE Flow Server Operations")
+@click.group()
 @click.pass_context
-def service(ctx):
+def server(ctx):
     """
     \b
-    Provides numbers of component operational commands, including metrics, parameters and etc.
-    For more details, please check out the help text.
+    -description: Third-party Service Related Operations
     """
     pass
 
 
-@service.command("delete", short_help="delete Service Command")
+@server.command("info")
 @click.pass_context
-def delete(ctx, **kwargs):
+def flow_server_info(ctx):
     """
-    - DESCRIPTION:
-
+    -description: Fetching Current FATE FLow server (Cluster) Information
 
     \b
-    - USAGE:
-
+    -usage: flow server info
     """
-    config_data, dsl_data = preprocess(**kwargs)
     client: FlowClient = ctx.obj["client"]
-    response = client.service.delete(**config_data)
+    response = client.service.get_fateflow_info()
     prettify(response)
