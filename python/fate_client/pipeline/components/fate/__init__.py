@@ -16,6 +16,7 @@
 from .coordinated_linr import CoordinatedLinR
 from .coordinated_lr import CoordinatedLR
 from .data_split import DataSplit
+
 # from .multi_input import MultiInput
 from .dataframe_io_test import DataFrameIOTest
 from .dataframe_transformer import DataFrameTransformer

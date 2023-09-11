@@ -22,33 +22,33 @@ from ...interface import ArtifactType
 class HeteroSBT(Component):
     yaml_define_path = "./component_define/fate/hetero_sbt.yaml"
 
-    def __init__(self,
-                 _name: str,
-                 runtime_roles: List[str] = None,
-                 train_data: ArtifactType = PlaceHolder(),
-                 validate_data: ArtifactType = PlaceHolder(),
-                 num_trees: int = 20,
-                 learning_rate: float = 0.3,
-                 max_depth: int = 3,
-                 max_bin: int = 32,
-                 objective: str = 'binary:bce',
-                 num_class: int = 2,
-                 l2: float = 0.1,
-                 min_impurity_split: float = 1e-2,
-                 min_sample_split: int = 2,
-                 min_leaf_node: int = 1,
-                 min_child_weight: float = 1,
-                 gh_pack: bool = True,
-                 split_info_pack: bool = True ,
-                 hist_sub: bool = True,
-                 he_param: dict = PlaceHolder(),
-                 train_data_output: ArtifactType = PlaceHolder(),
-                 train_model_output: ArtifactType = PlaceHolder(),
-                 train_model_input: ArtifactType = PlaceHolder(),
-                 test_data: ArtifactType = PlaceHolder(),
-                 predict_model_input: ArtifactType = PlaceHolder()
-                 ):
-        
+    def __init__(
+        self,
+        _name: str,
+        runtime_roles: List[str] = None,
+        train_data: ArtifactType = PlaceHolder(),
+        validate_data: ArtifactType = PlaceHolder(),
+        num_trees: int = 20,
+        learning_rate: float = 0.3,
+        max_depth: int = 3,
+        max_bin: int = 32,
+        objective: str = "binary:bce",
+        num_class: int = 2,
+        l2: float = 0.1,
+        min_impurity_split: float = 1e-2,
+        min_sample_split: int = 2,
+        min_leaf_node: int = 1,
+        min_child_weight: float = 1,
+        gh_pack: bool = True,
+        split_info_pack: bool = True,
+        hist_sub: bool = True,
+        he_param: dict = PlaceHolder(),
+        train_data_output: ArtifactType = PlaceHolder(),
+        train_model_output: ArtifactType = PlaceHolder(),
+        train_model_input: ArtifactType = PlaceHolder(),
+        test_data: ArtifactType = PlaceHolder(),
+        predict_model_input: ArtifactType = PlaceHolder(),
+    ):
         inputs = locals()
         self._process_init_inputs(inputs)
         super(HeteroSBT, self).__init__()
@@ -76,6 +76,3 @@ class HeteroSBT(Component):
         self.train_model_output = train_model_output
         self.test_data = test_data
         self.predict_model_input = predict_model_input
-        
-
-        

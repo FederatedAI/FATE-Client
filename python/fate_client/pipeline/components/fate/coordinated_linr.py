@@ -22,28 +22,28 @@ from ...interface import ArtifactType
 class CoordinatedLinR(Component):
     yaml_define_path = "./component_define/fate/coordinated_linr.yaml"
 
-    def __init__(self,
-                 _name: str,
-                 runtime_roles: List[str] = None,
-                 epochs: int = 20,
-                 early_stop: str = "diff",
-                 tol: float = 1e-4,
-                 batch_size: int = None,
-                 optimizer: dict = PlaceHolder(),
-                 learning_rate_scheduler: dict = PlaceHolder(),
-                 init_param: dict = PlaceHolder(),
-                 train_data: ArtifactType = PlaceHolder(),
-                 cv_data: ArtifactType = PlaceHolder(),
-                 output_cv_data: bool = True,
-                 cv_param: dict = PlaceHolder(),
-                 floating_point_precision: int = 23,
-                 he_param: dict = PlaceHolder(),
-                 validate_data: ArtifactType = PlaceHolder(),
-                 test_data: ArtifactType = PlaceHolder(),
-                 input_model: ArtifactType = PlaceHolder(),
-                 warm_start_model: ArtifactType = PlaceHolder()
-
-                 ):
+    def __init__(
+        self,
+        _name: str,
+        runtime_roles: List[str] = None,
+        epochs: int = 20,
+        early_stop: str = "diff",
+        tol: float = 1e-4,
+        batch_size: int = None,
+        optimizer: dict = PlaceHolder(),
+        learning_rate_scheduler: dict = PlaceHolder(),
+        init_param: dict = PlaceHolder(),
+        train_data: ArtifactType = PlaceHolder(),
+        cv_data: ArtifactType = PlaceHolder(),
+        output_cv_data: bool = True,
+        cv_param: dict = PlaceHolder(),
+        floating_point_precision: int = 23,
+        he_param: dict = PlaceHolder(),
+        validate_data: ArtifactType = PlaceHolder(),
+        test_data: ArtifactType = PlaceHolder(),
+        input_model: ArtifactType = PlaceHolder(),
+        warm_start_model: ArtifactType = PlaceHolder(),
+    ):
         inputs = locals()
         self._process_init_inputs(inputs)
         super(CoordinatedLinR, self).__init__()
