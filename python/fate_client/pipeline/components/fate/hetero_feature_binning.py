@@ -23,27 +23,28 @@ from ...interface import ArtifactType
 class HeteroFeatureBinning(Component):
     yaml_define_path = "./component_define/fate/hetero_feature_binning.yaml"
 
-    def __init__(self,
-                 _name: str,
-                 runtime_roles: List[str] = None,
-                 method: str = PlaceHolder(),
-                 n_bins: int = None,
-                 split_pt_dict: dict = None,
-                 bin_col: List[str] = None,
-                 bin_idx: List[int] = None,
-                 category_col: List[str] = None,
-                 category_idx: List[int] = None,
-                 use_anonymous: bool = False,
-                 transform_method: str = None,
-                 skip_metrics: bool = False,
-                 local_only: bool = False,
-                 relative_error: float = 1e-6,
-                 adjustment_factor: float = 0.5,
-                 he_param: dict = PlaceHolder(),
-                 train_data: ArtifactType = PlaceHolder(),
-                 test_data: ArtifactType = PlaceHolder(),
-                 input_model: ArtifactType = PlaceHolder()
-                 ):
+    def __init__(
+        self,
+        _name: str,
+        runtime_roles: List[str] = None,
+        method: str = PlaceHolder(),
+        n_bins: int = None,
+        split_pt_dict: dict = None,
+        bin_col: List[str] = None,
+        bin_idx: List[int] = None,
+        category_col: List[str] = None,
+        category_idx: List[int] = None,
+        use_anonymous: bool = False,
+        transform_method: str = None,
+        skip_metrics: bool = False,
+        local_only: bool = False,
+        relative_error: float = 1e-6,
+        adjustment_factor: float = 0.5,
+        he_param: dict = PlaceHolder(),
+        train_data: ArtifactType = PlaceHolder(),
+        test_data: ArtifactType = PlaceHolder(),
+        input_model: ArtifactType = PlaceHolder(),
+    ):
         inputs = locals()
         self._process_init_inputs(inputs)
         super(HeteroFeatureBinning, self).__init__()

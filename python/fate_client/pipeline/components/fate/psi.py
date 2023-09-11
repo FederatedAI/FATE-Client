@@ -21,13 +21,14 @@ from ...interface import ArtifactType
 class PSI(Component):
     yaml_define_path = "./component_define/fate/psi.yaml"
 
-    def __init__(self,
-                 _name: str,
-                 runtime_roles: List[str] = None,
-                 input_data: ArtifactType = PlaceHolder(),
-                 protocol: str = PlaceHolder(),
-                 curve_type: str = PlaceHolder()
-                 ):
+    def __init__(
+        self,
+        _name: str,
+        runtime_roles: List[str] = None,
+        input_data: ArtifactType = PlaceHolder(),
+        protocol: str = PlaceHolder(),
+        curve_type: str = PlaceHolder(),
+    ):
         inputs = locals()
         self._process_init_inputs(inputs)
         super(PSI, self).__init__()

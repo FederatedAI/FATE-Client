@@ -22,17 +22,18 @@ from ...interface import ArtifactType
 class DataSplit(Component):
     yaml_define_path = "./component_define/fate/data_split.yaml"
 
-    def __init__(self,
-                 _name: str,
-                 runtime_roles: List[str] = None,
-                 input_data: ArtifactType = PlaceHolder(),
-                 train_size: Union[int, float] = None,
-                 validate_size: Union[int, float] = None,
-                 test_size: Union[int, float] = None,
-                 stratified: bool = False,
-                 random_state: int = None,
-                 hetero_sync: bool = True
-                 ):
+    def __init__(
+        self,
+        _name: str,
+        runtime_roles: List[str] = None,
+        input_data: ArtifactType = PlaceHolder(),
+        train_size: Union[int, float] = None,
+        validate_size: Union[int, float] = None,
+        test_size: Union[int, float] = None,
+        stratified: bool = False,
+        random_state: int = None,
+        hetero_sync: bool = True,
+    ):
         inputs = locals()
         self._process_init_inputs(inputs)
         super(DataSplit, self).__init__()

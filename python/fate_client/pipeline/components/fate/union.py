@@ -22,11 +22,12 @@ from ...interface import ArtifactType
 class Union(Component):
     yaml_define_path = "./component_define/fate/union.yaml"
 
-    def __init__(self,
-                 _name: str,
-                 runtime_roles: List[str] = None,
-                 input_data_list: List[ArtifactType] = PlaceHolder(),
-                 ):
+    def __init__(
+        self,
+        _name: str,
+        runtime_roles: List[str] = None,
+        input_data_list: List[ArtifactType] = PlaceHolder(),
+    ):
         inputs = locals()
         self._process_init_inputs(inputs)
         super(Union, self).__init__()

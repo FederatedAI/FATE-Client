@@ -22,16 +22,17 @@ from ...interface import ArtifactType
 class Sample(Component):
     yaml_define_path = "./component_define/fate/sample.yaml"
 
-    def __init__(self,
-                 _name: str,
-                 runtime_roles: List[str] = None,
-                 replace: bool = False,
-                 frac: Union[float, dict] = None,
-                 n: int = None,
-                 random_state: int = None,
-                 hetero_sync: bool = True,
-                 input_data: ArtifactType = PlaceHolder()
-                 ):
+    def __init__(
+        self,
+        _name: str,
+        runtime_roles: List[str] = None,
+        replace: bool = False,
+        frac: Union[float, dict] = None,
+        n: int = None,
+        random_state: int = None,
+        hetero_sync: bool = True,
+        input_data: ArtifactType = PlaceHolder(),
+    ):
         inputs = locals()
         self._process_init_inputs(inputs)
         super(Sample, self).__init__()

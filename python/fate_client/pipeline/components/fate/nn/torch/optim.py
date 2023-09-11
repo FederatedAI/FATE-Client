@@ -3,7 +3,6 @@ from fate_client.pipeline.components.fate.nn.torch.base import TorchOptimizer
 
 
 class ASGD(optim.ASGD, TorchOptimizer):
-
     def __init__(
         self,
         params=None,
@@ -16,13 +15,13 @@ class ASGD(optim.ASGD, TorchOptimizer):
         maximize=False,
     ):
         TorchOptimizer.__init__(self)
-        self.param_dict['lr'] = lr
-        self.param_dict['lambd'] = lambd
-        self.param_dict['alpha'] = alpha
-        self.param_dict['t0'] = t0
-        self.param_dict['weight_decay'] = weight_decay
-        self.param_dict['foreach'] = foreach
-        self.param_dict['maximize'] = maximize
+        self.param_dict["lr"] = lr
+        self.param_dict["lambd"] = lambd
+        self.param_dict["alpha"] = alpha
+        self.param_dict["t0"] = t0
+        self.param_dict["weight_decay"] = weight_decay
+        self.param_dict["foreach"] = foreach
+        self.param_dict["maximize"] = maximize
         self.torch_class = type(self).__bases__[0]
 
         if params is None:
@@ -38,12 +37,12 @@ class ASGD(optim.ASGD, TorchOptimizer):
         try:
             return type(self).__bases__[0].__repr__(self)
         except BaseException:
-            return 'Optimizer ASGD without initiated parameters'.format(
-                type(self).__name__)
+            return "Optimizer ASGD without initiated parameters".format(
+                type(self).__name__
+            )
 
 
 class Adadelta(optim.Adadelta, TorchOptimizer):
-
     def __init__(
         self,
         params=None,
@@ -54,11 +53,11 @@ class Adadelta(optim.Adadelta, TorchOptimizer):
         foreach=None,
     ):
         TorchOptimizer.__init__(self)
-        self.param_dict['lr'] = lr
-        self.param_dict['rho'] = rho
-        self.param_dict['eps'] = eps
-        self.param_dict['weight_decay'] = weight_decay
-        self.param_dict['foreach'] = foreach
+        self.param_dict["lr"] = lr
+        self.param_dict["rho"] = rho
+        self.param_dict["eps"] = eps
+        self.param_dict["weight_decay"] = weight_decay
+        self.param_dict["foreach"] = foreach
         self.torch_class = type(self).__bases__[0]
 
         if params is None:
@@ -74,12 +73,12 @@ class Adadelta(optim.Adadelta, TorchOptimizer):
         try:
             return type(self).__bases__[0].__repr__(self)
         except BaseException:
-            return 'Optimizer Adadelta without initiated parameters'.format(
-                type(self).__name__)
+            return "Optimizer Adadelta without initiated parameters".format(
+                type(self).__name__
+            )
 
 
 class Adagrad(optim.Adagrad, TorchOptimizer):
-
     def __init__(
         self,
         params=None,
@@ -91,12 +90,12 @@ class Adagrad(optim.Adagrad, TorchOptimizer):
         foreach=None,
     ):
         TorchOptimizer.__init__(self)
-        self.param_dict['lr'] = lr
-        self.param_dict['lr_decay'] = lr_decay
-        self.param_dict['weight_decay'] = weight_decay
-        self.param_dict['initial_accumulator_value'] = initial_accumulator_value
-        self.param_dict['eps'] = eps
-        self.param_dict['foreach'] = foreach
+        self.param_dict["lr"] = lr
+        self.param_dict["lr_decay"] = lr_decay
+        self.param_dict["weight_decay"] = weight_decay
+        self.param_dict["initial_accumulator_value"] = initial_accumulator_value
+        self.param_dict["eps"] = eps
+        self.param_dict["foreach"] = foreach
         self.torch_class = type(self).__bases__[0]
 
         if params is None:
@@ -112,29 +111,27 @@ class Adagrad(optim.Adagrad, TorchOptimizer):
         try:
             return type(self).__bases__[0].__repr__(self)
         except BaseException:
-            return 'Optimizer Adagrad without initiated parameters'.format(
-                type(self).__name__)
+            return "Optimizer Adagrad without initiated parameters".format(
+                type(self).__name__
+            )
 
 
 class Adam(optim.Adam, TorchOptimizer):
-
     def __init__(
         self,
         params=None,
         lr=0.001,
-        betas=(
-            0.9,
-            0.999),
+        betas=(0.9, 0.999),
         eps=1e-08,
         weight_decay=0,
         amsgrad=False,
     ):
         TorchOptimizer.__init__(self)
-        self.param_dict['lr'] = lr
-        self.param_dict['betas'] = betas
-        self.param_dict['eps'] = eps
-        self.param_dict['weight_decay'] = weight_decay
-        self.param_dict['amsgrad'] = amsgrad
+        self.param_dict["lr"] = lr
+        self.param_dict["betas"] = betas
+        self.param_dict["eps"] = eps
+        self.param_dict["weight_decay"] = weight_decay
+        self.param_dict["amsgrad"] = amsgrad
         self.torch_class = type(self).__bases__[0]
 
         if params is None:
@@ -150,29 +147,27 @@ class Adam(optim.Adam, TorchOptimizer):
         try:
             return type(self).__bases__[0].__repr__(self)
         except BaseException:
-            return 'Optimizer Adam without initiated parameters'.format(
-                type(self).__name__)
+            return "Optimizer Adam without initiated parameters".format(
+                type(self).__name__
+            )
 
 
 class AdamW(optim.AdamW, TorchOptimizer):
-
     def __init__(
         self,
         params=None,
         lr=0.001,
-        betas=(
-            0.9,
-            0.999),
+        betas=(0.9, 0.999),
         eps=1e-08,
         weight_decay=0.01,
         amsgrad=False,
     ):
         TorchOptimizer.__init__(self)
-        self.param_dict['lr'] = lr
-        self.param_dict['betas'] = betas
-        self.param_dict['eps'] = eps
-        self.param_dict['weight_decay'] = weight_decay
-        self.param_dict['amsgrad'] = amsgrad
+        self.param_dict["lr"] = lr
+        self.param_dict["betas"] = betas
+        self.param_dict["eps"] = eps
+        self.param_dict["weight_decay"] = weight_decay
+        self.param_dict["amsgrad"] = amsgrad
         self.torch_class = type(self).__bases__[0]
 
         if params is None:
@@ -188,29 +183,27 @@ class AdamW(optim.AdamW, TorchOptimizer):
         try:
             return type(self).__bases__[0].__repr__(self)
         except BaseException:
-            return 'Optimizer AdamW without initiated parameters'.format(
-                type(self).__name__)
+            return "Optimizer AdamW without initiated parameters".format(
+                type(self).__name__
+            )
 
 
 class Adamax(optim.Adamax, TorchOptimizer):
-
     def __init__(
         self,
         params=None,
         lr=0.002,
-        betas=(
-            0.9,
-            0.999),
+        betas=(0.9, 0.999),
         eps=1e-08,
         weight_decay=0,
         foreach=None,
     ):
         TorchOptimizer.__init__(self)
-        self.param_dict['lr'] = lr
-        self.param_dict['betas'] = betas
-        self.param_dict['eps'] = eps
-        self.param_dict['weight_decay'] = weight_decay
-        self.param_dict['foreach'] = foreach
+        self.param_dict["lr"] = lr
+        self.param_dict["betas"] = betas
+        self.param_dict["eps"] = eps
+        self.param_dict["weight_decay"] = weight_decay
+        self.param_dict["foreach"] = foreach
         self.torch_class = type(self).__bases__[0]
 
         if params is None:
@@ -226,12 +219,12 @@ class Adamax(optim.Adamax, TorchOptimizer):
         try:
             return type(self).__bases__[0].__repr__(self)
         except BaseException:
-            return 'Optimizer Adamax without initiated parameters'.format(
-                type(self).__name__)
+            return "Optimizer Adamax without initiated parameters".format(
+                type(self).__name__
+            )
 
 
 class LBFGS(optim.LBFGS, TorchOptimizer):
-
     def __init__(
         self,
         params=None,
@@ -244,13 +237,13 @@ class LBFGS(optim.LBFGS, TorchOptimizer):
         line_search_fn=None,
     ):
         TorchOptimizer.__init__(self)
-        self.param_dict['lr'] = lr
-        self.param_dict['max_iter'] = max_iter
-        self.param_dict['max_eval'] = max_eval
-        self.param_dict['tolerance_grad'] = tolerance_grad
-        self.param_dict['tolerance_change'] = tolerance_change
-        self.param_dict['history_size'] = history_size
-        self.param_dict['line_search_fn'] = line_search_fn
+        self.param_dict["lr"] = lr
+        self.param_dict["max_iter"] = max_iter
+        self.param_dict["max_eval"] = max_eval
+        self.param_dict["tolerance_grad"] = tolerance_grad
+        self.param_dict["tolerance_change"] = tolerance_change
+        self.param_dict["history_size"] = history_size
+        self.param_dict["line_search_fn"] = line_search_fn
         self.torch_class = type(self).__bases__[0]
 
         if params is None:
@@ -266,31 +259,29 @@ class LBFGS(optim.LBFGS, TorchOptimizer):
         try:
             return type(self).__bases__[0].__repr__(self)
         except BaseException:
-            return 'Optimizer LBFGS without initiated parameters'.format(
-                type(self).__name__)
+            return "Optimizer LBFGS without initiated parameters".format(
+                type(self).__name__
+            )
 
 
 class NAdam(optim.NAdam, TorchOptimizer):
-
     def __init__(
         self,
         params=None,
         lr=0.002,
-        betas=(
-            0.9,
-            0.999),
+        betas=(0.9, 0.999),
         eps=1e-08,
         weight_decay=0,
         momentum_decay=0.004,
         foreach=None,
     ):
         TorchOptimizer.__init__(self)
-        self.param_dict['lr'] = lr
-        self.param_dict['betas'] = betas
-        self.param_dict['eps'] = eps
-        self.param_dict['weight_decay'] = weight_decay
-        self.param_dict['momentum_decay'] = momentum_decay
-        self.param_dict['foreach'] = foreach
+        self.param_dict["lr"] = lr
+        self.param_dict["betas"] = betas
+        self.param_dict["eps"] = eps
+        self.param_dict["weight_decay"] = weight_decay
+        self.param_dict["momentum_decay"] = momentum_decay
+        self.param_dict["foreach"] = foreach
         self.torch_class = type(self).__bases__[0]
 
         if params is None:
@@ -306,29 +297,27 @@ class NAdam(optim.NAdam, TorchOptimizer):
         try:
             return type(self).__bases__[0].__repr__(self)
         except BaseException:
-            return 'Optimizer NAdam without initiated parameters'.format(
-                type(self).__name__)
+            return "Optimizer NAdam without initiated parameters".format(
+                type(self).__name__
+            )
 
 
 class RAdam(optim.RAdam, TorchOptimizer):
-
     def __init__(
         self,
         params=None,
         lr=0.001,
-        betas=(
-            0.9,
-            0.999),
+        betas=(0.9, 0.999),
         eps=1e-08,
         weight_decay=0,
         foreach=None,
     ):
         TorchOptimizer.__init__(self)
-        self.param_dict['lr'] = lr
-        self.param_dict['betas'] = betas
-        self.param_dict['eps'] = eps
-        self.param_dict['weight_decay'] = weight_decay
-        self.param_dict['foreach'] = foreach
+        self.param_dict["lr"] = lr
+        self.param_dict["betas"] = betas
+        self.param_dict["eps"] = eps
+        self.param_dict["weight_decay"] = weight_decay
+        self.param_dict["foreach"] = foreach
         self.torch_class = type(self).__bases__[0]
 
         if params is None:
@@ -344,12 +333,12 @@ class RAdam(optim.RAdam, TorchOptimizer):
         try:
             return type(self).__bases__[0].__repr__(self)
         except BaseException:
-            return 'Optimizer RAdam without initiated parameters'.format(
-                type(self).__name__)
+            return "Optimizer RAdam without initiated parameters".format(
+                type(self).__name__
+            )
 
 
 class RMSprop(optim.RMSprop, TorchOptimizer):
-
     def __init__(
         self,
         params=None,
@@ -364,15 +353,15 @@ class RMSprop(optim.RMSprop, TorchOptimizer):
         differentiable=False,
     ):
         TorchOptimizer.__init__(self)
-        self.param_dict['lr'] = lr
-        self.param_dict['alpha'] = alpha
-        self.param_dict['eps'] = eps
-        self.param_dict['weight_decay'] = weight_decay
-        self.param_dict['momentum'] = momentum
-        self.param_dict['centered'] = centered
-        self.param_dict['foreach'] = foreach
-        self.param_dict['maximize'] = maximize
-        self.param_dict['differentiable'] = differentiable
+        self.param_dict["lr"] = lr
+        self.param_dict["alpha"] = alpha
+        self.param_dict["eps"] = eps
+        self.param_dict["weight_decay"] = weight_decay
+        self.param_dict["momentum"] = momentum
+        self.param_dict["centered"] = centered
+        self.param_dict["foreach"] = foreach
+        self.param_dict["maximize"] = maximize
+        self.param_dict["differentiable"] = differentiable
         self.torch_class = type(self).__bases__[0]
 
         if params is None:
@@ -388,22 +377,27 @@ class RMSprop(optim.RMSprop, TorchOptimizer):
         try:
             return type(self).__bases__[0].__repr__(self)
         except BaseException:
-            return 'Optimizer RMSprop without initiated parameters'.format(
-                type(self).__name__)
+            return "Optimizer RMSprop without initiated parameters".format(
+                type(self).__name__
+            )
 
 
 class Rprop(optim.Rprop, TorchOptimizer):
-
     def __init__(
-        self, params=None, lr=0.01, etas=(
-            0.5, 1.2), step_sizes=(
-            1e-06, 50), foreach=None, maximize=False, ):
+        self,
+        params=None,
+        lr=0.01,
+        etas=(0.5, 1.2),
+        step_sizes=(1e-06, 50),
+        foreach=None,
+        maximize=False,
+    ):
         TorchOptimizer.__init__(self)
-        self.param_dict['lr'] = lr
-        self.param_dict['etas'] = etas
-        self.param_dict['step_sizes'] = step_sizes
-        self.param_dict['foreach'] = foreach
-        self.param_dict['maximize'] = maximize
+        self.param_dict["lr"] = lr
+        self.param_dict["etas"] = etas
+        self.param_dict["step_sizes"] = step_sizes
+        self.param_dict["foreach"] = foreach
+        self.param_dict["maximize"] = maximize
         self.torch_class = type(self).__bases__[0]
 
         if params is None:
@@ -419,12 +413,12 @@ class Rprop(optim.Rprop, TorchOptimizer):
         try:
             return type(self).__bases__[0].__repr__(self)
         except BaseException:
-            return 'Optimizer Rprop without initiated parameters'.format(
-                type(self).__name__)
+            return "Optimizer Rprop without initiated parameters".format(
+                type(self).__name__
+            )
 
 
 class SGD(optim.SGD, TorchOptimizer):
-
     def __init__(
         self,
         lr,
@@ -435,11 +429,11 @@ class SGD(optim.SGD, TorchOptimizer):
         nesterov=False,
     ):
         TorchOptimizer.__init__(self)
-        self.param_dict['lr'] = lr
-        self.param_dict['momentum'] = momentum
-        self.param_dict['dampening'] = dampening
-        self.param_dict['weight_decay'] = weight_decay
-        self.param_dict['nesterov'] = nesterov
+        self.param_dict["lr"] = lr
+        self.param_dict["momentum"] = momentum
+        self.param_dict["dampening"] = dampening
+        self.param_dict["weight_decay"] = weight_decay
+        self.param_dict["nesterov"] = nesterov
         self.torch_class = type(self).__bases__[0]
 
         if params is None:
@@ -455,27 +449,25 @@ class SGD(optim.SGD, TorchOptimizer):
         try:
             return type(self).__bases__[0].__repr__(self)
         except BaseException:
-            return 'Optimizer SGD without initiated parameters'.format(
-                type(self).__name__)
+            return "Optimizer SGD without initiated parameters".format(
+                type(self).__name__
+            )
 
 
 class SparseAdam(optim.SparseAdam, TorchOptimizer):
-
     def __init__(
         self,
         params=None,
         lr=0.001,
-        betas=(
-            0.9,
-            0.999),
+        betas=(0.9, 0.999),
         eps=1e-08,
         maximize=False,
     ):
         TorchOptimizer.__init__(self)
-        self.param_dict['lr'] = lr
-        self.param_dict['betas'] = betas
-        self.param_dict['eps'] = eps
-        self.param_dict['maximize'] = maximize
+        self.param_dict["lr"] = lr
+        self.param_dict["betas"] = betas
+        self.param_dict["eps"] = eps
+        self.param_dict["maximize"] = maximize
         self.torch_class = type(self).__bases__[0]
 
         if params is None:
@@ -491,5 +483,6 @@ class SparseAdam(optim.SparseAdam, TorchOptimizer):
         try:
             return type(self).__bases__[0].__repr__(self)
         except BaseException:
-            return 'Optimizer SparseAdam without initiated parameters'.format(
-                type(self).__name__)
+            return "Optimizer SparseAdam without initiated parameters".format(
+                type(self).__name__
+            )

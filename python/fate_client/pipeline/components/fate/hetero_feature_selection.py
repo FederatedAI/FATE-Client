@@ -23,21 +23,22 @@ from ...interface import ArtifactType
 class HeteroFeatureSelection(Component):
     yaml_define_path = "./component_define/fate/hetero_feature_selection.yaml"
 
-    def __init__(self,
-                 _name: str,
-                 runtime_roles: List[str] = None,
-                 method: List[str] = PlaceHolder(),
-                 select_col: List[str] = None,
-                 iv_param: dict = None,
-                 statistic_param: dict = None,
-                 manual_param: dict = None,
-                 keep_one: bool = True,
-                 use_anonymous: bool = False,
-                 train_data: ArtifactType = PlaceHolder(),
-                 test_data: ArtifactType = PlaceHolder(),
-                 input_model: ArtifactType = PlaceHolder(),
-                 input_models: List[ArtifactType] = PlaceHolder()
-                 ):
+    def __init__(
+        self,
+        _name: str,
+        runtime_roles: List[str] = None,
+        method: List[str] = PlaceHolder(),
+        select_col: List[str] = None,
+        iv_param: dict = None,
+        statistic_param: dict = None,
+        manual_param: dict = None,
+        keep_one: bool = True,
+        use_anonymous: bool = False,
+        train_data: ArtifactType = PlaceHolder(),
+        test_data: ArtifactType = PlaceHolder(),
+        input_model: ArtifactType = PlaceHolder(),
+        input_models: List[ArtifactType] = PlaceHolder(),
+    ):
         inputs = locals()
         self._process_init_inputs(inputs)
         super(HeteroFeatureSelection, self).__init__()
