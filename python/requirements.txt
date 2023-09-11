@@ -1,0 +1,16 @@
+pip>=21
+click
+poetry==1.2.2
+pandas==2.0.3
+psutil==5.9.5
+requests<2.26.0
+requests_toolbelt==0.9.1
+ruamel-yaml==0.16
+setuptools
+networkx
+pydantic==1.10.12
+ml_metadata
+protobuf==3.19.6
+grpcio==1.46.3
+grpcio-tools==1.46.3
+
