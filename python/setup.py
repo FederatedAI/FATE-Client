@@ -32,11 +32,11 @@ install_requires = [
     "setuptools",
     "networkx",
     "pydantic",
-    "ml_metadata",
 ]
 
 extras_require = {
     "fate": ["pyfate"],
+    "fate_flow": ["fate_flow"]
 }
 entry_points = {"console_scripts": ["flow = fate_client.flow_cli.flow:flow_cli",
                                     "pipeline = fate_client.pipeline.pipeline_cli:pipeline_group"]}

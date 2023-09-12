@@ -21,15 +21,16 @@ from ...interface import ArtifactType
 class Evaluation(Component):
     yaml_define_path = "./component_define/fate/evaluation.yaml"
 
-    def __init__(self,
-                 _name: str,
-                 runtime_roles: List[str] = None,
-                 default_eval_setting: Literal['binary', 'multi', 'regression'] = PlaceHolder(),
-                 metrics: List[str] = None,
-                 predict_column_name: str = None,
-                 label_column_name: str = None,
-                 input_data: ArtifactType = PlaceHolder(),
-                 ):
+    def __init__(
+        self,
+        _name: str,
+        runtime_roles: List[str] = None,
+        default_eval_setting: Literal["binary", "multi", "regression"] = PlaceHolder(),
+        metrics: List[str] = None,
+        predict_column_name: str = None,
+        label_column_name: str = None,
+        input_data: ArtifactType = PlaceHolder(),
+    ):
         inputs = locals()
         self._process_init_inputs(inputs)
         super(Evaluation, self).__init__()
@@ -40,4 +41,3 @@ class Evaluation(Component):
         self.metrics = metrics
         self.predict_column_name = predict_column_name
         self.label_column_name = label_column_name
-        

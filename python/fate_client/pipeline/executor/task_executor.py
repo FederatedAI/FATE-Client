@@ -14,123 +14,10 @@
 #  limitations under the License.
 from pathlib import Path
 from typing import Dict
-from ..conf.env_config import StandaloneConfig
-from ..utils.standalone.id_gen import gen_job_id
-from ..utils.standalone.job_process import process_task
 from ..entity.dag_structures import DAGSchema
 from ..entity.component_structures import ComponentSpec
-from ..scheduler.dag_parser import DagParser
-from ..scheduler.runtime_constructor import RuntimeConstructor
 from ..utils.fateflow.fate_flow_job_invoker import FATEFlowJobInvoker
-from ..entity.model_info import StandaloneModelInfo, FateFlowModelInfo
-
-
-class StandaloneExecutor(object):
-    def __init__(self):
-        self._job_id = None
-        self._runtime_constructor_dict: dict = dict()
-        self._dag_parser = DagParser()
-        self._log_dir_prefix = None
-
-    def fit(self, dag_schema: DAGSchema, component_specs: Dict[str, ComponentSpec],
-            local_role: str, local_party_id: str) -> StandaloneModelInfo:
-        self._dag_parser.parse_dag(dag_schema, component_specs)
-        self._run()
-
-        local_party_id = self.get_site_party_id(dag_schema, local_role, local_party_id)
-        return StandaloneModelInfo(
-            job_id=self._job_id,
-            task_info=self._runtime_constructor_dict,
-            local_role=local_role,
-            local_party_id=local_party_id,
-            model_id=self._job_id,
-            model_version=0
-        )
-
-    def predict(self,
-                dag_schema: DAGSchema,
-                component_specs: Dict[str, ComponentSpec],
-                fit_model_info: StandaloneModelInfo) -> StandaloneModelInfo:
-        self._dag_parser.parse_dag(dag_schema, component_specs)
-        self._run(fit_model_info)
-        return StandaloneModelInfo(
-            job_id=self._job_id,
-            task_info=self._runtime_constructor_dict,
-            local_role=fit_model_info.local_role,
-            local_party_id=fit_model_info.local_party_id
-        )
-
-    def _run(self, fit_model_info: StandaloneModelInfo = None):
-        self._job_id = gen_job_id()
-        self._log_dir_prefix = StandaloneConfig.OUTPUT_LOG_DIR.joinpath(self._job_id)
-        print(f"log prefix {self._log_dir_prefix}")
-
-        runtime_constructor_dict = dict()
-        for task_name in self._dag_parser.topological_sort():
-            print(f"Running component {task_name}")
-            log_dir = self._log_dir_prefix.joinpath("tasks").joinpath(task_name)
-            task_node = self._dag_parser.get_task_node(task_name)
-            stage = task_node.stage
-            runtime_parties = task_node.runtime_parties
-            runtime_parameters = task_node.runtime_parameters
-            upstream_inputs = task_node.upstream_inputs
-
-            runtime_constructor = RuntimeConstructor(runtime_parties=runtime_parties,
-                                                     job_id=self._job_id,
-                                                     task_name=task_name,
-                                                     component_ref=task_node.component_ref,
-                                                     component_spec=task_node.component_spec,
-                                                     stage=stage,
-                                                     runtime_parameters=runtime_parameters,
-                                                     log_dir=log_dir)
-            runtime_constructor.construct_input_artifacts(upstream_inputs,
-                                                          runtime_constructor_dict,
-                                                          fit_model_info)
-            runtime_constructor.construct_outputs()
-            # runtime_constructor.construct_output_artifacts(output_definitions)
-            runtime_constructor.construct_task_schedule_spec()
-            runtime_constructor_dict[task_name] = runtime_constructor
-
-            status = self._exec_task("run_component",
-                                     task_name,
-                                     runtime_constructor=runtime_constructor)
-            if status["summary_status"] != "success":
-                raise ValueError(f"run task {task_name} is failed, status is {status}")
-
-            runtime_constructor_dict[task_name].retrieval_task_outputs()
-
-        self._runtime_constructor_dict = runtime_constructor_dict
-        print("Job Finish Successfully!!!")
-
-    @staticmethod
-    def _exec_task(task_type, task_name, runtime_constructor):
-        exec_cmd_prefix = [
-            "python",
-            "-m",
-            "fate.components",
-            "component",
-            "execute",
-        ]
-
-        ret_msg = process_task(task_type=task_type,
-                               task_name=task_name,
-                               exec_cmd_prefix=exec_cmd_prefix,
-                               runtime_constructor=runtime_constructor,
-                               )
-
-        return ret_msg
-
-    @staticmethod
-    def get_site_party_id(dag_schema, role, party_id):
-        if party_id:
-            return party_id
-
-        if party_id is None:
-            for party in dag_schema.dag.parties:
-                if role == party.role:
-                    return party.party_id[0]
-
-        raise ValueError(f"Can not retrieval site's party_id from site's role {role}")
+from ..entity.model_info import FateFlowModelInfo
 
 
 class FateFlowExecutor(object):
@@ -174,9 +61,6 @@ class FateFlowExecutor(object):
 
     @staticmethod
     def get_site_party_id(flow_job_invoker, dag_schema, role, party_id):
-        """
-        query it by flow, if backend is standalone, multiple party_ids exist, so need to decide it by query dag
-        """
         site_party_id = flow_job_invoker.query_site_info()
 
         if site_party_id:
@@ -216,6 +100,7 @@ class FateFlowExecutor(object):
     def transform_to_dataframe(namespace: str,
                                name: str,
                                data_warehouse: dict,
+                               site_name: str,
                                role: str,
                                party_id: str):
         flow_job_invoker = FATEFlowJobInvoker()
@@ -223,6 +108,7 @@ class FateFlowExecutor(object):
         flow_job_invoker.transform_to_dataframe(namespace=namespace,
                                                 name=name,
                                                 data_warehouse=data_warehouse,
+                                                site_name=site_name,
                                                 role=role,
                                                 party_id=party_id
                                                 )

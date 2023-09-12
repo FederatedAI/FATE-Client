@@ -2,7 +2,7 @@ component:
   name: hetero_feature_selection
   description: ''
   provider: fate
-  version: 2.0.0-alpha
+  version: 2.0.0-beta
   labels: [ ]
   roles:
     - guest
@@ -44,7 +44,7 @@ component:
         filter_type:
           - threshold
         threshold:
-          - 1
+          - 1.0
         take_high:
           - true
         host_filter_type:
@@ -81,8 +81,11 @@ component:
             type: array
             items:
               anyOf:
-                - type: integer
                 - type: number
+                  minimum: 0.0
+                  maximum: 1.0
+                - type: integer
+                  minimum: 1
           take_high:
             title: Take High
             default:
@@ -104,8 +107,11 @@ component:
             type: array
             items:
               anyOf:
-                - type: integer
                 - type: number
+                  minimum: 0.0
+                  maximum: 1.0
+                - type: integer
+                  minimum: 1
           host_take_high:
             title: Host Take High
             default:
@@ -125,7 +131,7 @@ component:
         filter_type:
           - threshold
         threshold:
-          - 1
+          - 1.0
         take_high:
           - true
       optional: true
@@ -155,8 +161,11 @@ component:
             type: array
             items:
               anyOf:
-                - type: integer
                 - type: number
+                  minimum: 0.0
+                  maximum: 1.0
+                - type: integer
+                  minimum: 1
           take_high:
             title: Take High
             default:

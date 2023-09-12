@@ -22,16 +22,17 @@ from ...interface import ArtifactType
 class Statistics(Component):
     yaml_define_path = "./component_define/fate/statistics.yaml"
 
-    def __init__(self,
-                 _name: str,
-                 runtime_roles: List[str] = None,
-                 metrics: Union[List[str], str] = None,
-                 bias: bool = True,
-                 skip_col: List[str] = PlaceHolder(),
-                 use_anonymous: bool = False,
-                 relative_error: float = 1e-3,
-                 input_data: ArtifactType = PlaceHolder()
-                 ):
+    def __init__(
+        self,
+        _name: str,
+        runtime_roles: List[str] = None,
+        metrics: Union[List[str], str] = None,
+        bias: bool = True,
+        skip_col: List[str] = PlaceHolder(),
+        use_anonymous: bool = False,
+        relative_error: float = 1e-3,
+        input_data: ArtifactType = PlaceHolder(),
+    ):
         inputs = locals()
         self._process_init_inputs(inputs)
         super(Statistics, self).__init__()

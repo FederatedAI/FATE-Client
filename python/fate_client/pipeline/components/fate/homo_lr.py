@@ -22,25 +22,26 @@ from ...interface import ArtifactType
 class HomoLR(Component):
     yaml_define_path = "./component_define/fate/homo_lr.yaml"
 
-    def __init__(self,
-                 _name: str,
-                 runtime_roles: List[str] = None,
-                 epochs: int = 20,
-                 early_stop: str = "diff",
-                 tol: float = 1e-4,
-                 batch_size: int = -1,
-                 optimizer: dict = PlaceHolder(),
-                 learning_rate_scheduler: dict = PlaceHolder(),
-                 init_param: dict = PlaceHolder(),
-                 threshold: float = 0.5,
-                 ovr: bool = False,
-                 label_num: int = None,
-                 train_data: ArtifactType = PlaceHolder(),
-                 validate_data: ArtifactType = PlaceHolder(),
-                 test_data: ArtifactType = PlaceHolder(),
-                 train_input_model: ArtifactType = PlaceHolder(),
-                 predict_input_model: ArtifactType = PlaceHolder()
-                 ):
+    def __init__(
+        self,
+        _name: str,
+        runtime_roles: List[str] = None,
+        epochs: int = 20,
+        early_stop: str = "diff",
+        tol: float = 1e-4,
+        batch_size: int = -1,
+        optimizer: dict = PlaceHolder(),
+        learning_rate_scheduler: dict = PlaceHolder(),
+        init_param: dict = PlaceHolder(),
+        threshold: float = 0.5,
+        ovr: bool = False,
+        label_num: int = None,
+        train_data: ArtifactType = PlaceHolder(),
+        validate_data: ArtifactType = PlaceHolder(),
+        test_data: ArtifactType = PlaceHolder(),
+        train_input_model: ArtifactType = PlaceHolder(),
+        predict_input_model: ArtifactType = PlaceHolder(),
+    ):
         inputs = locals()
         self._process_init_inputs(inputs)
         super(HomoLR, self).__init__()
@@ -61,5 +62,3 @@ class HomoLR(Component):
         self.predict_input_model = predict_input_model
         self.ovr = ovr
         self.label_num = label_num
-        
-        

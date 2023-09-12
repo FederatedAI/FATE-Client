@@ -2,7 +2,7 @@ component:
   name: hetero_feature_binning
   description: ''
   provider: fate
-  version: 2.0.0-alpha
+  version: 2.0.0-beta
   labels: [ ]
   roles:
     - guest
@@ -161,6 +161,34 @@ component:
         title: ConstrainedNumberMeta
         exclusiveMinimum: 0
         type: number
+    he_param:
+      type: HEParam
+      default:
+        kind: paillier
+        key_length: 1024
+      optional: true
+      description: homomorphic encryption param
+      type_meta:
+        title: HEParam
+        $ref: '#/definitions/abc__HEParam'
+        definitions:
+          abc__HEParam:
+            title: HEParam
+            type: object
+            properties:
+              kind:
+                title: Kind
+                type: string
+              key_length:
+                title: Key Length
+                default: 1024
+                type: integer
+            required:
+              - kind
+        default:
+          kind: paillier
+          key_length: 1024
+        description: homomorphic encryption param
   input_artifacts:
     data:
       train_data:

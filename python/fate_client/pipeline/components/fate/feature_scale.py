@@ -22,19 +22,20 @@ from ...interface import ArtifactType
 class FeatureScale(Component):
     yaml_define_path = "./component_define/fate/feature_scale.yaml"
 
-    def __init__(self,
-                 _name: str,
-                 runtime_roles: List[str] = None,
-                 method: str = PlaceHolder(),
-                 feature_range: Union[list, dict] = None,
-                 scale_col: List[str] = None,
-                 scale_idx: List[int] = None,
-                 strict_range: bool = True,
-                 use_anonymous: bool = False,
-                 train_data: ArtifactType = PlaceHolder(),
-                 test_data: ArtifactType = PlaceHolder(),
-                 input_model: ArtifactType = PlaceHolder()
-                 ):
+    def __init__(
+        self,
+        _name: str,
+        runtime_roles: List[str] = None,
+        method: str = PlaceHolder(),
+        feature_range: Union[list, dict] = None,
+        scale_col: List[str] = None,
+        scale_idx: List[int] = None,
+        strict_range: bool = True,
+        use_anonymous: bool = False,
+        train_data: ArtifactType = PlaceHolder(),
+        test_data: ArtifactType = PlaceHolder(),
+        input_model: ArtifactType = PlaceHolder(),
+    ):
         inputs = locals()
         self._process_init_inputs(inputs)
         super(FeatureScale, self).__init__()

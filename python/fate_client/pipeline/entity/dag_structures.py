@@ -103,20 +103,35 @@ class PartyTaskSpec(BaseModel):
 
 
 class TaskConfSpec(BaseModel):
-    task_cores: Optional[int]
-    engine: Optional[Dict[str, Any]]
+    run: Optional[Dict]
     provider: Optional[str]
 
 
+class EngineRunSpec(BaseModel):
+    name: str
+    conf: Optional[Dict]
+
+
+class InheritConfSpec(BaseModel):
+    job_id: str
+    task_list: List[str]
+
+
 class JobConfSpec(BaseModel):
-    inherit: Optional[Dict[str, Any]]
+    priority: Optional[int]
+    scheduler_party_id: Optional[str]
+    inheritance: Optional[InheritConfSpec]
     task_parallelism: Optional[int]
+    cores: Optional[int]
+    computing_partitions: Optional[int]
+    sync_type: Optional[Union[Literal["poll", "callback"]]]
     federated_status_collect_type: Optional[str]
     auto_retries: Optional[int]
     model_warehouse: Optional[ModelWarehouseConfSpec]
     model_id: Optional[str]
     model_version: Optional[str]
     task: Optional[TaskConfSpec]
+    engine: Optional[EngineRunSpec]
 
 
 class DAGSpec(BaseModel):

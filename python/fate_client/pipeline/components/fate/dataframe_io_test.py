@@ -21,11 +21,12 @@ from ...interface import ArtifactType
 class DataFrameIOTest(Component):
     yaml_define_path = "./component_define/fate/dataframe_io_test.yaml"
 
-    def __init__(self,
-                 _name: str,
-                 dataframe_input: ArtifactType = PlaceHolder(),
-                 dataframe_inputs: ArtifactType = PlaceHolder()
-                 ):
+    def __init__(
+        self,
+        _name: str,
+        dataframe_input: ArtifactType = PlaceHolder(),
+        dataframe_inputs: ArtifactType = PlaceHolder(),
+    ):
         inputs = locals()
         self._process_init_inputs(inputs)
         super(DataFrameIOTest, self).__init__()

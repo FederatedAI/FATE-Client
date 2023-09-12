@@ -21,14 +21,15 @@ from ...interface import ArtifactType
 class DataFrameTransformer(Component):
     yaml_define_path = "./component_define/fate/dataframe_transformer.yaml"
 
-    def __init__(self,
-                 _name: str,
-                 table: ArtifactType = PlaceHolder(),
-                 name: str = PlaceHolder(),
-                 namespace: str = PlaceHolder(),
-                 anonymous_role: str = PlaceHolder(),
-                 anonymous_party_id: str = PlaceHolder()
-                 ):
+    def __init__(
+        self,
+        _name: str,
+        table: ArtifactType = PlaceHolder(),
+        name: str = PlaceHolder(),
+        namespace: str = PlaceHolder(),
+        anonymous_role: str = PlaceHolder(),
+        anonymous_party_id: str = PlaceHolder(),
+    ):
         inputs = locals()
         self._process_init_inputs(inputs)
         super(DataFrameTransformer, self).__init__()

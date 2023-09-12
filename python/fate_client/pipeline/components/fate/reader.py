@@ -20,18 +20,19 @@ from ..component_base import Component
 class Reader(Component):
     yaml_define_path = "./component_define/fate/reader.yaml"
 
-    def __init__(self,
-                 _name: str,
-                 runtime_roles: List[str] = None,
-                 path: str = PlaceHolder(),
-                 format: str = PlaceHolder(),
-                 sample_id_name: str = PlaceHolder(),
-                 match_id_name: str = PlaceHolder(),
-                 delimiter: str = PlaceHolder(),
-                 label_name: str = PlaceHolder(),
-                 label_type: str = PlaceHolder(),
-                 dtype: str = PlaceHolder()
-                 ):
+    def __init__(
+        self,
+        _name: str,
+        runtime_roles: List[str] = None,
+        path: str = PlaceHolder(),
+        format: str = PlaceHolder(),
+        sample_id_name: str = PlaceHolder(),
+        match_id_name: str = PlaceHolder(),
+        delimiter: str = PlaceHolder(),
+        label_name: str = PlaceHolder(),
+        label_type: str = PlaceHolder(),
+        dtype: str = PlaceHolder(),
+    ):
         inputs = locals()
         self._process_init_inputs(inputs)
         super(Reader, self).__init__()

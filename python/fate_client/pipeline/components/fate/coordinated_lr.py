@@ -22,26 +22,29 @@ from ...interface import ArtifactType
 class CoordinatedLR(Component):
     yaml_define_path = "./component_define/fate/coordinated_lr.yaml"
 
-    def __init__(self,
-                 _name: str,
-                 runtime_roles: List[str] = None,
-                 epochs: int = 20,
-                 early_stop: str = "diff",
-                 tol: float = 1e-4,
-                 batch_size: int = None,
-                 optimizer: dict = PlaceHolder(),
-                 learning_rate_scheduler: dict = PlaceHolder(),
-                 init_param: dict = PlaceHolder(),
-                 threshold: float = 0.5,
-                 train_data: ArtifactType = PlaceHolder(),
-                 cv_data: ArtifactType = PlaceHolder(),
-                 cv_param: dict = PlaceHolder(),
-                 output_cv_data: bool = True,
-                 validate_data: ArtifactType = PlaceHolder(),
-                 test_data: ArtifactType = PlaceHolder(),
-                 input_model: ArtifactType = PlaceHolder(),
-                 warm_start_model: ArtifactType = PlaceHolder()
-                 ):
+    def __init__(
+        self,
+        _name: str,
+        runtime_roles: List[str] = None,
+        epochs: int = 20,
+        early_stop: str = "diff",
+        tol: float = 1e-4,
+        batch_size: int = None,
+        optimizer: dict = PlaceHolder(),
+        learning_rate_scheduler: dict = PlaceHolder(),
+        init_param: dict = PlaceHolder(),
+        threshold: float = 0.5,
+        train_data: ArtifactType = PlaceHolder(),
+        cv_data: ArtifactType = PlaceHolder(),
+        cv_param: dict = PlaceHolder(),
+        floating_point_precision: int = 23,
+        he_param: dict = PlaceHolder(),
+        output_cv_data: bool = True,
+        validate_data: ArtifactType = PlaceHolder(),
+        test_data: ArtifactType = PlaceHolder(),
+        input_model: ArtifactType = PlaceHolder(),
+        warm_start_model: ArtifactType = PlaceHolder(),
+    ):
         inputs = locals()
         self._process_init_inputs(inputs)
         super(CoordinatedLR, self).__init__()
@@ -63,3 +66,5 @@ class CoordinatedLR(Component):
         self.cv_param = cv_param
         self.output_cv_data = output_cv_data
         self.warm_start_model = warm_start_model
+        self.floating_point_precision = floating_point_precision
+        self.he_param = he_param

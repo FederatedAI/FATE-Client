@@ -2,7 +2,7 @@ component:
   name: coordinated_lr
   description: ''
   provider: fate
-  version: 2.0.0-alpha
+  version: 2.0.0-beta
   labels: [ ]
   roles:
     - guest
@@ -102,6 +102,15 @@ component:
             lr: 0.01
             weight_decay: 0
         description: ''
+    floating_point_precision:
+      type: ConstrainedNumberMeta
+      default: 23
+      optional: true
+      description: 'floating point precision, '
+      type_meta:
+        title: ConstrainedNumberMeta
+        minimum: 0
+        type: integer
     tol:
       type: ConstrainedNumberMeta
       default: 0.0001
@@ -120,6 +129,34 @@ component:
       type_meta:
         title: type
         type: string
+    he_param:
+      type: HEParam
+      default:
+        kind: paillier
+        key_length: 1024
+      optional: true
+      description: homomorphic encryption param
+      type_meta:
+        title: HEParam
+        $ref: '#/definitions/abc__HEParam'
+        definitions:
+          abc__HEParam:
+            title: HEParam
+            type: object
+            properties:
+              kind:
+                title: Kind
+                type: string
+              key_length:
+                title: Key Length
+                default: 1024
+                type: integer
+            required:
+              - kind
+        default:
+          kind: paillier
+          key_length: 1024
+        description: homomorphic encryption param
     init_param:
       type: InitParam
       default:

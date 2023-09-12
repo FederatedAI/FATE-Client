@@ -20,7 +20,6 @@ from datetime import timedelta
 from pathlib import Path
 
 from fate_client.flow_sdk import FlowClient
-
 from ...conf.env_config import FlowConfig
 
 
@@ -138,9 +137,10 @@ class FATEFlowJobInvoker(object):
         self.monitor_status(job_id, role=role, party_id=party_id)
         return dict(namespace=namespace, name=name)
 
-    def transform_to_dataframe(self, name, namespace, data_warehouse, role, party_id):
+    def transform_to_dataframe(self, name, namespace, data_warehouse, site_name, role, party_id):
         response = self._client.data.dataframe_transformer(namespace=namespace,
                                                            name=name,
+                                                           site_name=site_name,
                                                            data_warehouse=data_warehouse)
 
         try:
@@ -241,8 +241,6 @@ class FATEFlowJobInvoker(object):
                         columns = line.strip().split(",")
                     else:
                         cols = line.strip().split(",", -1)
-                        print('cols are {}'.format(cols))
-                        print('json str are {}'.format(",".join(cols[len(columns) - 2: -1])[1:-1].replace("\'", "\"")))
                         predict_detail = json.loads(",".join(cols[len(columns) - 2: -1])[1:-1].replace("\'", "\""))
                         value = cols[: len(columns) - 2] + [predict_detail] + cols[-1:]
                         data.append(value)
