@@ -27,7 +27,7 @@ WARNING = '\033[91m'
 ENDC = '\033[0m'
 
 
-@click.group(name="pipeline")
+@click.group(name="pipeline", context_settings=dict(help_option_names=['-h', '--help']))
 def pipeline_group():
     ...
 
@@ -38,7 +38,10 @@ def pipeline_group():
 @click.option("--path", type=click.STRING, help="config pipeline by file directly")
 def _init_pipeline(**kwargs):
     """
-    pipeline config
+        \b
+        - DESCRIPTION: init pipeline config
+        \b
+        - USAGE: pipeline config init --ip 127.0.0.1 --port 9380
     """
     ip = kwargs.get("ip")
     port = kwargs.get("port")
@@ -78,7 +81,10 @@ def _init_pipeline(**kwargs):
 @click.option("--party", type=click.STRING, help="local party id.")
 def _init_pipeline(**kwargs):
     """
-    pipeline config
+        \b
+        - DESCRIPTION: set pipeline site info
+        \b
+        - USAGE: pipeline config site-info --role guest --party 9999
     """
     role = kwargs.get("role")
     party = kwargs.get("party")
@@ -116,5 +122,3 @@ def _show():
     with Path(default_config).open("r") as fin:
         config = yaml.safe_load(fin)
         click.echo(f"\nPipeline Config: {yaml.dump(config)}")
-
-

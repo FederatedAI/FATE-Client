@@ -103,8 +103,7 @@ class PartyTaskSpec(BaseModel):
 
 
 class TaskConfSpec(BaseModel):
-    task_cores: Optional[int]
-    engine: Optional[Dict[str, Any]]
+    run: Optional[Dict]
     provider: Optional[str]
 
 
