@@ -23,7 +23,6 @@ package_data = {"": ["*"]}
 
 install_requires = [
     "click",
-    "poetry",
     "pandas",
     "psutil",
     "requests",
