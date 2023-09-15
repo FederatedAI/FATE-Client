@@ -146,7 +146,9 @@ component:
               - mean
             type: array
             items:
-              type: string
+              anyOf:
+                - type: string
+                - type: string
           filter_type:
             title: Filter Type
             default:
