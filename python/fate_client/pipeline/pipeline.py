@@ -14,13 +14,13 @@
 #  limitations under the License.
 import copy
 from ruamel import yaml
-from .executor import StandaloneExecutor, FateFlowExecutor
+from .executor import FateFlowExecutor
 from .entity import DAG
-from .entity.dag_structures import JobConfSpec
-from .entity import FateFlowTaskInfo, StandaloneTaskInfo
+from .entity.dag_structures import JobConfSpec, ModelWarehouseConfSpec
+from .entity import FateFlowTaskInfo
 from .entity.runtime_entity import Roles
 from .conf.env_config import SiteInfo
-from .conf.types import SupportRole, PlaceHolder
+from .conf.types import SupportRole, PlaceHolder, InputArtifactType
 from .conf.job_configuration import JobConf
 from .components.component_base import Component
 from .scheduler.dag_parser import DagParser
@@ -115,10 +115,10 @@ class Pipeline(object):
 
     def add_task(self, task) -> "Pipeline":
         if isinstance(task, Component):
-            if task.name in self._tasks:
-                raise ValueError(f"Task {task.name} has been added before")
+            if task.task_name in self._tasks:
+                raise ValueError(f"Task {task.task_name} has been added before")
 
-            self._tasks[task.name] = task
+            self._tasks[task.task_name] = task
         elif isinstance(task, Pipeline):
             if task.stage != "deployed":
                 raise ValueError("Deploy training pipeline first and use get_deployed_pipeline to get the inst")
@@ -147,7 +147,8 @@ class Pipeline(object):
         deploy_pipeline = Pipeline(self._executor)
         deploy_pipeline.set_stage("deployed")
         deploy_pipeline.conf = self._job_conf
-        deploy_pipeline.conf.update(self._predict_dag.conf.dict(exclude_defaults=True))
+        if self._predict_dag.conf:
+            deploy_pipeline.conf.update(self._predict_dag.conf.dict(exclude_defaults=True))
         deploy_pipeline.predict_dag = self._predict_dag
         deploy_pipeline.roles = self._roles
         deploy_pipeline.model_info = self._model_info
@@ -157,20 +158,49 @@ class Pipeline(object):
                 continue
             deploy_task = copy.deepcopy(task)
             predict_task_spec = self._predict_dag.tasks[task_name]
-            input_artifact_keys = task.component_spec.input_definitions.artifacts.keys()
-            for input_artifact_key in input_artifact_keys:
-                setattr(deploy_task, input_artifact_key, PlaceHolder())
+            for artifact_type in InputArtifactType.types():
+                if not getattr(task.component_spec.input_artifacts, artifact_type):
+                    continue
+                artifacts = getattr(task.component_spec.input_artifacts, artifact_type)
+                input_artifact_keys = artifacts.keys()
+                for input_artifact_key in input_artifact_keys:
+                    setattr(deploy_task, input_artifact_key, PlaceHolder())
 
-            if predict_task_spec.inputs and predict_task_spec.inputs.artifacts:
-                for input_artifact_key, input_channel in predict_task_spec.inputs.artifacts.items():
+                if not predict_task_spec.inputs or not getattr(predict_task_spec.inputs, artifact_type):
+                    continue
+                artifacts = getattr(predict_task_spec.inputs, artifact_type)
+                for input_artifact_key, input_channel in artifacts.items():
                     for artifact_source_type, channel in input_channel.items():
-                        producer_task = channel.producer_task
-                        output_artifact_key = channel.output_artifact_key
-                        changed_channel = copy.deepcopy(self._tasks[producer_task].outputs[output_artifact_key])
-                        changed_channel.source = artifact_source_type
-                        setattr(deploy_task, input_artifact_key, changed_channel)
+                        channels = channel if isinstance(channel, list) else [channel]
+                        changed_channels = []
+                        for _c in channels:
+                            producer_task = _c.producer_task
+                            output_artifact_key = _c.output_artifact_key
+                            changed_channel = copy.deepcopy(self._tasks[producer_task].outputs[output_artifact_key])
+                            changed_channel.source = artifact_source_type
+                            changed_channels.append(changed_channel)
+
+                        if isinstance(channel, list):
+                            setattr(deploy_task, input_artifact_key, changed_channels)
+                        else:
+                            setattr(deploy_task, input_artifact_key, changed_channels[0])
 
             deploy_pipeline.add_task(deploy_task)
+
+        party_tasks = self._dag.dag_spec.dag.party_tasks
+        if not party_tasks:
+            return deploy_pipeline
+
+        for site_name, party_task_spec in party_tasks.items():
+            if not party_task_spec.tasks:
+                continue
+
+            for task_name, task_spec in party_task_spec.tasks.items():
+                if task_spec.inputs:
+                    try:
+                        getattr(deploy_pipeline, task_name).reset_source_inputs()
+                    except AttributeError:
+                        pass
 
         return deploy_pipeline
 
@@ -214,7 +244,7 @@ class Pipeline(object):
             task_name_list = []
             for task in task_list:
                 if isinstance(task, Component):
-                    task_name_list.append(task.name)
+                    task_name_list.append(task.task_name)
                 else:
                     task_name_list.append(task)
         else:
@@ -225,8 +255,8 @@ class Pipeline(object):
         if self._model_info:
             if self._predict_dag.conf is None:
                 self._predict_dag.conf = JobConfSpec()
-            self._predict_dag.conf.model_id = self._model_info.model_id
-            self._predict_dag.conf.model_version = self._model_info.model_version
+            self._predict_dag.conf.model_warehouse = ModelWarehouseConfSpec(model_id=self._model_info.model_id,
+                                                                            model_version=self._model_info.model_version)
 
         return yaml.dump(self._predict_dag.dict(exclude_defaults=True))
 
@@ -243,30 +273,35 @@ class Pipeline(object):
         return self._tasks[item]
 
 
-class StandalonePipeline(Pipeline):
-    def __init__(self, *args):
-        super(StandalonePipeline, self).__init__(StandaloneExecutor(), *args)
-
-    def get_task_info(self, task):
-        if isinstance(task, Component):
-            task = task.name
-
-        return StandaloneTaskInfo(task_name=task, model_info=self._model_info)
-
-
 class FateFlowPipeline(Pipeline):
     def __init__(self, *args):
         super(FateFlowPipeline, self).__init__(FateFlowExecutor(), *args)
 
-    def upload(self, file: str, head: int,
-               namespace: str, name: str,
-               meta: dict, partitions=4,
-               destroy=True,
-               storage_engine=None, **kwargs):
-        self._executor.upload(file, head, namespace, name, meta, partitions, destroy, storage_engine, **kwargs)
+    def transform_local_file_to_dataframe(self,
+                                          file: str,
+                                          head: str,
+                                          namespace: str,
+                                          name: str,
+                                          meta: dict,
+                                          extend_sid=True,
+                                          partitions=4,
+                                          site_name: str = None,
+                                          **kwargs):
+        data_warehouse = self._executor.upload(file=file,
+                                               head=head,
+                                               meta=meta,
+                                               partitions=partitions,
+                                               extend_sid=extend_sid,
+                                               role="local",
+                                               party_id="0",
+                                               **kwargs)
+        self._executor.transform_to_dataframe(namespace, name, data_warehouse, site_name=site_name, role="local", party_id="0")
 
     def get_task_info(self, task):
         if isinstance(task, Component):
-            task = task.name
+            task = task.task_name
+
+        if task not in self._tasks:
+            raise ValueError(f"Task {task} not exist")
 
         return FateFlowTaskInfo(task_name=task, model_info=self._model_info)

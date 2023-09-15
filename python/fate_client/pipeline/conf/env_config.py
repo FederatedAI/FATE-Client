@@ -18,10 +18,10 @@ from pathlib import Path
 from ruamel import yaml
 
 
-__all__ = ["StatusCode", "FlowConfig", "StandaloneConfig", "SiteInfo"]
+__all__ = ["StatusCode", "FlowConfig", "SiteInfo"]
 
 
-with Path(__file__).parent.parent.joinpath("pipeline_config.yaml").resolve().open("r") as fin:
+with Path(__file__).parent.parent.parent.joinpath("settings.yaml").resolve().open("r") as fin:
     __DEFAULT_CONFIG: dict = yaml.safe_load(fin)
 
 
@@ -41,25 +41,16 @@ class StatusCode(object):
 
 
 class SiteInfo(object):
-    conf = get_default_config().get("site_info", {})
+    conf = get_default_config().get("pipeline", {}).get("site_info", {})
     ROLE = conf.get("local_role")
     PARTY_ID = conf.get("local_party_id")
 
 
 class FlowConfig(object):
-    conf = get_default_config().get("fate_flow", {})
+    conf = get_default_config().get("flow_service", {})
     IP = conf.get("ip")
     PORT = conf.get("port")
-    VERSION = conf.get("version")
-
-
-class Device(object):
-    def __init__(self, conf):
-        self._type = conf.get("device", {}).get("type", "CPU")
-
-    @property
-    def type(self):
-        return self._type
+    VERSION = conf.get("api_version")
 
 
 class LOGGER(object):
@@ -74,61 +65,3 @@ class LOGGER(object):
     @property
     def debug_mode(self):
         return self._debug_mode
-
-
-class ComputingEngine(object):
-    def __init__(self, conf):
-        self._type = conf.get("computing_engine", {}).get("type", "standalone")
-
-    @property
-    def type(self):
-        return self._type
-
-
-class FederationEngine(object):
-    def __init__(self, conf):
-        self._type = conf.get("federation_engine", {}).get("type", "standalone")
-
-    @property
-    def type(self):
-        return self._type
-
-
-class MLMD(object):
-    def __init__(self, conf):
-        self._type = conf.get("mlmd", {}).get("type", "pipeline")
-        self._db = conf.get("mlmd", {}).get("metadata", {}).get("db")
-        if not self._db:
-            default_path = Path.cwd()
-            self._db = default_path.joinpath("pipeline_sqlite.db").as_uri()
-
-    @property
-    def db(self):
-        return self._db
-
-    @property
-    def type(self):
-        return self._type
-
-
-class StandaloneConfig(object):
-    conf = get_default_config().get("standalone", {})
-
-    job_dir = conf.get("job_dir")
-    if not job_dir:
-        job_dir = Path.cwd()
-    else:
-        job_dir = Path(job_dir)
-
-    JOB_CONF_DIR = job_dir.joinpath("jobs").as_uri()
-    OUTPUT_DATA_DIR = job_dir.joinpath("data").as_uri()
-    OUTPUT_MODEL_DIR = job_dir.joinpath("model").as_uri()
-    OUTPUT_METRIC_DIR = job_dir.joinpath("metric").as_uri()
-    OUTPUT_LOG_DIR = job_dir.joinpath("logs")
-
-    MLMD = MLMD(conf)
-    LOGGER = LOGGER(conf)
-    DEVICE = Device(conf)
-    COMPUTING_ENGINE = ComputingEngine(conf)
-    FEDERATION_ENGINE = FederationEngine(conf)
-

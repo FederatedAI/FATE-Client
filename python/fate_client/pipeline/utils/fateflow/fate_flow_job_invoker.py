@@ -12,9 +12,14 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+#
+import os
+import tempfile
 import time
 from datetime import timedelta
-from .flow_client import FlowClient
+from pathlib import Path
+
+from fate_client.flow_sdk import FlowClient
 from ...conf.env_config import FlowConfig
 
 
@@ -66,7 +71,7 @@ class FATEFlowJobInvoker(object):
             time.sleep(1)
 
     def submit_job(self, dag_schema):
-        response = self._client.submit_job(dag_schema=dag_schema)
+        response = self._client.job.submit(dag_schema=dag_schema)
         try:
             code = response["code"]
             if code != 0:
@@ -80,7 +85,7 @@ class FATEFlowJobInvoker(object):
             raise ValueError(f"submit job is failed, response={response}")
 
     def query_job(self, job_id, role, party_id):
-        response = self._client.query_job(job_id, role, party_id)
+        response = self._client.job.query(job_id, role, party_id)
         try:
             code = response["code"]
             if code != 0:
@@ -92,7 +97,7 @@ class FATEFlowJobInvoker(object):
             raise ValueError(f"query job is failed, response={response}")
 
     def query_task(self, job_id, role, party_id, status):
-        response = self._client.query_task(job_id, role, party_id, status)
+        response = self._client.task.query(job_id=job_id, role=role, party_id=party_id, status=status)
         try:
             code = response["code"]
             data = response.get("data", [])
@@ -101,7 +106,7 @@ class FATEFlowJobInvoker(object):
             raise ValueError(f"query task is failed, response={response}")
 
     def query_site_info(self):
-        response = self._client.query_site_info()
+        response = self._client.site.info()
         try:
             code = response["code"]
             if code != 0:
@@ -112,8 +117,12 @@ class FATEFlowJobInvoker(object):
         except ValueError:
             return None
 
-    def upload_data(self, upload_conf):
-        response = self._client.upload_data(upload_conf)
+    def upload_data(self, file, meta, head, extend_sid, role=None, party_id=None, **kwargs):
+        response = self._client.data.upload(file=file,
+                                            head=head,
+                                            meta=meta,
+                                            extend_sid=extend_sid,
+                                            **kwargs)
         try:
             code = response["code"]
             if code != 0:
@@ -121,27 +130,81 @@ class FATEFlowJobInvoker(object):
 
             namespace = response["data"]["namespace"]
             name = response["data"]["name"]
-            print(f"Upload data successfully, please use eggroll:///{namespace}/{name} as input uri")
+            job_id = response["job_id"]
         except BaseException:
             raise ValueError(f"Upload data fails, response={response}")
 
-    def get_output_data(self, ):
-        ...
+        self.monitor_status(job_id, role=role, party_id=party_id)
+        return dict(namespace=namespace, name=name)
 
-    def get_output_model(self, job_id, role, party_id, task_name):
-        response = self._client.query_model(job_id, role, party_id, task_name)
+    def transform_to_dataframe(self, name, namespace, data_warehouse, site_name, role, party_id):
+        response = self._client.data.dataframe_transformer(namespace=namespace,
+                                                           name=name,
+                                                           site_name=site_name,
+                                                           data_warehouse=data_warehouse)
+
         try:
             code = response["code"]
             if code != 0:
                 raise ValueError(f"Return code {code}!=0")
-            model = response["data"]["output_model"]
+
+            job_id = response["job_id"]
+        except BaseException:
+            raise ValueError(f"Upload data fails, response={response}")
+
+        self.monitor_status(job_id, role=role, party_id=party_id)
+
+        return code
+
+    def get_output_data(self, job_id, role, party_id, task_name):
+        with tempfile.TemporaryDirectory() as data_dir:
+            response = self._client.output.download_data(job_id=job_id, role=role, party_id=party_id,
+                                                         task_name=task_name, path=data_dir)
+            try:
+                code = response["code"]
+                if code != 0:
+                    raise ValueError(f"Return code {code}!=0")
+            except BaseException:
+                raise ValueError(f"query task={job_id}, role={role}, "
+                                 f"party_id={party_id}'s output data is failed, response={response}")
+
+            data_dir = Path(data_dir).joinpath(os.listdir(data_dir)[0])
+            output_keys = os.listdir(data_dir)
+            if not output_keys:
+                return None
+
+            output_data_dict = {}
+            for output_key in output_keys:
+                path = Path(data_dir).joinpath(output_key)
+                files = os.listdir(path)
+                file_names = []
+                for file in files:
+                    if file.endswith("csv"):
+                        file_names.append(file)
+
+                if len(file_names) == 1:
+                    output_data_dict[output_key] = self.load_data_to_pd_df(path.joinpath(file_names[0]))
+                else:
+                    output_data_dict[output_key] = dict()
+                    for file_name in file_names:
+                        output_data_dict[output_key][file_name] = self.load_data_to_pd_df(path.joinpath(file_name))
+
+            return output_data_dict
+
+    def get_output_model(self, job_id, role, party_id, task_name):
+        response = self._client.output.query_model(job_id=job_id, role=role, party_id=party_id, task_name=task_name)
+        try:
+            code = response["code"]
+            if code != 0:
+                raise ValueError(f"Return code {code}!=0")
+            model = response["data"]
             return model
         except BaseException:
             raise ValueError(f"query task={job_id}, role={role}, "
                              f"party_id={party_id}'s output model is failed, response={response}")
 
-    def get_output_metrics(self, job_id, role, party_id, task_name):
-        response = self._client.query_metrics(job_id, role, party_id, task_name)
+    def get_output_metric(self, job_id, role, party_id, task_name):
+        response = self._client.output.query_metric(job_id=job_id, role=role, party_id=party_id, task_name=task_name)
         try:
             code = response["code"]
             if code != 0:
@@ -151,6 +214,39 @@ class FATEFlowJobInvoker(object):
         except BaseException:
             raise ValueError(f"query task={job_id}, role={role}, "
                              f"party_id={party_id}'s output metrics is failed, response={response}")
+
+    @staticmethod
+    def load_data_to_pd_df(path: Path):
+        import pandas as pd
+        import json
+        is_predict_task = False
+        template_col_names = ["label", "predict_result", "predict_score", "predict_detail", "type"]
+
+        with open(path, "r") as fin:
+            columns = set(fin.readline().strip().split(",", -1))
+            tot = 0
+            for col in template_col_names:
+                if col in columns:
+                    tot += 1
+
+            if tot >= 4:
+                is_predict_task = True
+
+        if is_predict_task:
+            data = []
+            columns = None
+            with open(path, "r") as fin:
+                for line in fin:
+                    if not columns:
+                        columns = line.strip().split(",")
+                    else:
+                        cols = line.strip().split(",", -1)
+                        predict_detail = json.loads(",".join(cols[len(columns) - 2: -1])[1:-1].replace("\'", "\""))
+                        value = cols[: len(columns) - 2] + [predict_detail] + cols[-1:]
+                        data.append(value)
+            return pd.DataFrame(data, columns=columns)
+        else:
+            return pd.read_csv(path)
 
 
 class JobStatus(object):

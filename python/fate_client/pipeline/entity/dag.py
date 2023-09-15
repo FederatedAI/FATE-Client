@@ -13,11 +13,11 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 from .runtime_entity import PartySpec
-from .dag_structures import RuntimeInputDefinition, DAGSpec, DAGSchema, \
+from .dag_structures import RuntimeInputArtifacts, DAGSpec, DAGSchema, \
     TaskSpec, PartyTaskRefSpec, PartyTaskSpec, JobConfSpec
 from ..scheduler.component_stage import ComponentStageSchedule
 
-SCHEMA_VERSION = "2.0.0.alpha"
+SCHEMA_VERSION = "2.0.0.beta"
 
 
 class DAG(object):
@@ -39,18 +39,16 @@ class DAG(object):
         for task_name, task_inst in task_insts.items():
             task = dict(component_ref=task_inst.component_ref)
             dependent_tasks = task_inst.get_dependent_tasks()
-            inputs = RuntimeInputDefinition()
             cpn_runtime_roles = set(roles.get_runtime_roles()) & set(task_inst.support_roles)
             if cpn_runtime_roles != set(roles.get_runtime_roles()):
                 task["parties"] = roles.get_parties_spec(cpn_runtime_roles)
 
-            input_channel, input_artifacts = task_inst.get_runtime_input_artifacts(cpn_runtime_roles)
-            task_stage = ComponentStageSchedule.get_stage(input_artifacts)
-            if task_stage != stage:
-                task["stage"] = task_stage
+            input_channels, input_artifacts = task_inst.get_runtime_input_artifacts(cpn_runtime_roles)
+            task_stage = ComponentStageSchedule.get_stage(input_artifacts, default_stage=stage)
 
-            if input_channel:
-                inputs.artifacts = input_channel
+            if input_channels:
+                inputs = RuntimeInputArtifacts(**input_channels)
+                task["inputs"] = inputs
 
             if dependent_tasks:
                 task["dependent_tasks"] = dependent_tasks
@@ -58,16 +56,14 @@ class DAG(object):
             if task_inst.conf.dict():
                 task["conf"] = task_inst.conf.dict()
 
-            common_parameters = task_inst.get_component_param()
-            if common_parameters:
-                inputs.parameters = common_parameters
+            common_parameters = task_inst.get_component_setting()
 
             for role in cpn_runtime_roles:
                 party_id_list = roles.get_party_id_list_by_role(role)
                 for idx, party_id in enumerate(party_id_list):
                     role_party_key = f"{role}_{party_id}"
-                    role_param = task_inst.get_role_param(role, idx)
-                    if role_param:
+                    role_setting = task_inst.get_role_setting(role, idx)
+                    if role_setting:
                         if role_party_key not in party_tasks:
                             party_tasks[role_party_key] = PartyTaskSpec(
                                 parties=[PartySpec(role=role, party_id=[party_id])],
@@ -75,17 +71,22 @@ class DAG(object):
                             )
 
                         party_tasks[role_party_key].tasks[task_name] = PartyTaskRefSpec(
-                            inputs=RuntimeInputDefinition(
-                                parameters=role_param
-                            )
+                            parameters=role_setting.get("parameters"),
+                            inputs=role_setting.get("input_channels")
                         )
+                        if role_setting.get("input_artifacts"):
+                            party_task_stage = ComponentStageSchedule.get_stage(role_setting.get("input_artifacts"),
+                                                                                default_stage=stage)
+                            if task_stage != party_task_stage:
+                                task_stage = party_task_stage
 
                     role_conf = task_inst.get_role_conf(role, idx)
                     if role_conf:
                         party_tasks[role_party_key].conf = role_conf
 
-            if inputs.dict(exclude_unset=True):
-                task["inputs"] = inputs
+            if task_stage != stage:
+                task["stage"] = task_stage
+            task["parameters"] = common_parameters
 
             tasks[task_name] = TaskSpec(**task)
 
