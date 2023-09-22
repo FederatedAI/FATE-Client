@@ -36,14 +36,14 @@ class Component(object):
         self._index = None
         self._callable = True
         self._outputs = None
-        self._component_setting = dict()
+        self._task_setting = dict()
         self._task_conf = TaskConf()
 
         if self.yaml_define_path is None:
             raise ValueError("Component should have yaml define file, set yaml_define_path first please!")
 
         self._component_spec = load_component_spec(self.yaml_define_path)
-        self._init_component_setting()
+        self._init_task_setting()
 
     def __new__(cls, *args, **kwargs):
         if cls.__name__.lower() not in cls.__instance:
@@ -163,17 +163,17 @@ class Component(object):
                 self.runtime_roles = [self.runtime_roles]
             return list(set(self._component_spec.roles) & set(self.runtime_roles))
 
-    def component_setting(self, **kwargs):
+    def task_setting(self, **kwargs):
         for attr, val in kwargs.items():
-            self._component_setting[attr] = val
+            self._task_setting[attr] = val
 
-    def get_component_setting(self):
-        return self._component_setting
+    def get_task_setting(self):
+        return self._task_setting
 
     def get_role_setting(self, role, index):
-        component_setting = dict()
+        task_setting = dict()
         if role not in self.__party_instance:
-            return component_setting
+            return task_setting
 
         index = str(index)
 
@@ -185,15 +185,15 @@ class Component(object):
                 if index not in party_index:
                     continue
 
-                component_setting.update(party_inst.get_component_setting())
+                task_setting.update(party_inst.get_task_setting())
 
-        if not component_setting:
-            return component_setting
+        if not task_setting:
+            return task_setting
 
         parameters = {}
         input_channels = {}
         input_artifacts = {}
-        for attr, value in component_setting.items():
+        for attr, value in task_setting.items():
             if attr in self._component_spec.parameters:
                 parameters[attr] = value
             else:
@@ -233,14 +233,14 @@ class Component(object):
 
                 input_artifacts[type_key][attr] = artifact_spec
 
-        component_setting = dict()
+        task_setting = dict()
         if parameters:
-            component_setting["parameters"] = parameters
+            task_setting["parameters"] = parameters
         if input_channels:
-            component_setting["input_artifacts"] = input_artifacts
-            component_setting["input_channels"] = input_channels
+            task_setting["input_artifacts"] = input_artifacts
+            task_setting["input_channels"] = input_channels
 
-        return component_setting
+        return task_setting
 
     def get_role_conf(self, role, index):
         conf = dict()
@@ -264,13 +264,13 @@ class Component(object):
         for _, role_instances in self.__party_instance.items():
             for __, inst in role_instances.items():
                 for ___, party_inst in inst.party_instance.items():
-                    component_setting = party_inst.get_component_setting()
+                    task_setting = party_inst.get_task_setting()
                     input_artifacts = self._component_spec.input_artifacts
 
                     for artifact_type in InputArtifactType.types():
                         for artifact_key in getattr(input_artifacts, artifact_type):
-                            if artifact_key in component_setting:
-                                component_setting.pop(artifact_key)
+                            if artifact_key in task_setting:
+                                task_setting.pop(artifact_key)
 
     def validate_runtime_env(self, roles):
         runtime_roles = roles.get_runtime_roles()
@@ -397,9 +397,9 @@ class Component(object):
 
         return runtime_input_channels, input_artifacts
 
-    def _init_component_setting(self):
+    def _init_task_setting(self):
         parameters = self._component_spec.parameters
         for param in parameters:
             if isinstance(self._init_inputs.get(param, PlaceHolder()), PlaceHolder):
                 continue
-            self._component_setting[param] = self._init_inputs[param]
+            self._task_setting[param] = self._init_inputs[param]
