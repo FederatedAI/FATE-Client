@@ -20,7 +20,7 @@ from ...interface import ArtifactType
 
 
 class HeteroSecureBoost(Component):
-    yaml_define_path = "./component_define/fate/hetero_sbt.yaml"
+    yaml_define_path = "./component_define/fate/hetero_secureboost.yaml"
 
     def __init__(
         self,

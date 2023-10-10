@@ -1,5 +1,5 @@
 component:
-  name: hetero_sbt
+  name: hetero_secureboost
   description: ''
   provider: fate
   version: 2.0.0-beta
@@ -34,6 +34,16 @@ component:
       type_meta:
         title: ConstrainedNumberMeta
         exclusiveMinimum: 0
+        type: integer
+    complete_secure:
+      type: ConstrainedNumberMeta
+      default: 0
+      optional: true
+      description: number of trees to use guest features only in the complete secure
+        mode, 0 means no complete secure
+      type_meta:
+        title: ConstrainedNumberMeta
+        minimum: 0
         type: integer
     max_bin:
       type: ConstrainedNumberMeta
