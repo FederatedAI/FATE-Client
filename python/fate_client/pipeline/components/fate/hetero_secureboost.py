@@ -19,7 +19,7 @@ from ...conf.types import PlaceHolder
 from ...interface import ArtifactType
 
 
-class HeteroSBT(Component):
+class HeteroSecureBoost(Component):
     yaml_define_path = "./component_define/fate/hetero_sbt.yaml"
 
     def __init__(
@@ -30,6 +30,7 @@ class HeteroSBT(Component):
         validate_data: ArtifactType = PlaceHolder(),
         num_trees: int = 20,
         learning_rate: float = 0.3,
+        complete_secure: int = 0,
         max_depth: int = 3,
         max_bin: int = 32,
         objective: str = "binary:bce",
@@ -51,7 +52,7 @@ class HeteroSBT(Component):
     ):
         inputs = locals()
         self._process_init_inputs(inputs)
-        super(HeteroSBT, self).__init__()
+        super(HeteroSecureBoost, self).__init__()
         self._name = _name
         self.runtime_roles = runtime_roles
         self.train_data = train_data
@@ -59,6 +60,7 @@ class HeteroSBT(Component):
         self.train_model_input = train_model_input
         self.num_trees = num_trees
         self.learning_rate = learning_rate
+        self.complete_secure = complete_secure
         self.max_depth = max_depth
         self.max_bin = max_bin
         self.objective = objective
