@@ -72,6 +72,15 @@ component:
         title: ConstrainedNumberMeta
         exclusiveMinimum: 0
         type: integer
+    l1:
+      type: ConstrainedNumberMeta
+      default: 0
+      optional: true
+      description: L1 regularization
+      type_meta:
+        title: ConstrainedNumberMeta
+        minimum: 0
+        type: number
     l2:
       type: ConstrainedNumberMeta
       default: 0.1
@@ -79,7 +88,7 @@ component:
       description: L2 regularization
       type_meta:
         title: ConstrainedNumberMeta
-        exclusiveMinimum: 0
+        minimum: 0
         type: number
     min_impurity_split:
       type: ConstrainedNumberMeta

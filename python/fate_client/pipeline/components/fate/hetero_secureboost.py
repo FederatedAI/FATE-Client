@@ -35,6 +35,7 @@ class HeteroSecureBoost(Component):
         max_bin: int = 32,
         objective: str = "binary:bce",
         num_class: int = 2,
+        l1: float = 0,
         l2: float = 0.1,
         min_impurity_split: float = 1e-2,
         min_sample_split: int = 2,
@@ -65,6 +66,7 @@ class HeteroSecureBoost(Component):
         self.max_bin = max_bin
         self.objective = objective
         self.num_class = num_class
+        self.l1 = l1
         self.l2 = l2
         self.min_impurity_split = min_impurity_split
         self.min_sample_split = min_sample_split
