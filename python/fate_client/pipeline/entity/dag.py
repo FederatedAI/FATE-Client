@@ -32,16 +32,16 @@ class DAG(object):
 
         return DAGSchema(dag=self._dag_spec, schema_version=SCHEMA_VERSION)
 
-    def compile(self, roles, task_insts, stage, job_conf):
-        parties = roles.get_parties_spec()
+    def compile(self, parties, task_insts, stage, job_conf):
+        party_spec = parties.get_parties_spec()
         tasks = dict()
         party_tasks = dict()
         for task_name, task_inst in task_insts.items():
             task = dict(component_ref=task_inst.component_ref)
             dependent_tasks = task_inst.get_dependent_tasks()
-            cpn_runtime_roles = set(roles.get_runtime_roles()) & set(task_inst.support_roles)
-            if cpn_runtime_roles != set(roles.get_runtime_roles()):
-                task["parties"] = roles.get_parties_spec(cpn_runtime_roles)
+            cpn_runtime_roles = set(parties.get_runtime_roles()) & set(task_inst.support_roles)
+            if cpn_runtime_roles != set(parties.get_runtime_roles()):
+                task["parties"] = parties.get_parties_spec(cpn_runtime_roles)
 
             input_channels, input_artifacts = task_inst.get_runtime_input_artifacts(cpn_runtime_roles)
             task_stage = ComponentStageSchedule.get_stage(input_artifacts, default_stage=stage)
@@ -56,10 +56,10 @@ class DAG(object):
             if task_inst.conf.dict():
                 task["conf"] = task_inst.conf.dict()
 
-            common_parameters = task_inst.get_component_setting()
+            common_parameters = task_inst.get_task_setting()
 
             for role in cpn_runtime_roles:
-                party_id_list = roles.get_party_id_list_by_role(role)
+                party_id_list = parties.get_party_id_list_by_role(role)
                 for idx, party_id in enumerate(party_id_list):
                     role_party_key = f"{role}_{party_id}"
                     role_setting = task_inst.get_role_setting(role, idx)
@@ -91,7 +91,7 @@ class DAG(object):
             tasks[task_name] = TaskSpec(**task)
 
         self._dag_spec = DAGSpec(
-            parties=parties,
+            parties=party_spec,
             stage=stage,
             tasks=tasks
         )
