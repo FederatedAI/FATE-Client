@@ -165,7 +165,7 @@ class DAGSpec(BaseModel):
     """
     flow_id: Optional[str]
     old_job_id: Optional[str]
-    initiator: Tuple[Union[Literal["guest", "host", "arbiter", "local"]], str]
+    initiator: Optional[Tuple[Union[Literal["guest", "host", "arbiter", "local"]], str]]
 
 
 class DAGSchema(BaseModel):

@@ -251,7 +251,7 @@ class Translator(object):
     def get_party_task_params(cls,
                               party_task_params,
                               component_specs: Dict[str, BFIAComponentSpec],
-                              tasks: Dict[str, BFIAComponentSpec]):
+                              tasks: Dict[str, TaskSpec]):
         party_task_specs = dict()
 
         for task_name, params in party_task_params.items():
