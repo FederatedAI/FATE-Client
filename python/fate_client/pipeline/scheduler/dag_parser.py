@@ -23,6 +23,7 @@ from ..conf.types import (
     InputDataKeyType,
     ArtifactSourceType,
     InputArtifactType,
+    OutputArtifactType,
 )
 
 from ..entity.dag_structures import (
@@ -72,6 +73,7 @@ class DagParser(object):
             self._init_task_runtime_parameters_and_conf(name, dag_schema, task_conf)
 
             self._init_upstream_inputs(name, dag_schema.dag)
+            self._init_outputs(name, dag_schema.dag)
 
     def _init_upstream_inputs(self, name, dag: DAGSpec):
         task_spec = dag.tasks[name]
@@ -161,8 +163,42 @@ class DagParser(object):
                             dependent_task = channel_spec.producer_task
                             self._add_edge(dependent_task, name)
 
-        upstream_inputs = self.check_and_add_runtime_roles(upstream_inputs, runtime_roles)
+        upstream_inputs = self.check_and_add_runtime_roles(upstream_inputs, runtime_roles, artifact_type="input")
         return upstream_inputs
+
+    def _init_outputs(self, name, dag: DAGSpec):
+        task_spec = dag.tasks[name]
+
+        if not task_spec.outputs:
+            return
+
+        runtime_roles = self._tasks[name].runtime_roles
+        outputs = dict()
+
+        """
+        role.party_id.output_type.output_artifact
+        role.party_id.output_type.output_artifact.roles = runtime_roles
+        """
+        for output_type, outputs_dict in iter(task_spec.outputs):
+            if not outputs_dict:
+                continue
+
+            if output_type not in outputs:
+                outputs[output_type] = dict()
+
+            for output_key, output_artifact in outputs_dict.items():
+                outputs[output_type][output_key] = output_artifact
+
+        outputs = self.check_and_add_runtime_roles(outputs, runtime_roles, artifact_type="output")
+        party_outputs = dict()
+        for party_spec in dag.parties:
+            if party_spec.role not in party_outputs:
+                party_outputs[party_spec.role] = dict()
+
+            for party_id in party_spec.party_id:
+                party_outputs[party_spec.role][party_id] = copy.deepcopy(outputs)
+
+        self._tasks[name].outputs = party_outputs
 
     def _add_edge(self, src, dst, attrs=None):
         if not attrs:
@@ -229,8 +265,16 @@ class DagParser(object):
         self._tasks[task_name].runtime_parties = task_runtime_parties
         self._tasks[task_name].conf = task_conf
 
-    def get_runtime_parties(self, task_name):
-        return self._task_parties[task_name]
+    def get_runtime_roles_on_party(self, task_name, party_id):
+        task: TaskNodeInfo = self._tasks[task_name]
+        task_runtime_parties = task.runtime_parties
+
+        runtime_roles = set()
+        for party_spec in task_runtime_parties:
+            if party_spec.party_id == party_id:
+                runtime_roles.add(party_spec.role)
+
+        return list(runtime_roles)
 
     def get_task_node(self, task_name):
         return self._tasks[task_name]
@@ -287,21 +331,26 @@ class DagParser(object):
         return self._dag.edges[src, dst]
 
     @staticmethod
-    def check_and_add_runtime_roles(upstream_inputs, runtime_roles):
-        correct_inputs = copy.deepcopy(upstream_inputs)
-        for input_type in InputArtifactType.types():
-            if input_type not in upstream_inputs:
+    def check_and_add_runtime_roles(artifacts, runtime_roles, artifact_type):
+        correct_artifacts = copy.deepcopy(artifacts)
+        if artifact_type == "input":
+            types = InputArtifactType.types()
+        else:
+            types = OutputArtifactType.types()
+
+        for t in types:
+            if t not in artifacts:
                 continue
-            for input_key, channel_list in upstream_inputs[input_type].items():
+            for _key, channel_list in artifacts[t].items():
                 if isinstance(channel_list, list):
                     for idx, channel in enumerate(channel_list):
                         if channel.roles is None:
-                            correct_inputs[input_type][input_key][idx].roles = runtime_roles
+                            correct_artifacts[t][_key][idx].roles = runtime_roles
                 else:
                     if channel_list.roles is None:
-                        correct_inputs[input_type][input_key].roles = runtime_roles
+                        correct_artifacts[t][_key].roles = runtime_roles
 
-        return correct_inputs
+        return correct_artifacts
 
     @property
     def conf(self):
@@ -671,6 +720,13 @@ class DagParser(object):
         else:
             return list(upstream_task)
 
+    @classmethod
+    def translate_dag(cls, src, dst, *args, **kwargs):
+        from ..adapters import adapter_map
+        translate_func = adapter_map[src][dst]
+
+        return translate_func(*args, **kwargs)
+
 
 class TaskNodeInfo(object):
     def __init__(self):
@@ -680,6 +736,7 @@ class TaskNodeInfo(object):
         self._component_ref = None
         self._component_spec = None
         self._upstream_inputs = dict()
+        self._outputs = dict()
         self._stage = None
         self._conf = None
 
@@ -722,6 +779,14 @@ class TaskNodeInfo(object):
     @upstream_inputs.setter
     def upstream_inputs(self, upstream_inputs):
         self._upstream_inputs = upstream_inputs
+
+    @property
+    def outputs(self):
+        return self._outputs
+
+    @outputs.setter
+    def outputs(self, outputs):
+        self._outputs = outputs
 
     @property
     def component_spec(self):
