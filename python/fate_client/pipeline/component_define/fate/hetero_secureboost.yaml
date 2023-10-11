@@ -135,7 +135,7 @@ component:
         title: bool
         type: boolean
         default: true
-        description: whether to use histogram subtraction
+        description: whether output prediction result per cv fold
     split_info_pack:
       type: bool
       default: true
@@ -145,7 +145,7 @@ component:
         title: bool
         type: boolean
         default: true
-        description: whether to use histogram subtraction
+        description: whether output prediction result per cv fold
     hist_sub:
       type: bool
       default: true
@@ -155,7 +155,7 @@ component:
         title: bool
         type: boolean
         default: true
-        description: whether to use histogram subtraction
+        description: whether output prediction result per cv fold
     he_param:
       type: HEParam
       default:
@@ -186,6 +186,50 @@ component:
           key_length: 1024
         description: homomorphic encryption param, support paillier, ou and mock in
           current version
+    cv_param:
+      type: CVParam
+      default:
+        n_splits: 5
+        shuffle: false
+        random_state:
+      optional: true
+      description: cross validation param
+      type_meta:
+        title: CVParam
+        $ref: '#/definitions/abc__CVParam'
+        definitions:
+          abc__CVParam:
+            title: CVParam
+            type: object
+            properties:
+              n_splits:
+                title: N Splits
+                exclusiveMinimum: 1
+                type: integer
+              shuffle:
+                title: Shuffle
+                default: false
+                type: boolean
+              random_state:
+                title: Random State
+                type: integer
+            required:
+              - n_splits
+        default:
+          n_splits: 5
+          shuffle: false
+          random_state:
+        description: cross validation param
+    output_cv_data:
+      type: bool
+      default: true
+      optional: true
+      description: whether output prediction result per cv fold
+      type_meta:
+        title: bool
+        type: boolean
+        default: true
+        description: whether output prediction result per cv fold
   input_artifacts:
     data:
       train_data:
@@ -216,6 +260,17 @@ component:
         optional: false
         stages:
           - predict
+        roles:
+          - guest
+          - host
+        description: ''
+        is_multi: false
+      cv_data:
+        types:
+          - dataframe
+        optional: false
+        stages:
+          - cross_validation
         roles:
           - guest
           - host
@@ -268,6 +323,17 @@ component:
           - host
         description: ''
         is_multi: false
+      cv_output_datas:
+        types:
+          - dataframe
+        optional: true
+        stages:
+          - cross_validation
+        roles:
+          - guest
+          - host
+        description: ''
+        is_multi: true
     model:
       train_model_output:
         types:

@@ -45,6 +45,9 @@ class HeteroSecureBoost(Component):
         split_info_pack: bool = True,
         hist_sub: bool = True,
         he_param: dict = PlaceHolder(),
+        cv_param: dict = PlaceHolder(),
+        output_cv_data: bool = True,
+        cv_data: ArtifactType = PlaceHolder(),
         train_data_output: ArtifactType = PlaceHolder(),
         train_model_output: ArtifactType = PlaceHolder(),
         train_model_input: ArtifactType = PlaceHolder(),
@@ -80,3 +83,5 @@ class HeteroSecureBoost(Component):
         self.train_model_output = train_model_output
         self.test_data = test_data
         self.predict_model_input = predict_model_input
+        self.cv_param = cv_param
+        self.output_cv_data = output_cv_data
