@@ -19,7 +19,7 @@ class FedArguments(object):
     The argument for Fed algorithm
     """
 
-    aggregate_strategy: AggregateStrategy = field(default=AggregateStrategy.EPOCH.value)
+    aggregate_strategy: str = field(default=AggregateStrategy.EPOCH.value)
     aggregate_freq: int = field(default=1)
     aggregator: str = field(default=AggregatorType.SECURE_AGGREGATE.value)
 
