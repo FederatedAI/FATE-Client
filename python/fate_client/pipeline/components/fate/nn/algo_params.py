@@ -46,7 +46,7 @@ class FedArguments(object):
 
 
 @dataclass
-class TrainingArguments(_hf_TrainingArguments):
+class _TrainingArguments(_hf_TrainingArguments):
     # in fate-2.0, we will control the output dir when using pipeline
     output_dir: str = field(default="./")
     disable_tqdm: bool = field(default=True)
@@ -55,11 +55,11 @@ class TrainingArguments(_hf_TrainingArguments):
     evaluation_strategy: str = field(default="no")
     logging_dir: str = field(default=None)
     checkpoint_idx: int = field(default=None)
-    # by default we use constant learning rate, the same as FATE-1.X
+    # by default, we use constant learning rate, the same as FATE-1.X
     lr_scheduler_type: str = field(default="constant")
+    log_level: str = field(default="info")
 
     def __post_init__(self):
-        # Always use default values for hub-related attributes
         self.push_to_hub = False
         self.hub_model_id = None
         self.hub_strategy = "every_save"
@@ -71,23 +71,20 @@ class TrainingArguments(_hf_TrainingArguments):
 
         super().__post_init__()
 
+
+@dataclass
+class TrainingArguments(_TrainingArguments):
+
+    # To simplify the to dict result(to_dict only return non-default args)
+
     def to_dict(self):
         # Call the superclass's to_dict method
-        # print(self.logging_dir)
         all_args = super().to_dict()
-
         # Get a dict with default values for all fields
-        default_args = _hf_TrainingArguments(output_dir="./").to_dict()
-
+        default_args = _TrainingArguments().to_dict()
         # Filter out args that are equal to their default values
-        set_args = {
-            name: value
-            for name, value in all_args.items()
-            if value != default_args.get(name)
-        }
-
+        set_args = {name: value for name, value in all_args.items() if value != default_args.get(name)}
         return set_args
-
 
 @dataclass
 class FedAVGArguments(FedArguments):
