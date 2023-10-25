@@ -140,7 +140,7 @@ specified. Below is an example of initial setup of a pipeline:
 ```python
 from fate_client.pipeline import FateFlowPipeline
 
-pipeline = FateFlowPipeline().set_roles(guest='9999', host='10000', arbiter='10000')
+pipeline = FateFlowPipeline().set_parties(guest='9999', host='10000', arbiter='10000')
 ```
 
 User may also specify runtime configuration:
@@ -156,9 +156,9 @@ component can be configured specifically for each party like this:
 
 ```python
 psi_0 = PSI("psi_0")
-psi_0.guest.component_setting(input_data=DataWarehouseChannel(name="breast_hetero_guest",
+psi_0.guest.task_setting(input_data=DataWarehouseChannel(name="breast_hetero_guest",
                                                               namespace="experiment"))
-psi_0.hosts[0].component_setting(input_data=DataWarehouseChannel(name="breast_hetero_host",
+psi_0.hosts[0].task_setting(input_data=DataWarehouseChannel(name="breast_hetero_host",
                                                                  namespace="experiment"))
 ```
 
@@ -210,10 +210,10 @@ prediction.
 predict_pipeline = FateFlowPipeline()
 
 deployed_pipeline = pipeline.get_deployed_pipeline()
-deployed_pipeline.psi_0.guest.component_setting(
+deployed_pipeline.psi_0.guest.task_setting(
     input_data=DataWarehouseChannel(name="breast_hetero_guest",
                                     namespace=f"experiment{namespace}"))
-deployed_pipeline.psi_0.hosts[0].component_setting(
+deployed_pipeline.psi_0.hosts[0].task_setting(
     input_data=DataWarehouseChannel(name="breast_hetero_host",
                                     namespace=f"experiment{namespace}"))
 
