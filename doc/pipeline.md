@@ -56,10 +56,10 @@ Unspecified parameters will take default values. All components have a
 identifier, and so it must be unique within a pipeline. We suggest that
 each component name includes a numbering as suffix for easy tracking.
 
-An example of initializing a component:
+An example of initializing components:
 
 ```python
-from fate_client.pipeline.components.fate import CoordinatedLR, PSI
+from fate_client.pipeline.components.fate import CoordinatedLR
 
 lr_0 = CoordinatedLR("lr_0",
                      epochs=10,
@@ -155,11 +155,14 @@ roles. For instance, `PSI`
 component can be configured specifically for each party like this:
 
 ```python
+from fate_client.pipeline.components.fate import PSI
+from fate_client.pipeline.interface import DataWarehouseChannel
+
 psi_0 = PSI("psi_0")
 psi_0.guest.task_setting(input_data=DataWarehouseChannel(name="breast_hetero_guest",
-                                                              namespace="experiment"))
+                                                         namespace="experiment"))
 psi_0.hosts[0].task_setting(input_data=DataWarehouseChannel(name="breast_hetero_host",
-                                                                 namespace="experiment"))
+                                                            namespace="experiment"))
 ```
 
 To include a component in a pipeline, use `add_task`. To add the
