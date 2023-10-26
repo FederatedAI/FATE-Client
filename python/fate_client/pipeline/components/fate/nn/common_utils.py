@@ -12,13 +12,11 @@ from fate_client.pipeline.components.fate.nn.torch.base import (
 from typing import Union
 from fate_client.pipeline.components.fate.nn.algo_params import (
     TrainingArguments,
-    FedArguments,
 )
 from typing import Literal
 
 
 def get_config_of_default_runner(
-    model: Union[TorchModule, Sequential, ModelLoader] = None,
     optimizer: Union[TorchOptimizer, Loader] = None,
     loss: Union[TorchModule, CustFuncLoader] = None,
     training_args: TrainingArguments = None,
@@ -27,12 +25,6 @@ def get_config_of_default_runner(
     tokenizer: CustFuncLoader = None,
     task_type: Literal["binary", "multi", "regression", "others"] = "binary",
 ):
-    if model is not None and not isinstance(
-        model, (TorchModule, Sequential, ModelLoader)
-    ):
-        raise ValueError(
-            f"The model is of type {type(model)}, not TorchModule, Sequential, or ModelLoader. Remember to use patched_torch_hook for passing NN Modules or Optimizers."
-        )
 
     if optimizer is not None and not isinstance(optimizer, (TorchOptimizer, Loader)):
         raise ValueError(
@@ -68,7 +60,6 @@ def get_config_of_default_runner(
         )
 
     runner_conf = {
-        "model_conf": model.to_dict() if model is not None else None,
         "optimizer_conf": optimizer.to_dict() if optimizer is not None else None,
         "loss_conf": loss.to_dict() if loss is not None else None,
         "training_args_conf": training_args.to_dict()

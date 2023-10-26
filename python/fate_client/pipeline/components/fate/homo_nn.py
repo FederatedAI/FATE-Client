@@ -50,16 +50,24 @@ def get_config_of_default_runner(
     task_type: Literal["binary", "multi", "regression", "others"] = "binary",
 ):
 
-    runner_conf = _get_config_of_default_runner(
-        model, optimizer, loss, training_args, dataset, data_collator, tokenizer, task_type
-    )
+    if model is not None and not isinstance(
+        model, (TorchModule, Sequential, ModelLoader)
+    ):
+        raise ValueError(
+            f"The model is of type {type(model)}, not TorchModule, Sequential, or ModelLoader. Remember to use patched_torch_hook for passing NN Modules or Optimizers."
+        )
+
 
     if fed_args is not None and not isinstance(fed_args, FedArguments):
         raise ValueError(
             f"Federation arguments are of type {type(fed_args)}, not FedArguments."
         )
 
+    runner_conf = _get_config_of_default_runner(
+        optimizer, loss, training_args, dataset, data_collator, tokenizer, task_type
+    )
     runner_conf['algo'] = algo
+    runner_conf['model'] = model.to_dict() if model is not None else None
     runner_conf['fed_args_conf'] = fed_args.to_dict() if fed_args is not None else None
 
     return runner_conf
