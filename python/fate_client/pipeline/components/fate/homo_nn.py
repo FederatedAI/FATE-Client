@@ -67,7 +67,7 @@ def get_config_of_default_runner(
         optimizer, loss, training_args, dataset, data_collator, tokenizer, task_type
     )
     runner_conf['algo'] = algo
-    runner_conf['model'] = model.to_dict() if model is not None else None
+    runner_conf['model_conf'] = model.to_dict() if model is not None else None
     runner_conf['fed_args_conf'] = fed_args.to_dict() if fed_args is not None else None
 
     return runner_conf
