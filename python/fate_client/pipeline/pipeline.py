@@ -24,6 +24,7 @@ from .conf.types import SupportRole, PlaceHolder, InputArtifactType
 from .conf.job_configuration import JobConf
 from .components.component_base import Component
 from .scheduler.dag_parser import DagParser
+from .utils.callbacks import CallbackHandler, JobInfoCallBack
 
 
 class Pipeline(object):
@@ -39,6 +40,13 @@ class Pipeline(object):
         self._local_role = SiteInfo.ROLE
         self._local_party_id = SiteInfo.PARTY_ID
 
+        self._callback_handler = None
+        self._init_callback_handler()
+
+    def _init_callback_handler(self):
+        self._callback_handler = CallbackHandler()
+        self._callback_handler.add_callback(JobInfoCallBack())
+
     def set_site_role(self, role):
         self._local_role = role
         return self
@@ -50,6 +58,14 @@ class Pipeline(object):
     def set_stage(self, stage):
         self._stage = stage
         return self
+
+    @property
+    def callback_handler(self):
+        return self._callback_handler
+
+    @callback_handler.setter
+    def callback_handler(self, callback_handler):
+        self._callback_handler = callback_handler
 
     @property
     def conf(self):
@@ -112,6 +128,9 @@ class Pipeline(object):
     @parties.setter
     def parties(self, parties):
         self._parties = parties
+
+    def add_callback(self, callback):
+        self._callback_handler.add_callback(callback)
 
     def add_task(self, task) -> "Pipeline":
         if isinstance(task, Component):
@@ -221,14 +240,16 @@ class Pipeline(object):
         self._model_info = self._executor.fit(self._dag.dag_spec,
                                               self.get_component_specs(),
                                               local_role=self._local_role,
-                                              local_party_id=self._local_party_id)
+                                              local_party_id=self._local_party_id,
+                                              callback_handler=self._callback_handler)
 
         return self
 
     def predict(self) -> "Pipeline":
         self._model_info = self._executor.predict(self._dag.dag_spec,
                                                   self.get_component_specs(),
-                                                  self._model_info)
+                                                  self._model_info,
+                                                  callback_handler=self._callback_handler)
 
         return self
 
