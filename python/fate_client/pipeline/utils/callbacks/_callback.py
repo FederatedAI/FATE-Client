@@ -119,6 +119,9 @@ class JobInfoCallBack(PipelineCallBack):
 
         job_info = kwargs["job_info"]
 
+        if pre_job_info := os.environ.get(self.PIPELINE_JOB_INFO):
+            self._callback_buf = json.loads(pre_job_info)
+
         self._callback_buf.append(
             dict(
                 job_info=job_info,
