@@ -39,6 +39,7 @@ class DataWarehouseChannelSpec(BaseModel):
     roles: Optional[List[Literal["guest", "host", "arbiter", "local"]]]
     namespace: Optional[str]
     name: Optional[str]
+    dataset_id: Optional[str]
 
     class Config:
         extra = "forbid"
