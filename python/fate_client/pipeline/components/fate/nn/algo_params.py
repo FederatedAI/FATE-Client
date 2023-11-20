@@ -1,5 +1,6 @@
 from transformers import TrainingArguments as _hf_TrainingArguments
 from dataclasses import dataclass, field, fields
+from typing import Union, Literal
 from enum import Enum
 
 
@@ -89,3 +90,108 @@ class TrainingArguments(_TrainingArguments):
 @dataclass
 class FedAVGArguments(FedArguments):
     pass
+
+
+@dataclass
+class Args(object):
+    def to_dict(self):
+        d = dict((field.name, getattr(self, field.name)) for field in fields(self) if field.init)
+        for k, v in d.items():
+            if isinstance(v, Enum):
+                d[k] = v.value
+            if isinstance(v, list) and len(v) > 0 and isinstance(v[0], Enum):
+                d[k] = [x.value for x in v]
+            if k.endswith("_token"):
+                d[k] = f"<{k.upper()}>"
+        return d
+
+
+@dataclass
+class StdAggLayerArgument(Args):
+
+    merge_type: Literal['sum', 'concat'] = 'sum'
+    concat_dim = 1
+
+    def to_dict(self):
+        d = super().to_dict()
+        d['agg_type'] = 'std'
+        return d
+
+
+@dataclass
+class FedPassArgument(StdAggLayerArgument):
+
+    layer_type: Literal['conv', 'linear'] = 'conv'
+    in_channels_or_features: int = 8
+    out_channels_or_features: int = 8
+    kernel_size: Union[int, tuple] = 3
+    stride: Union[int, tuple] = 1
+    padding: int = 0
+    bias: bool = True
+    hidden_features: int = 128
+    activation: Literal['relu', 'tanh', 'sigmoid'] = "relu"
+    passport_distribute: Literal['gaussian', 'uniform'] = 'gaussian'
+    passport_mode: Literal['single', 'multi'] = 'single'
+    loc: int = -1.0
+    scale: int = 1.0
+    low: int = -1.0
+    high: int = 1.0
+    num_passport: int = 1
+    ae_in: int = None
+    ae_out: int = None
+
+    def to_dict(self):
+        d = super().to_dict()
+        d['agg_type'] = 'fed_pass'
+        return d
+
+
+@dataclass
+class HESSArgument(object):
+    pass
+
+
+def parse_agglayer_conf(agglayer_arg_conf):
+
+    if 'agg_type' not in agglayer_arg_conf:
+        raise ValueError('can not load agg layer conf, keyword agg_type not found')
+    agg_type = agglayer_arg_conf['agg_type']
+    agglayer_arg_conf.pop('agg_type')
+    if agg_type == 'fed_pass':
+        agglayer_arg = FedPassArgument(**agglayer_arg_conf['fed_pass_arg'])
+    elif agg_type == 'std':
+        agglayer_arg = StdAggLayerArgument(**agglayer_arg_conf['std_arg'])
+    else:
+        raise ValueError(f'agg type {agg_type} not supported')
+
+    return agglayer_arg
+
+"""
+Top & Bottom Model Strategy
+"""
+
+@dataclass
+class TopModelStrategyArguments(Args):
+
+    protect_strategy: Literal['fedpass'] = None
+    fed_pass_arg: Union[FedPassArgument, dict] = None
+    add_output_layer: Literal[None, 'sigmoid', 'softmax'] = None
+
+    def __post_init__(self):
+
+        if self.protect_strategy == 'fedpass':
+            if isinstance(self.fed_pass_arg, dict):
+                self.fed_pass_arg = FedPassArgument(**self.fed_pass_arg)
+            if not isinstance(self.fed_pass_arg, FedPassArgument):
+                raise TypeError("fed_pass_arg must be an instance of FedPassArgument for protect_strategy 'fedpass'")
+
+        assert self.add_output_layer in [None, 'sigmoid', 'softmax'], \
+            "add_output_layer must be None, 'sigmoid' or 'softmax'"
+
+    def to_dict(self):
+        d = super().to_dict()
+        if 'fed_pass_arg' in d:
+            d['fed_pass_arg'] = d['fed_pass_arg'].to_dict()
+            d['fed_pass_arg'].pop('agg_type')
+        return d
+
