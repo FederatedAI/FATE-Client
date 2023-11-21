@@ -16,20 +16,20 @@
 from .coordinated_linr import CoordinatedLinR
 from .coordinated_lr import CoordinatedLR
 from .data_split import DataSplit
-
 # from .multi_input import MultiInput
 from .dataframe_io_test import DataFrameIOTest
 from .dataframe_transformer import DataFrameTransformer
 from .evaluation import Evaluation
+from .evaluation import Evaluation
+from .feature_correlation import FeatureCorrelation
 from .feature_scale import FeatureScale
 from .hetero_feature_binning import HeteroFeatureBinning
 from .hetero_feature_selection import HeteroFeatureSelection
+from .hetero_sbt import HeteroSBT as HeteroSecureBoost
+from .homo_lr import HomoLR
+from .homo_nn import HomoNN
 from .psi import PSI
 from .reader import Reader
 from .sample import Sample
 from .statistics import Statistics
 from .union import Union
-from .homo_lr import HomoLR
-from .hetero_sbt import HeteroSBT as HeteroSecureBoost
-from .homo_nn import HomoNN
-from .evaluation import Evaluation
