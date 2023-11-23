@@ -5,7 +5,7 @@ from enum import Enum
 
 
 class AggregateStrategy(Enum):
-    EPOCH = "epochs"
+    EPOCH = "epoch"
     STEP = "steps"
 
 
@@ -53,6 +53,7 @@ class _TrainingArguments(_hf_TrainingArguments):
     disable_tqdm: bool = field(default=True)
     save_strategy: str = field(default="no")
     logging_strategy: str = field(default="epoch")
+    logging_steps: int = field(default=1)
     evaluation_strategy: str = field(default="no")
     logging_dir: str = field(default=None)
     checkpoint_idx: int = field(default=None)
