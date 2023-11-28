@@ -441,9 +441,14 @@ class Translator(object):
 
     @classmethod
     def get_source_type(cls, type_keyword):
-        if "dataset" in type_keyword:
-            return "data"
-        elif "model" in type_keyword:
-            return "model"
-        else:
-            return "metric"
+        data_keywords = ["dataset", "training_set", "test_set", "validate_set"]
+        model_keywords = ["model"]
+        for data_keyword in data_keywords:
+            if data_keyword in type_keyword:
+                return "data"
+
+        for model_keyword in model_keywords:
+            if model_keyword in type_keyword:
+                return "model"
+
+        return "metric"
