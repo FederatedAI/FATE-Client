@@ -19,7 +19,7 @@ from ...conf.types import PlaceHolder
 from ...interface import ArtifactType
 
 
-class HeteroSBT(Component):
+class HeteroSecureBoost(Component):
     yaml_define_path = "./component_define/fate/hetero_sbt.yaml"
 
     def __init__(
@@ -56,7 +56,7 @@ class HeteroSBT(Component):
     ):
         inputs = locals()
         self._process_init_inputs(inputs)
-        super(HeteroSBT, self).__init__()
+        super(HeteroSecureBoost, self).__init__()
         self._name = _name
         self.runtime_roles = runtime_roles
         self.train_data = train_data
@@ -72,6 +72,8 @@ class HeteroSBT(Component):
         self.l1 = l1
         self.goss = goss
         self.goss_start_iter = goss_start_iter
+        self.top_rate = top_rate
+        self.other_rate = other_rate
         self.top_rate = top_rate
         self.other_rate = other_rate
         self.min_impurity_split = min_impurity_split
