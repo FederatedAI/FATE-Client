@@ -72,6 +72,25 @@ component:
         title: ConstrainedNumberMeta
         exclusiveMinimum: 0
         type: integer
+    goss:
+      type: bool
+      default: false
+      optional: true
+      description: whether to use goss sampling
+      type_meta:
+        title: bool
+        type: boolean
+        default: true
+        description: whether output prediction result per cv fold
+    goss_start_iter:
+      type: ConstrainedNumberMeta
+      default: 0
+      optional: true
+      description: start iteration of goss sampling
+      type_meta:
+        title: ConstrainedNumberMeta
+        exclusiveMinimum: 0
+        type: integer
     l1:
       type: ConstrainedNumberMeta
       default: 0
@@ -186,6 +205,24 @@ component:
           key_length: 1024
         description: homomorphic encryption param, support paillier, ou and mock in
           current version
+    top_rate:
+      type: ConstrainedNumberMeta
+      default: 0.2
+      optional: true
+      description: top rate of goss sampling
+      type_meta:
+        title: ConstrainedNumberMeta
+        exclusiveMinimum: 0
+        type: number
+    other_rate:
+      type: ConstrainedNumberMeta
+      default: 0.1
+      optional: true
+      description: other rate of goss sampling
+      type_meta:
+        title: ConstrainedNumberMeta
+        exclusiveMinimum: 0
+        type: number
     cv_param:
       type: CVParam
       default:

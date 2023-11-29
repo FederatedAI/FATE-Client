@@ -18,19 +18,20 @@ from .executor import FateFlowExecutor
 from .entity import DAG
 from .entity.dag_structures import JobConfSpec, ModelWarehouseConfSpec
 from .entity import FateFlowTaskInfo
-from .entity.runtime_entity import Roles
+from .entity.runtime_entity import Parties
 from .conf.env_config import SiteInfo
 from .conf.types import SupportRole, PlaceHolder, InputArtifactType
 from .conf.job_configuration import JobConf
 from .components.component_base import Component
 from .scheduler.dag_parser import DagParser
+from .utils.callbacks import CallbackHandler, JobInfoCallBack
 
 
 class Pipeline(object):
     def __init__(self, executor, *args):
         self._executor = executor
         self._dag = DAG()
-        self._roles = Roles()
+        self._parties = Parties()
         self._stage = "train"
         self._tasks = dict()
         self._job_conf = JobConf()
@@ -38,6 +39,13 @@ class Pipeline(object):
         self._predict_dag = None
         self._local_role = SiteInfo.ROLE
         self._local_party_id = SiteInfo.PARTY_ID
+
+        self._callback_handler = None
+        self._init_callback_handler()
+
+    def _init_callback_handler(self):
+        self._callback_handler = CallbackHandler()
+        self._callback_handler.add_callback(JobInfoCallBack())
 
     def set_site_role(self, role):
         self._local_role = role
@@ -50,6 +58,14 @@ class Pipeline(object):
     def set_stage(self, stage):
         self._stage = stage
         return self
+
+    @property
+    def callback_handler(self):
+        return self._callback_handler
+
+    @callback_handler.setter
+    def callback_handler(self, callback_handler):
+        self._callback_handler = callback_handler
 
     @property
     def conf(self):
@@ -83,7 +99,7 @@ class Pipeline(object):
     def tasks(self):
         return self._tasks
 
-    def set_roles(self, guest=None, host=None, arbiter=None, **kwargs):
+    def set_parties(self, guest=None, host=None, arbiter=None, **kwargs):
         local_vars = locals()
         local_vars.pop("kwargs")
         if kwargs:
@@ -101,17 +117,20 @@ class Pipeline(object):
                 party_id = str(party_id)
             elif isinstance(party_id, list):
                 party_id = [str(_id) for _id in party_id]
-            self._roles.set_role(role, party_id)
+            self._parties.set_party(role, party_id)
 
         return self
 
     @property
-    def roles(self) -> Roles:
-        return self._roles
+    def parties(self) -> Parties:
+        return self._parties
 
-    @roles.setter
-    def roles(self, roles):
-        self._roles = roles
+    @parties.setter
+    def parties(self, parties):
+        self._parties = parties
+
+    def add_callback(self, callback):
+        self._callback_handler.add_callback(callback)
 
     def add_task(self, task) -> "Pipeline":
         if isinstance(task, Component):
@@ -124,8 +143,8 @@ class Pipeline(object):
                 raise ValueError("Deploy training pipeline first and use get_deployed_pipeline to get the inst")
 
             self._stage = "predict"
-            if not self._roles.is_initialized():
-                self._roles = task.roles
+            if not self._parties.is_initialized():
+                self._parties = task.parties
 
             self._tasks.update(task.tasks)
             self._job_conf.update(task.conf.dict())
@@ -135,7 +154,7 @@ class Pipeline(object):
 
     def compile(self) -> "Pipeline":
         self._dag.compile(task_insts=self._tasks,
-                          roles=self._roles,
+                          parties=self._parties,
                           stage=self._stage,
                           job_conf=self._job_conf.dict())
         return self
@@ -150,7 +169,7 @@ class Pipeline(object):
         if self._predict_dag.conf:
             deploy_pipeline.conf.update(self._predict_dag.conf.dict(exclude_defaults=True))
         deploy_pipeline.predict_dag = self._predict_dag
-        deploy_pipeline.roles = self._roles
+        deploy_pipeline.parties = self._parties
         deploy_pipeline.model_info = self._model_info
 
         for task_name, task in self._tasks.items():
@@ -221,14 +240,16 @@ class Pipeline(object):
         self._model_info = self._executor.fit(self._dag.dag_spec,
                                               self.get_component_specs(),
                                               local_role=self._local_role,
-                                              local_party_id=self._local_party_id)
+                                              local_party_id=self._local_party_id,
+                                              callback_handler=self._callback_handler)
 
         return self
 
     def predict(self) -> "Pipeline":
         self._model_info = self._executor.predict(self._dag.dag_spec,
                                                   self.get_component_specs(),
-                                                  self._model_info)
+                                                  self._model_info,
+                                                  callback_handler=self._callback_handler)
 
         return self
 

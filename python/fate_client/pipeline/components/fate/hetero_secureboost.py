@@ -19,8 +19,8 @@ from ...conf.types import PlaceHolder
 from ...interface import ArtifactType
 
 
-class HeteroSecureBoost(Component):
-    yaml_define_path = "./component_define/fate/hetero_secureboost.yaml"
+class HeteroSBT(Component):
+    yaml_define_path = "./component_define/fate/hetero_sbt.yaml"
 
     def __init__(
         self,
@@ -30,11 +30,14 @@ class HeteroSecureBoost(Component):
         validate_data: ArtifactType = PlaceHolder(),
         num_trees: int = 20,
         learning_rate: float = 0.3,
-        complete_secure: int = 0,
         max_depth: int = 3,
         max_bin: int = 32,
         objective: str = "binary:bce",
         num_class: int = 2,
+        goss: bool = False,
+        goss_start_iter: int = 0,
+        top_rate: float = 0.2,
+        other_rate: float = 0.1,
         l1: float = 0,
         l2: float = 0.1,
         min_impurity_split: float = 1e-2,
@@ -45,9 +48,6 @@ class HeteroSecureBoost(Component):
         split_info_pack: bool = True,
         hist_sub: bool = True,
         he_param: dict = PlaceHolder(),
-        cv_param: dict = PlaceHolder(),
-        output_cv_data: bool = True,
-        cv_data: ArtifactType = PlaceHolder(),
         train_data_output: ArtifactType = PlaceHolder(),
         train_model_output: ArtifactType = PlaceHolder(),
         train_model_input: ArtifactType = PlaceHolder(),
@@ -56,7 +56,7 @@ class HeteroSecureBoost(Component):
     ):
         inputs = locals()
         self._process_init_inputs(inputs)
-        super(HeteroSecureBoost, self).__init__()
+        super(HeteroSBT, self).__init__()
         self._name = _name
         self.runtime_roles = runtime_roles
         self.train_data = train_data
@@ -64,13 +64,16 @@ class HeteroSecureBoost(Component):
         self.train_model_input = train_model_input
         self.num_trees = num_trees
         self.learning_rate = learning_rate
-        self.complete_secure = complete_secure
         self.max_depth = max_depth
         self.max_bin = max_bin
         self.objective = objective
         self.num_class = num_class
-        self.l1 = l1
         self.l2 = l2
+        self.l1 = l1
+        self.goss = goss
+        self.goss_start_iter = goss_start_iter
+        self.top_rate = top_rate
+        self.other_rate = other_rate
         self.min_impurity_split = min_impurity_split
         self.min_sample_split = min_sample_split
         self.min_leaf_node = min_leaf_node
@@ -83,6 +86,3 @@ class HeteroSecureBoost(Component):
         self.train_model_output = train_model_output
         self.test_data = test_data
         self.predict_model_input = predict_model_input
-        self.cv_data = cv_data
-        self.cv_param = cv_param
-        self.output_cv_data = output_cv_data

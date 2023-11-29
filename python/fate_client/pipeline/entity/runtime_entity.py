@@ -15,7 +15,7 @@
 from .dag_structures import PartySpec
 
 
-class Roles(object):
+class Parties(object):
     def __init__(self):
         self._role_party_id_mappings = dict()
         self._role_party_index_mapping = dict()
@@ -24,7 +24,7 @@ class Roles(object):
     def is_initialized(self):
         return self._is_initialized
 
-    def set_role(self, role, party_id):
+    def set_party(self, role, party_id):
         if not isinstance(party_id, list):
             party_id = [party_id]
 
