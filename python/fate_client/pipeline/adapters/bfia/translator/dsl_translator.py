@@ -351,6 +351,8 @@ class Translator(object):
                             party_conf[task_name]["dataset_id"] = "#".join(
                                 [data_warehouse.namespace, data_warehouse.name]
                             )
+                        elif data_warehouse.dataset_id:
+                            party_conf[task_name]["dataset_id"] = data_warehouse.dataset_id
 
                 if role not in party_task_params:
                     party_task_params[role] = dict()
