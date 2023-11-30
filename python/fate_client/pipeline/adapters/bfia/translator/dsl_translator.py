@@ -257,35 +257,22 @@ class Translator(object):
         for task_name, params in party_task_params.items():
             task_spec = PartyTaskRefSpec()
             params = copy.deepcopy(params)
-            if ("name" in params and "namespace" in params) or "dataset_id" in params:
+            if "dataset_id" in params:
                 """
                 bfia support only single input yet
                 """
                 component_ref = tasks[task_name].component_ref
                 input_name = component_specs[component_ref].inputData[0].name
 
-                if "name" in params:
-                    name = params.pop("name")
-                    namespace = params.pop("namespace")
-                    task_spec.inputs = SourceInputArtifacts(
-                        data={
-                            input_name:
-                                {
-                                    "data_warehouse": DataWarehouseChannelSpec(namespace=namespace, name=name)
-                                }
-                        }
-                    )
-                else:
-                    dataset_id = params.pop("dataset_id")
-                    task_spec.inputs = SourceInputArtifacts(
-                        data={
-                            input_name:
-                                {
-                                    "data_warehouse": DataWarehouseChannelSpec(dataset_id=dataset_id)
-                                }
-                        }
-                    )
-
+                dataset_id = params.pop("dataset_id")
+                task_spec.inputs = SourceInputArtifacts(
+                    data={
+                        input_name:
+                            {
+                                "data_warehouse": DataWarehouseChannelSpec(dataset_id=dataset_id)
+                            }
+                    }
+                )
 
                 party_task_specs[task_name] = task_spec
 
