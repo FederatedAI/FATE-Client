@@ -49,12 +49,26 @@ from .dag_spec import (
 class Translator(object):
     @classmethod
     def translate_dag_to_bfia_dag(cls, dag_schema: DAGSchema, component_specs: Dict[str, BFIAComponentSpec]):
+        flow_id = None
+        old_job_id = None
+        if dag_schema.dag.conf and dag_schema.dag.conf.extra:
+            flow_id = dag_schema.dag.conf.extra.get("flow_id", None)
+            old_job_id = dag_schema.dag.conf.extra.get("old_job_id", None)
+
+        bfia_dag = BFIADagSpec(
+            flow_id=flow_id,
+            old_job_id=old_job_id,
+            config=cls.translate_dag_to_bfia_config(dag_schema.dag, dag_schema.schema_version),
+            dag=cls.translate_dag_to_bfia_tasks(dag_schema.dag, component_specs, dag_schema.schema_version)
+        )
+        """
         bfia_dag = BFIADagSpec(
             flow_id=dag_schema.dag.flow_id,
             old_job_id=dag_schema.dag.old_job_id,
             config=cls.translate_dag_to_bfia_config(dag_schema.dag, dag_schema.schema_version),
             dag=cls.translate_dag_to_bfia_tasks(dag_schema.dag, component_specs, dag_schema.schema_version)
         )
+        """
 
         return DagSchemaSpec(
             kind=dag_schema.kind,
@@ -72,13 +86,22 @@ class Translator(object):
         translated_dag_buf["kind"] = bfia_dag_schema.kind
 
         dag_spec_buf = dict()
-        dag_spec_buf["initiator"] = (bfia_dag.config.initiator.role, bfia_dag.config.initiator.node_id)
+        # dag_spec_buf["initiator"] = (bfia_dag.config.initiator.role, bfia_dag.config.initiator.node_id)
         dag_spec_buf["parties"] = cls.get_party_spec_from_bfia_dag(bfia_dag)
-        dag_spec_buf["flow_id"] = bfia_dag.flow_id
-        dag_spec_buf["old_job_id"] = bfia_dag.old_job_id
+        # dag_spec_buf["flow_id"] = bfia_dag.flow_id
+        # dag_spec_buf["old_job_id"] = bfia_dag.old_job_id
         dag_spec_buf["conf"] = cls.translate_job_params_to_dag(bfia_dag)
         dag_spec_buf["tasks"] = cls.translate_bfia_tasks_to_dag(bfia_dag, component_specs)
         dag_spec_buf["party_tasks"] = cls.translate_party_tasks_to_dag(bfia_dag, component_specs, dag_spec_buf["tasks"])
+
+        if not dag_spec_buf["conf"].extra:
+            dag_spec_buf["conf"].extra = dict()
+        dag_spec_buf["conf"].extra["flow_id"] = bfia_dag.flow_id
+        dag_spec_buf["conf"].extra["old_job_id"] = bfia_dag.old_job_id
+        dag_spec_buf["conf"].extra["initiator"] = dict(
+            role=bfia_dag.config.initiator.role,
+            party_id=bfia_dag.config.initiator.node_id
+        )
 
         translated_dag_buf["dag"] = dag_spec_buf
         return DAGSchema(**translated_dag_buf)
@@ -285,8 +308,14 @@ class Translator(object):
     def translate_dag_to_bfia_config(cls, dag: DAGSpec, schema_version: str):
         bfia_conf_buf = dict(version=schema_version)
 
-        if dag.initiator:
-            bfia_conf_buf["initiator"] = InitiatorSpec(role=dag.initiator[0], node_id=dag.initiator[1])
+        if dag.conf and dag.conf.extra and "initiator" in dag.conf.extra:
+            bfia_conf_buf["initiator"] = InitiatorSpec(
+                role=dag.conf.extra["initiator"]["role"],
+                node_id=dag.conf.extra["initiator"]["party_id"]
+            )
+
+        # if dag.initiator:
+        #     bfia_conf_buf["initiator"] = InitiatorSpec(role=dag.initiator[0], node_id=dag.initiator[1])
 
         role_spec = RoleSpec()
         for party_spec in dag.parties:

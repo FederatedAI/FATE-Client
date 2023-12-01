@@ -132,9 +132,9 @@ class InheritConfSpec(BaseModel):
     task_list: List[str]
 
 
-class InitiatorSpec(BaseModel):
-    role: Union[Literal["guest", "host", "arbiter", "local"]]
-    party_id: List[str]
+# class InitiatorSpec(BaseModel):
+#     role: Union[Literal["guest", "host", "arbiter", "local"]]
+#     party_id: List[str]
 
 
 class JobConfSpec(BaseModel):
@@ -153,6 +153,8 @@ class JobConfSpec(BaseModel):
     task: Optional[TaskConfSpec]
     engine: Optional[EngineRunSpec]
 
+    extra: Optional[Dict[Any, Any]]
+
 
 class DAGSpec(BaseModel):
     parties: List[PartySpec]
@@ -164,9 +166,9 @@ class DAGSpec(BaseModel):
     """
     BFIA PROTOCOL EXTRA
     """
-    flow_id: Optional[str]
-    old_job_id: Optional[str]
-    initiator: Optional[Tuple[Union[Literal["guest", "host", "arbiter", "local"]], str]]
+    # flow_id: Optional[str]
+    # old_job_id: Optional[str]
+    # initiator: Optional[Tuple[Union[Literal["guest", "host", "arbiter", "local"]], str]]
 
 
 class DAGSchema(BaseModel):
