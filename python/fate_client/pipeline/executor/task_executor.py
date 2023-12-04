@@ -17,6 +17,7 @@ from typing import Dict
 from ..entity.dag_structures import DAGSchema
 from ..entity.component_structures import ComponentSpec
 from ..utils.fateflow.fate_flow_job_invoker import FATEFlowJobInvoker
+from ..utils.callbacks import CallbackHandler
 from ..entity.model_info import FateFlowModelInfo
 
 
@@ -25,31 +26,63 @@ class FateFlowExecutor(object):
         ...
 
     def fit(self, dag_schema: DAGSchema, component_specs: Dict[str, ComponentSpec],
-            local_role: str, local_party_id: str) -> FateFlowModelInfo:
+            local_role: str, local_party_id: str, callback_handler: CallbackHandler) -> FateFlowModelInfo:
         flow_job_invoker = FATEFlowJobInvoker()
         local_party_id = self.get_site_party_id(flow_job_invoker, dag_schema, local_role, local_party_id)
 
-        return self._run(dag_schema, local_role, local_party_id, flow_job_invoker)
+        return self._run(
+            dag_schema,
+            local_role,
+            local_party_id,
+            flow_job_invoker,
+            callback_handler,
+            event="fit"
+        )
 
     def predict(self,
                 dag_schema: DAGSchema,
                 component_specs: Dict[str, ComponentSpec],
-                fit_model_info: FateFlowModelInfo) -> FateFlowModelInfo:
+                fit_model_info: FateFlowModelInfo, callback_handler: CallbackHandler) -> FateFlowModelInfo:
         flow_job_invoker = FATEFlowJobInvoker()
         schedule_role = fit_model_info.local_role
         schedule_party_id = fit_model_info.local_party_id
 
-        return self._run(dag_schema, schedule_role, schedule_party_id, flow_job_invoker)
+        return self._run(
+            dag_schema,
+            schedule_role,
+            schedule_party_id,
+            flow_job_invoker,
+            callback_handler,
+            event="predict"
+        )
 
     def _run(self,
              dag_schema: DAGSchema,
              local_role,
              local_party_id,
-             flow_job_invoker: FATEFlowJobInvoker) -> FateFlowModelInfo:
+             flow_job_invoker: FATEFlowJobInvoker,
+             callback_handler: CallbackHandler,
+             event="fit") -> FateFlowModelInfo:
 
         job_id, model_id, model_version = flow_job_invoker.submit_job(dag_schema.dict(exclude_defaults=True))
 
+        getattr(callback_handler, f"on_{event}_begin")(
+            job_info=dict(
+                job_id=job_id,
+                model_id=model_id,
+                model_version=model_version
+            )
+        )
+
         flow_job_invoker.monitor_status(job_id, local_role, local_party_id)
+
+        getattr(callback_handler, f"on_{event}_end")(
+            job_info=dict(
+                job_id=job_id,
+                model_id=model_id,
+                model_version=model_version
+            )
+        )
 
         return FateFlowModelInfo(
             job_id=job_id,
