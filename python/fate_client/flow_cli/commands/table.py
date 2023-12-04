@@ -64,3 +64,20 @@ def delete(ctx, **kwargs):
     response = client.table.delete(**kwargs)
     prettify(response)
 
+
+@table.command("bind")
+@cli_args.NAMESPACE_REQUIRED
+@cli_args.NAME_REQUIRED
+@cli_args.PATH_REQUIRED
+@click.pass_context
+def bind(ctx, **kwargs):
+    """
+    \b
+    -description: Delete data table.
+
+    \b
+    -usage: flow table delete --name xxx --namespace xxx
+    """
+    client: FlowClient = ctx.obj["client"]
+    response = client.table.bind_path(**kwargs)
+    prettify(response)
