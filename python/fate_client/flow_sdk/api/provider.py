@@ -18,7 +18,8 @@ from ..utils.params_utils import filter_invalid_params
 
 
 class Provider(BaseFlowAPI):
-    def register(self, name: str = None, device: str = None, version: str = None, metadata: dict = None):
+    def register(self, name: str = None, device: str = None, version: str = None, metadata: dict = None,
+                 protocol: str = None, components_description: dict = None):
         """
 
         Args:
@@ -26,6 +27,8 @@ class Provider(BaseFlowAPI):
             device:
             version:
             metadata:
+            protocol:
+            components_description:
 
         Returns:
         {'code': 0, 'message': 'device success','data':None}
