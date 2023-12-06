@@ -1,0 +1,128 @@
+component:
+  description: 纵向逻辑回归算法
+  input_artifacts:
+    data:
+      train_data:
+        description: 纵向逻辑回归算法
+        is_multi: false
+        optional: true
+        roles:
+        - guest
+        - host
+        - arbiter
+        stages:
+        - train
+        - predict
+        types:
+        - csv
+        - yaml
+    model: {}
+  labels:
+  - ''
+  name: HeteroLR
+  output_artifacts:
+    data:
+      train_data:
+        description: 纵向逻辑回归算法
+        is_multi: false
+        optional: true
+        roles:
+        - guest
+        - host
+        - arbiter
+        stages:
+        - train
+        - predict
+        types:
+        - csv
+        - yaml
+    metric:
+      train-loss:
+        description: 纵向逻辑回归算法
+        is_multi: false
+        optional: true
+        roles:
+        - guest
+        - host
+        - arbiter
+        stages:
+        - train
+        - predict
+        types:
+        - csv
+        - zip
+    model:
+      model:
+        description: 纵向逻辑回归算法
+        is_multi: false
+        optional: true
+        roles:
+        - guest
+        - host
+        - arbiter
+        stages:
+        - default
+        types:
+        - pmml
+  parameters:
+    alpha:
+      default: '0.01'
+      description: 惩罚因子
+      optional: true
+      type: float
+    batch_size:
+      default: '2048'
+      description: 每轮迭代抽取数据计算梯度的size
+      optional: true
+      type: integer
+    early_stop:
+      default: weight_diff
+      description: 早停策略
+      optional: true
+      type: string
+    id:
+      default: x1
+      description: id字段名
+      optional: true
+      type: string
+    init_param:
+      default: zeros
+      description: 初始化方式
+      optional: true
+      type: string
+    label:
+      default: y
+      description: label字段名
+      optional: true
+      type: string
+    learning_rate:
+      default: '0.15'
+      description: 学习率
+      optional: true
+      type: float
+    max_iter:
+      default: '30'
+      description: 迭代次数
+      optional: true
+      type: integer
+    optimizer:
+      default: rmsprop
+      description: 优化方法
+      optional: true
+      type: string
+    penalty:
+      default: L2
+      description: 正则项
+      optional: true
+      type: string
+    tol:
+      default: '0.0001'
+      description: 最小损失值
+      optional: true
+      type: float
+  provider: unionpay
+  roles:
+  - guest
+  - host
+  - arbiter
+  version: 2.0.0

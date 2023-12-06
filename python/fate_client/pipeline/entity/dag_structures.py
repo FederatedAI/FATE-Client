@@ -24,7 +24,7 @@ class PartySpec(BaseModel):
 class RuntimeTaskOutputChannelSpec(BaseModel):
     producer_task: str
     output_artifact_key: str
-    output_artifact_type_alias: Optional[str] # protocol = "bfia" using
+    output_artifact_type_alias: Optional[str]
     roles: Optional[List[Literal["guest", "host", "arbiter", "local"]]]
 
     class Config:

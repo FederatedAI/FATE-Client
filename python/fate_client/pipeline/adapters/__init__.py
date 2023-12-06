@@ -15,6 +15,10 @@
 
 from .bfia.translator.dsl_translator import Translator
 
+def _default_dag_post_process_func(dag_spec):
+    return dag_spec
+
+
 adapter_map = {
     "fate": {
         "bfia": Translator.translate_dag_to_bfia_dag
@@ -22,4 +26,8 @@ adapter_map = {
     "bfia": {
         "fate": Translator.translate_bfia_dag_to_dag
     }
+}
+
+dag_post_process = {
+    "bfia": _default_dag_post_process_func
 }

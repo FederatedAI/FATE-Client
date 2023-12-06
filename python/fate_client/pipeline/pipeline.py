@@ -42,6 +42,7 @@ class Pipeline(object):
 
         self._callback_handler = None
         self._init_callback_handler()
+        self._protocol_kind = "fate"
 
     def _init_callback_handler(self):
         self._callback_handler = CallbackHandler()
@@ -129,6 +130,14 @@ class Pipeline(object):
     def parties(self, parties):
         self._parties = parties
 
+    @property
+    def protocol_kind(self) -> str:
+        return self._protocol_kind
+
+    @protocol_kind.setter
+    def protocol_kind(self, protocol_kind):
+        self._protocol_kind = protocol_kind
+
     def add_callback(self, callback):
         self._callback_handler.add_callback(callback)
 
@@ -156,7 +165,8 @@ class Pipeline(object):
         self._dag.compile(task_insts=self._tasks,
                           parties=self._parties,
                           stage=self._stage,
-                          job_conf=self._job_conf.dict())
+                          job_conf=self._job_conf.dict(),
+                          protocol_kind=self._protocol_kind)
         return self
 
     def get_deployed_pipeline(self):

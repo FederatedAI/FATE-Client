@@ -51,14 +51,16 @@ class TaskOutputArtifactChannel(abc.ABC):
 class DataWarehouseChannel(abc.ABC):
     def __init__(
             self,
-            name: str,
-            namespace: str,
+            name: str = None,
+            namespace: str = None,
+            dataset_id: str = None,
             job_id: str = None,
             producer_task: str = None,
             output_artifact_key: str = None,
     ):
         self.name = name
         self.namespace = namespace
+        self.dataset_id = dataset_id
         self.job_id = job_id
         self.producer_task = producer_task
         self.output_artifact_key = output_artifact_key
@@ -69,6 +71,7 @@ class DataWarehouseChannel(abc.ABC):
         return DataWarehouseChannelSpec(
             name=self.name,
             namespace=self.namespace,
+            dataset_id=self.dataset_id,
             job_id=self.job_id,
             producer_task=self.producer_task,
             output_artifact_key=self.output_artifact_key,
@@ -78,6 +81,7 @@ class DataWarehouseChannel(abc.ABC):
     def __str__(self):
         return "{" + f"channel:name={self.name};" \
                      f"namespace={self.namespace};" \
+                     f"dataset_id={self.dataset_id};" \
                      f"job_id={self.job_id};" \
                      f"producer_task={self.producer_task};" \
                      f"output_artifact_key={self.output_artifact_key};" \

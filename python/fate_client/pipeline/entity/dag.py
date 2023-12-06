@@ -12,6 +12,8 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+import copy
+
 from .runtime_entity import PartySpec
 from .dag_structures import RuntimeInputArtifacts, DAGSpec, DAGSchema, \
     TaskSpec, PartyTaskRefSpec, PartyTaskSpec, JobConfSpec
@@ -24,15 +26,16 @@ class DAG(object):
     def __init__(self):
         self._dag_spec = None
         self._is_compiled = False
+        self._kind = "fate"
 
     @property
     def dag_spec(self):
         if not self._is_compiled:
             raise ValueError("Please compile pipeline first")
 
-        return DAGSchema(dag=self._dag_spec, schema_version=SCHEMA_VERSION)
+        return DAGSchema(dag=self._dag_spec, schema_version=SCHEMA_VERSION, kind=self._kind)
 
-    def compile(self, parties, task_insts, stage, job_conf):
+    def compile(self, parties, task_insts, stage, job_conf, protocol_kind):
         party_spec = parties.get_parties_spec()
         tasks = dict()
         party_tasks = dict()
@@ -50,11 +53,15 @@ class DAG(object):
                 inputs = RuntimeInputArtifacts(**input_channels)
                 task["inputs"] = inputs
 
+            task["outputs"] = task_inst.get_output_artifacts()
+
             if dependent_tasks:
                 task["dependent_tasks"] = dependent_tasks
 
+            task["conf"] = dict(provider=task_inst.provider, version=task_inst.version)
             if task_inst.conf.dict():
-                task["conf"] = task_inst.conf.dict()
+                task["conf"].update(task_inst.conf.dict())
+
 
             common_parameters = task_inst.get_task_setting()
 
@@ -100,4 +107,36 @@ class DAG(object):
         if party_tasks:
             self._dag_spec.party_tasks = party_tasks
 
+        self._kind = protocol_kind
         self._is_compiled = True
+
+        self._dag_spec = post_process(protocol_kind, self._dag_spec)
+
+
+def post_process(protocol_kind, pre_dag_spec: DAGSpec):
+    def _default_post_process(dag_spec: DAGSpec):
+        post_dag_spec = copy.deepcopy(dag_spec)
+        for task in post_dag_spec.tasks:
+            if post_dag_spec.tasks[task].outputs:
+                post_dag_spec.tasks[task].outputs = None
+
+            if not post_dag_spec.tasks[task].conf:
+                continue
+
+            if "provider" in post_dag_spec.tasks[task].conf:
+                post_dag_spec.tasks[task].conf.pop("provider")
+            if "version" in post_dag_spec.tasks[task].conf:
+                post_dag_spec.tasks[task].conf.pop("version")
+
+        return post_dag_spec
+
+    if protocol_kind == "fate":
+        return _default_post_process(pre_dag_spec)
+    else:
+        try:
+            from ..adapters import dag_post_process
+            return dag_post_process[protocol_kind](pre_dag_spec)
+        except KeyError:
+            return pre_dag_spec
+
+
