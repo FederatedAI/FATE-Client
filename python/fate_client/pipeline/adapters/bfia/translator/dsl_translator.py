@@ -16,8 +16,9 @@
 import copy
 from typing import Dict
 from .component_spec import BFIAComponentSpec
+from .utils.types import get_source_type
 
-from ....entity.dag_structures import (
+from fate_client.pipeline.entity.dag_structures import (
     DAGSchema,
     DAGSpec,
     PartySpec,
@@ -161,7 +162,7 @@ class Translator(object):
             if bfia_task.input:
                 input_keys = dict()
                 for input_spec in component_spec.inputData:
-                    input_type = cls.get_source_type(input_spec.category)
+                    input_type = get_source_type(input_spec.category)
                     input_name = input_spec.name
                     if input_type not in input_keys:
                         input_keys[input_type] = []
@@ -170,7 +171,7 @@ class Translator(object):
 
                 inputs = dict()
                 for input_desc in bfia_task.input:
-                    input_type = cls.get_source_type(input_desc.type)
+                    input_type = get_source_type(input_desc.type)
 
                     if input_type not in inputs:
                         inputs[input_type] = dict()
@@ -191,7 +192,7 @@ class Translator(object):
                 output_keys = dict()
                 for output_spec in component_spec.outputData:
                     output_name = output_spec.name
-                    output_type = cls.get_source_type(output_spec.category)
+                    output_type = get_source_type(output_spec.category)
 
                     if output_type not in output_keys:
                         output_keys[output_type] = []
@@ -203,7 +204,7 @@ class Translator(object):
                     output_alias = output_dict.key
                     output_type_alias = output_dict.type
 
-                    output_type = cls.get_source_type(output_type_alias)
+                    output_type = get_source_type(output_type_alias)
                     if output_type not in outputs:
                         outputs[output_type] = dict()
 
@@ -413,7 +414,7 @@ class Translator(object):
                 inputs = []
                 if task_spec.inputs:
                     for input_desc in component_spec.inputData:
-                        input_type = cls.get_source_type(input_desc.category)
+                        input_type = get_source_type(input_desc.category)
                         input_key = input_desc.name
 
                         input_artifact_specs = getattr(task_spec.inputs, input_type, {})
@@ -426,6 +427,9 @@ class Translator(object):
                         output_artifact_key = input_spec["task_output_artifact"].output_artifact_key
                         type_alias = input_spec["task_output_artifact"].output_artifact_type_alias
 
+                        if type_alias is None:
+                            type_alias= getattr(dag.tasks[producer_task].outputs, input_type)[output_artifact_key].output_artifact_type_alias
+
                         inputs.append(DataSpec(type=type_alias, key=".".join([producer_task, output_artifact_key])))
 
                 bfia_task_spec.input = inputs
@@ -433,7 +437,7 @@ class Translator(object):
                 outputs = []
                 if task_spec.outputs:
                     for output_desc in component_spec.outputData:
-                        output_type = cls.get_source_type(output_desc.category)
+                        output_type = get_source_type(output_desc.category)
                         output_key = output_desc.name
 
                         output_artifacts = getattr(task_spec.outputs, output_type, {})
@@ -457,16 +461,3 @@ class Translator(object):
 
         return DagSpec(**bfia_dag_buf)
 
-    @classmethod
-    def get_source_type(cls, type_keyword):
-        data_keywords = ["dataset", "training_set", "test_set", "validate_set"]
-        model_keywords = ["model"]
-        for data_keyword in data_keywords:
-            if data_keyword in type_keyword:
-                return "data"
-
-        for model_keyword in model_keywords:
-            if model_keyword in type_keyword:
-                return "model"
-
-        return "metric"
