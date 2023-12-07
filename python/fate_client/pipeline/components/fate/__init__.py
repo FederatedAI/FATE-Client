@@ -31,5 +31,7 @@ from .homo_nn import HomoNN
 from .psi import PSI
 from .reader import Reader
 from .sample import Sample
+from .sshe_linr import SSHELinR
+from .sshe_lr import SSHELR
 from .statistics import Statistics
 from .union import Union
