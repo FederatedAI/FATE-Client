@@ -20,14 +20,10 @@ from .data_split import DataSplit
 from .dataframe_io_test import DataFrameIOTest
 from .dataframe_transformer import DataFrameTransformer
 from .evaluation import Evaluation
-from .evaluation import Evaluation
 from .feature_correlation import FeatureCorrelation
 from .feature_scale import FeatureScale
 from .hetero_feature_binning import HeteroFeatureBinning
 from .hetero_feature_selection import HeteroFeatureSelection
-from .hetero_sbt import HeteroSBT as HeteroSecureBoost
-from .homo_lr import HomoLR
-from .homo_nn import HomoNN
 from .psi import PSI
 from .reader import Reader
 from .sample import Sample
@@ -35,3 +31,8 @@ from .sshe_linr import SSHELinR
 from .sshe_lr import SSHELR
 from .statistics import Statistics
 from .union import Union
+from .homo_lr import HomoLR
+from .hetero_secureboost import HeteroSecureBoost
+from .homo_nn import HomoNN
+from .hetero_nn import HeteroNN
+from .evaluation import Evaluation
