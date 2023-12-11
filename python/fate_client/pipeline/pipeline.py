@@ -161,6 +161,10 @@ class Pipeline(object):
 
         return self
 
+    def add_tasks(self, task_list) -> "Pipeline":
+        for task in task_list:
+            self.add_task(task)
+
     def compile(self) -> "Pipeline":
         self._dag.compile(task_insts=self._tasks,
                           parties=self._parties,
