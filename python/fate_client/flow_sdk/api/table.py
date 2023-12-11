@@ -46,5 +46,20 @@ class Table(BaseFlowAPI):
         params = filter_invalid_params(**kwargs)
         return self._post(url='/table/delete', json=params)
 
+    def bind_path(self, namespace: str, name: str, path: str):
+        """
+
+        Args:
+            namespace
+            name
+            path
+
+        Returns:
+        {'code': 0, 'message': 'success'}
+        """
+        kwargs = locals()
+        params = filter_invalid_params(**kwargs)
+        return self._post(url='/table/bind/path', json=params)
+
 
 
