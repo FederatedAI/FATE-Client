@@ -30,6 +30,7 @@ from .sample import Sample
 from .statistics import Statistics
 from .union import Union
 from .homo_lr import HomoLR
-from .hetero_sbt import HeteroSBT as HeteroSecureBoost
+from .hetero_secureboost import HeteroSecureBoost
 from .homo_nn import HomoNN
+from .hetero_nn import HeteroNN
 from .evaluation import Evaluation

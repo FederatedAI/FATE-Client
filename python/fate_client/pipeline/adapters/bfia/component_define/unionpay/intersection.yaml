@@ -1,0 +1,120 @@
+component:
+  description: 对齐算法
+  input_artifacts:
+    data:
+      train_data:
+        description: 对齐算法
+        is_multi: false
+        optional: true
+        roles:
+        - guest
+        - host
+        stages:
+        - train
+        - predict
+        types:
+        - csv
+        - yaml
+    model: {}
+  labels:
+  - ''
+  name: Intersection
+  output_artifacts:
+    data:
+      train_data:
+        description: 对齐算法
+        is_multi: false
+        optional: true
+        roles:
+        - guest
+        - host
+        stages:
+        - train
+        - predict
+        types:
+        - csv
+    metric:
+      train-intersection:
+        description: 对齐算法
+        is_multi: false
+        optional: true
+        roles:
+        - guest
+        - host
+        stages:
+        - train
+        - predict
+        types:
+        - csv
+    model: {}
+  parameters:
+    base64:
+      default: 'true'
+      description: 是否选择base64方式
+      optional: true
+      type: string
+    final_hash_method:
+      default: sha256
+      description: 最终哈希方法
+      optional: true
+      type: string
+    hash_method:
+      default: sha256
+      description: 哈希方法
+      optional: true
+      type: string
+    id:
+      default: x1
+      description: id字段名
+      optional: true
+      type: string
+    intersect_method:
+      default: raw
+      description: 对齐方式
+      optional: true
+      type: string
+    join_role:
+      default: host
+      description: 参与角色
+      optional: true
+      type: string
+    key_length:
+      default: '2048'
+      description: 密钥长度
+      optional: true
+      type: string
+    only_output_key:
+      default: 'true'
+      description: 仅输出id
+      optional: true
+      type: boolean
+    raw_params:
+      default: ' '
+      description: id字段名
+      optional: true
+      type: string
+    rsa_params:
+      default: ' '
+      description: id字段名
+      optional: true
+      type: string
+    salt:
+      default: '12345'
+      description: salt
+      optional: true
+      type: string
+    sync_intersect_ids:
+      default: 'true'
+      description: 同步对齐id
+      optional: true
+      type: boolean
+    use_hash:
+      default: 'true'
+      description: 是否使用哈希
+      optional: true
+      type: string
+  provider: FATE
+  roles:
+  - guest
+  - host
+  version: 2.0.0

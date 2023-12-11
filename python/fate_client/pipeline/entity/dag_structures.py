@@ -24,20 +24,18 @@ class PartySpec(BaseModel):
 class RuntimeTaskOutputChannelSpec(BaseModel):
     producer_task: str
     output_artifact_key: str
-    roles: Optional[List[Literal["guest", "host", "arbiter", "local"]]]
+    output_artifact_type_alias: Optional[str]
+    parties: Optional[List[PartySpec]]
 
     class Config:
         extra = "forbid"
 
 
-# newly add: data source
 class DataWarehouseChannelSpec(BaseModel):
-    job_id: Optional[str]
-    producer_task: Optional[str]
-    output_artifact_key: Optional[str]
-    roles: Optional[List[Literal["guest", "host", "arbiter", "local"]]]
     namespace: Optional[str]
     name: Optional[str]
+    dataset_id: Optional[str]
+    parties: Optional[List[PartySpec]]
 
     class Config:
         extra = "forbid"
@@ -48,7 +46,7 @@ class ModelWarehouseChannelSpec(BaseModel):
     model_version: Optional[str]
     producer_task: str
     output_artifact_key: str
-    roles: Optional[List[Literal["guest", "host", "arbiter", "local"]]]
+    parties: Optional[List[PartySpec]]
 
     class Config:
         extra = "forbid"
@@ -60,19 +58,9 @@ InputArtifactSpec = TypeVar("InputArtifactSpec",
                             DataWarehouseChannelSpec)
 
 
-SourceInputArtifactSpec = TypeVar("SourceInputArtifactSpec",
-                                  ModelWarehouseChannelSpec,
-                                  DataWarehouseChannelSpec)
-
-
 class RuntimeInputArtifacts(BaseModel):
     data: Optional[Dict[str, Dict[str, Union[InputArtifactSpec, List[InputArtifactSpec]]]]]
     model: Optional[Dict[str, Dict[str, Union[InputArtifactSpec, List[InputArtifactSpec]]]]]
-
-
-class SourceInputArtifacts(BaseModel):
-    data: Optional[Dict[str, Dict[str, Union[SourceInputArtifactSpec, List[SourceInputArtifactSpec]]]]]
-    model: Optional[Dict[str, Dict[str, Union[SourceInputArtifactSpec, List[SourceInputArtifactSpec]]]]]
 
 
 class ModelWarehouseConfSpec(BaseModel):
@@ -80,11 +68,24 @@ class ModelWarehouseConfSpec(BaseModel):
     model_version: Optional[str]
 
 
+class OutputArtifactSpec(BaseModel):
+    output_artifact_key_alias: str
+    output_artifact_type_alias: str
+    parties: Optional[List[PartySpec]]
+
+
+class OutputArtifacts(BaseModel):
+    data: Optional[Dict[str, Union[OutputArtifactSpec, List[OutputArtifactSpec]]]]
+    model: Optional[Dict[str, Union[OutputArtifactSpec, List[OutputArtifactSpec]]]]
+    metric: Optional[Dict[str, Union[OutputArtifactSpec, List[OutputArtifactSpec]]]]
+
+
 class TaskSpec(BaseModel):
     component_ref: str
     dependent_tasks: Optional[List[str]]
     parameters: Optional[Dict[Any, Any]]
     inputs: Optional[RuntimeInputArtifacts]
+    outputs: Optional[OutputArtifacts]
     parties: Optional[List[PartySpec]]
     conf: Optional[Dict[Any, Any]]
     stage: Optional[Union[Literal["train", "predict", "default", "cross_validation"]]]
@@ -92,7 +93,6 @@ class TaskSpec(BaseModel):
 
 class PartyTaskRefSpec(BaseModel):
     parameters: Optional[Dict[Any, Any]]
-    inputs: Optional[SourceInputArtifacts]
     conf: Optional[Dict] = {}
 
 
@@ -133,6 +133,8 @@ class JobConfSpec(BaseModel):
     task: Optional[TaskConfSpec]
     engine: Optional[EngineRunSpec]
 
+    extra: Optional[Dict[Any, Any]]
+
 
 class DAGSpec(BaseModel):
     parties: List[PartySpec]
@@ -145,3 +147,4 @@ class DAGSpec(BaseModel):
 class DAGSchema(BaseModel):
     dag: DAGSpec
     schema_version: str
+    kind: str = "fate"
