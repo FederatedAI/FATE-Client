@@ -43,6 +43,7 @@ class DagParser(object):
         self._global_dag = nx.DiGraph()
         self._links = dict()
         self._tasks = dict()
+        self._task_runtime_parties = dict()
         self._conf = dict()
 
     def parse_dag(self, dag_schema: DAGSchema, component_specs: Dict[str, ComponentSpec] = None):
@@ -67,6 +68,8 @@ class DagParser(object):
                 task_stage = task_spec.stage
 
             self._global_dag.add_node(name)
+
+            self._task_runtime_parties[name] = parties
 
             for party_spec in parties:
                 if party_spec.role not in self._tasks:
@@ -369,6 +372,13 @@ class DagParser(object):
     @property
     def conf(self):
         return self._conf
+
+    @property
+    def task_runtime_parties(self):
+        return self._task_runtime_parties
+
+    def get_task_runtime_parties(self, task_name):
+        return self._task_runtime_parties[task_name]
 
     @classmethod
     def deploy(cls, task_name_list: list, dag_schema: DAGSchema, component_specs: Dict[str, ComponentSpec]):
