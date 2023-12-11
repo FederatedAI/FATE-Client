@@ -40,6 +40,7 @@ from ..entity.component_structures import ArtifactSpec, ComponentSpec, InputArti
 class DagParser(object):
     def __init__(self):
         self._dag = dict()
+        self._global_dag = nx.DiGraph()
         self._links = dict()
         self._tasks = dict()
         self._conf = dict()
@@ -64,6 +65,8 @@ class DagParser(object):
             component_ref = task_spec.component_ref
             if task_spec.stage:
                 task_stage = task_spec.stage
+
+            self._global_dag.add_node(name)
 
             for party_spec in parties:
                 if party_spec.role not in self._tasks:
@@ -232,6 +235,7 @@ class DagParser(object):
             attrs = {}
 
         self._dag[role][party_id].add_edge(src, dst, **attrs)
+        self._global_dag.add_edge(src, dst, **attrs)
 
     def _init_task_runtime_parameters_and_conf(self, task_name: str, dag_schema: DAGSchema, global_task_conf):
         dag = dag_schema.dag
@@ -295,7 +299,7 @@ class DagParser(object):
 
         this function finds tasks need to rerun, a task need to rerun if is upstreams is failed
         """
-        invalid_tasks = set(self.topological_sort(role, party_id)) - set(visited_tasks)
+        invalid_tasks = set(self.party_topological_sort(role, party_id)) - set(visited_tasks)
         invalid_tasks |= set(failed_tasks)
 
         revisit_tasks = []
@@ -310,7 +314,7 @@ class DagParser(object):
 
             while len(stack) > 0 and task_valid:
                 task = stack.pop()
-                pre_tasks = self.predecessors(role, party_id, task)
+                pre_tasks = self.party_predecessors(role, party_id, task)
 
                 for pre_task in pre_tasks:
                     if pre_task in task_stack:
@@ -327,13 +331,16 @@ class DagParser(object):
 
         return revisit_tasks
 
-    def topological_sort(self, role, party_id):
+    def global_topological_sort(self):
+        return nx.topological_sort(self._global_dag)
+
+    def party_topological_sort(self, role, party_id):
         return nx.topological_sort(self._dag[role][party_id])
 
-    def predecessors(self, role, party_id, task):
+    def party_predecessors(self, role, party_id, task):
         return set(self._dag[role][party_id].predecessors(task))
 
-    def successors(self, role, party_id, task):
+    def party_successors(self, role, party_id, task):
         return self._dag[role][party_id].successors(task)
 
     def get_edge_attr(self, role, party_id, src, dst):
@@ -383,9 +390,6 @@ class DagParser(object):
         dag_spec = cls.deduce_dag(dag_parser, task_name_list, dag_schema.dag, component_specs, data_tracer)
         dag_spec = cls.erase_redundant_tasks(
             task_name_set,
-            dag_spec
-        )
-        dag_spec = cls.erase_party_task_inputs(
             dag_spec
         )
 
@@ -504,22 +508,6 @@ class DagParser(object):
                 for task_name, task_spec in party_tasks_spec.tasks.items():
                     if task_name not in task_name_set:
                         ret_dag.party_tasks[site_name].tasks.pop(task_name)
-
-        return ret_dag
-
-    @classmethod
-    def erase_party_task_inputs(cls, dag_spec: DAGSpec):
-        ret_dag = copy.deepcopy(dag_spec)
-        if not dag_spec.party_tasks:
-            return ret_dag
-
-        for site_name, party_task_spec in dag_spec.party_tasks.items():
-            if not party_task_spec.tasks:
-                continue
-
-            for task_name, task_spec in party_task_spec.tasks.items():
-                if task_spec.inputs:
-                    ret_dag.party_tasks[site_name].tasks[task_name].inputs = None
 
         return ret_dag
 
