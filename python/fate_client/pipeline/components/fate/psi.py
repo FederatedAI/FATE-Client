@@ -12,7 +12,6 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-from typing import List
 from ...conf.types import PlaceHolder
 from ..component_base import Component
 from ...interface import ArtifactType
@@ -24,7 +23,7 @@ class PSI(Component):
     def __init__(
         self,
         _name: str,
-        runtime_roles: List[str] = None,
+        runtime_parties: dict = None,
         input_data: ArtifactType = PlaceHolder(),
         protocol: str = PlaceHolder(),
         curve_type: str = PlaceHolder(),
@@ -33,7 +32,7 @@ class PSI(Component):
         self._process_init_inputs(inputs)
         super(PSI, self).__init__()
         self._name = _name
-        self.runtime_roles = runtime_roles
+        self.runtime_parties = runtime_parties
         self.input_data = input_data
         self.protocol = protocol
         self.curve_type = curve_type
