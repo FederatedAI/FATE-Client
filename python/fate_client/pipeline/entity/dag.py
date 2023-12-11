@@ -42,11 +42,15 @@ class DAG(object):
         for task_name, task_inst in task_insts.items():
             task = dict(component_ref=task_inst.component_ref)
             dependent_tasks = task_inst.get_dependent_tasks()
-            cpn_runtime_roles = set(parties.get_runtime_roles()) & set(task_inst.support_roles)
-            if cpn_runtime_roles != set(parties.get_runtime_roles()):
-                task["parties"] = parties.get_parties_spec(cpn_runtime_roles)
 
-            input_channels, input_artifacts = task_inst.get_runtime_input_artifacts(cpn_runtime_roles)
+            cpn_runtime_parties = task_inst.support_parties.get_party_inst_by_role(parties.get_runtime_roles())
+            if not len(cpn_runtime_parties):
+                cpn_runtime_parties = parties.get_party_inst_by_role(task_inst.support_roles)
+
+            if cpn_runtime_parties != parties:
+                task["parties"] = cpn_runtime_parties.get_parties_spec()
+
+            input_channels, input_artifacts = task_inst.get_runtime_input_artifacts(cpn_runtime_parties)
             task_stage = ComponentStageSchedule.get_stage(input_artifacts, default_stage=stage)
 
             if input_channels:
@@ -63,14 +67,13 @@ class DAG(object):
                 task["conf"].update(task_inst.conf.dict())
 
 
-            common_parameters = task_inst.get_task_setting()
+            common_parameters = task_inst.get_task_parameters()
 
-            for role in cpn_runtime_roles:
-                party_id_list = parties.get_party_id_list_by_role(role)
+            for role, party_id_list in cpn_runtime_parties:
                 for idx, party_id in enumerate(party_id_list):
                     role_party_key = f"{role}_{party_id}"
-                    role_setting = task_inst.get_role_setting(role, idx)
-                    if role_setting:
+                    role_parameters = task_inst.get_role_parameters(role, idx)
+                    if role_parameters:
                         if role_party_key not in party_tasks:
                             party_tasks[role_party_key] = PartyTaskSpec(
                                 parties=[PartySpec(role=role, party_id=[party_id])],
@@ -78,14 +81,8 @@ class DAG(object):
                             )
 
                         party_tasks[role_party_key].tasks[task_name] = PartyTaskRefSpec(
-                            parameters=role_setting.get("parameters"),
-                            inputs=role_setting.get("input_channels")
+                            parameters=role_parameters
                         )
-                        if role_setting.get("input_artifacts"):
-                            party_task_stage = ComponentStageSchedule.get_stage(role_setting.get("input_artifacts"),
-                                                                                default_stage=stage)
-                            if task_stage != party_task_stage:
-                                task_stage = party_task_stage
 
                     role_conf = task_inst.get_role_conf(role, idx)
                     if role_conf:

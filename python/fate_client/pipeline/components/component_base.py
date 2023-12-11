@@ -15,11 +15,15 @@
 import copy
 import uuid
 
+from types import SimpleNamespace
+from typing import List
+
 from ..conf.types import SupportRole, PlaceHolder, ArtifactSourceType, InputArtifactType, OutputArtifactType
 from ..conf.job_configuration import TaskConf
 from ..entity.component_structures import load_component_spec
 from ..interface import TaskOutputArtifactChannel, DataWarehouseChannel, ModelWarehouseChannel
-from ..entity.dag_structures import DataWarehouseChannelSpec, ModelWarehouseChannelSpec
+from ..entity.dag_structures import OutputArtifactSpec, PartySpec
+from ..entity.runtime_entity import Parties
 
 
 class Component(object):
@@ -29,20 +33,22 @@ class Component(object):
 
     def __init__(self, *args, **kwargs):
         self._name = None
-        self.runtime_roles = None
+        self.runtime_parties = Parties()
         self.__party_instance = {}
         self._module = None
         self._role = None
         self._index = None
         self._callable = True
         self._outputs = None
-        self._task_setting = dict()
+        self._task_parameters = dict()
         self._task_conf = TaskConf()
 
         if self.yaml_define_path is None:
             raise ValueError("Component should have yaml define file, set yaml_define_path first please!")
 
         self._component_spec = load_component_spec(self.yaml_define_path)
+        self._provider = None
+        self._version = None
         self._init_task_setting()
 
     def __new__(cls, *args, **kwargs):
@@ -156,24 +162,28 @@ class Component(object):
 
     @property
     def support_roles(self):
-        if not self.runtime_roles:
+        self._convert_party_dict_to_party_inst()
+        if not len(self.runtime_parties):
             return self._component_spec.roles
         else:
-            if not isinstance(self.runtime_roles, list):
-                self.runtime_roles = [self.runtime_roles]
-            return list(set(self._component_spec.roles) & set(self.runtime_roles))
+            return list(set(self._component_spec.roles) & set(self.runtime_parties.get_runtime_roles()))
 
-    def task_setting(self, **kwargs):
+    @property
+    def support_parties(self) -> Parties:
+        self._convert_party_dict_to_party_inst()
+        return self.runtime_parties
+
+    def task_parameters(self, **kwargs):
         for attr, val in kwargs.items():
-            self._task_setting[attr] = val
+            self._task_parameters[attr] = val
 
-    def get_task_setting(self):
-        return self._task_setting
+    def get_task_parameters(self):
+        return self._task_parameters
 
-    def get_role_setting(self, role, index):
-        task_setting = dict()
+    def get_role_parameters(self, role, index):
+        task_parameters = dict()
         if role not in self.__party_instance:
-            return task_setting
+            return task_parameters
 
         index = str(index)
 
@@ -185,62 +195,9 @@ class Component(object):
                 if index not in party_index:
                     continue
 
-                task_setting.update(party_inst.get_task_setting())
+                task_parameters.update(party_inst.get_task_parameters())
 
-        if not task_setting:
-            return task_setting
-
-        parameters = {}
-        input_channels = {}
-        input_artifacts = {}
-        for attr, value in task_setting.items():
-            if attr in self._component_spec.parameters:
-                parameters[attr] = value
-            else:
-                """
-                artifact
-                """
-                if not isinstance(value, (DataWarehouseChannel, ModelWarehouseChannel)) or \
-                        (isinstance(value, list) and
-                         not isinstance(value[0], (DataWarehouseChannelSpec, ModelWarehouseChannelSpec))):
-                    raise ValueError(f"attr={attr} should be data_warehouse or model_warehouse artifact")
-
-                if not isinstance(value, list):
-                    type_key = InputArtifactType.DATA if isinstance(value, DataWarehouseChannel) \
-                        else InputArtifactType.MODEL
-                else:
-                    type_key = InputArtifactType.DATA if isinstance(value[0], DataWarehouseChannel) \
-                        else InputArtifactType.MODEL
-
-                if type_key not in input_channels:
-                    input_channels[type_key] = dict()
-                    input_artifacts[type_key] = dict()
-
-                artifact_spec = getattr(self._component_spec.input_artifacts, type_key).get(attr, None)
-                if not artifact_spec:
-                    raise ValueError(f"attr={attr} does not exist in component spec")
-
-                if isinstance(value, list) and not artifact_spec.is_multi:
-                    raise ValueError(f"Artifact={attr}'s input is list, it should be a single input")
-                if not isinstance(value, list) and artifact_spec.is_multi:
-                    value = [value]
-
-                if isinstance(value, list):
-                    artifact_list = [v.get_spec(roles=[role]) for v in value]
-                    input_channels[type_key][attr] = {value[0].source: artifact_list}
-                else:
-                    input_channels[type_key][attr] = {value.source: value.get_spec(roles=[role])}
-
-                input_artifacts[type_key][attr] = artifact_spec
-
-        task_setting = dict()
-        if parameters:
-            task_setting["parameters"] = parameters
-        if input_channels:
-            task_setting["input_artifacts"] = input_artifacts
-            task_setting["input_channels"] = input_channels
-
-        return task_setting
+        return task_parameters
 
     def get_role_conf(self, role, index):
         conf = dict()
@@ -259,18 +216,6 @@ class Component(object):
                 conf.update(party_inst.conf.dict())
 
         return conf
-
-    def reset_source_inputs(self):
-        for _, role_instances in self.__party_instance.items():
-            for __, inst in role_instances.items():
-                for ___, party_inst in inst.party_instance.items():
-                    task_setting = party_inst.get_task_setting()
-                    input_artifacts = self._component_spec.input_artifacts
-
-                    for artifact_type in InputArtifactType.types():
-                        for artifact_key in getattr(input_artifacts, artifact_type):
-                            if artifact_key in task_setting:
-                                task_setting.pop(artifact_key)
 
     def validate_runtime_env(self, roles):
         runtime_roles = roles.get_runtime_roles()
@@ -293,14 +238,15 @@ class Component(object):
         return self._component_spec
 
     @property
-    def outputs(self):
-        if self._component_spec.output_artifacts is None:
-            raise ValueError("Output Definitions is None")
+    def provider(self):
+        return self._provider
 
-        if self._outputs:
-            return self._outputs
+    @property
+    def version(self):
+        return self._version
 
-        self._outputs = dict()
+    def _get_output_by_parties(self, parties: Parties):
+        _outputs = dict()
         for output_artifact_type in OutputArtifactType.types():
             artifacts = getattr(self._component_spec.output_artifacts, output_artifact_type)
             if not artifacts:
@@ -310,12 +256,57 @@ class Component(object):
                 channel = TaskOutputArtifactChannel(
                     name=artifact_name,
                     channel_type=artifact.types[0],
-                    task_name=self._name
+                    task_name=self._name,
+                    parties=parties.get_parties_spec()
                 )
 
-                self._outputs[artifact_name] = channel
+                _outputs[artifact_name] = channel
+
+        return _outputs
+
+    @property
+    def outputs(self):
+        if self._component_spec.output_artifacts is None:
+            raise ValueError("Output Definitions is None")
+
+        if self._outputs:
+            return self._outputs
+
+        self._outputs = dict()
+
+        self._convert_party_dict_to_party_inst()
+        self._outputs = self._get_output_by_parties(self.runtime_parties)
 
         return self._outputs
+
+    def party_outputs(self, parties: dict):
+        if not parties:
+            raise ValueError("To get party_outputs, pleas pass parties setting")
+
+        party_inst = Parties()
+        for role, party_id in parties.items():
+            party_inst.set_party(role=role, party_id=party_id)
+
+        return self._get_output_by_parties(parties=party_inst)
+
+    def get_output_artifacts(self):
+        outputs = dict()
+
+        for output_artifact_type in OutputArtifactType.types():
+            artifacts = getattr(self._component_spec.output_artifacts, output_artifact_type)
+            if not artifacts:
+                continue
+
+            if output_artifact_type not in outputs:
+                outputs[output_artifact_type] = dict()
+
+            for artifact_name, artifact in artifacts.items():
+                outputs[output_artifact_type][artifact_name] = OutputArtifactSpec(
+                    output_artifact_key_alias=artifact_name,
+                    output_artifact_type_alias=output_artifact_type
+                )
+
+        return outputs
 
     def _process_init_inputs(self, inputs):
         self._init_inputs = {}
@@ -353,7 +344,7 @@ class Component(object):
 
         return list(dependencies)
 
-    def get_runtime_input_artifacts(self, runtime_roles):
+    def get_runtime_input_artifacts(self, dag_runtime_parties: Parties):
         input_artifacts_dict = dict()
         for input_artifact_type in InputArtifactType.types():
             input_artifacts_dict[input_artifact_type] = getattr(self._component_spec.input_artifacts,
@@ -362,6 +353,7 @@ class Component(object):
         runtime_input_channels = dict()
         input_artifacts = dict()
 
+        self._convert_party_dict_to_party_inst()
         for input_artifact_type, artifacts in input_artifacts_dict.items():
             if not artifacts:
                 continue
@@ -374,24 +366,41 @@ class Component(object):
 
                 channels = getattr(self, artifact_key)
 
-                roles = list(set(runtime_roles) & set(artifact_spec.roles)) \
-                    if set(runtime_roles) != set(artifact_spec.roles) else None
+                cpn_runtime_parties = self.runtime_parties if len(self.runtime_parties) else dag_runtime_parties
+                cpn_runtime_parties = cpn_runtime_parties.intersect(dag_runtime_parties)
+                cpn_runtime_parties = cpn_runtime_parties.get_party_inst_by_role(artifact_spec.roles)
 
-                if isinstance(channels, list) and not artifact_spec.is_multi:
-                    raise ValueError(f"Artifact={artifact_key}'s input is list, it should be a single input")
                 if not isinstance(channels, list) and artifact_spec.is_multi:
                     channels = [channels]
 
                 if isinstance(channels, list):
                     artifact_list = []
                     for channel in channels:
-                        artifact = channel.get_spec(roles=roles)
+                        if not channel.parties:
+                            artifact = channel.get_spec(parties=cpn_runtime_parties.get_parties_spec())
+                        else:
+                            channel_party_inst = Parties()
+                            for party_spec in channel.parties:
+                                channel_party_inst.set_party(role=party_spec.role, party_id=party_spec.party_id)
+                            artifact = channel.get_spec(
+                                parties=cpn_runtime_parties.intersect(channel_party_inst).get_parties_spec()
+                            )
+
                         artifact_list.append(artifact)
 
                     runtime_input_channels[input_artifact_type][artifact_key] = {channels[0].source: artifact_list}
                     input_artifacts[input_artifact_type][artifact_key] = artifact_spec
                 else:
-                    artifact = channels.get_spec(roles=roles)
+                    if not channels.parties:
+                        artifact = channels.get_spec(parties=cpn_runtime_parties.get_parties_spec())
+                    else:
+                        channel_party_inst = Parties()
+                        for party_spec in channels.parties:
+                            channel_party_inst.set_party(role=party_spec.role, party_id=party_spec.party_id)
+                        artifact = channels.get_spec(
+                            parties=cpn_runtime_parties.intersect(channel_party_inst).get_parties_spec()
+                        )
+
                     runtime_input_channels[input_artifact_type][artifact_key] = {channels.source: artifact}
                     input_artifacts[input_artifact_type][artifact_key] = artifact_spec
 
@@ -402,4 +411,17 @@ class Component(object):
         for param in parameters:
             if isinstance(self._init_inputs.get(param, PlaceHolder()), PlaceHolder):
                 continue
-            self._task_setting[param] = self._init_inputs[param]
+            self._task_parameters[param] = self._init_inputs[param]
+
+        self._provider = self._component_spec.provider
+        self._version = self._component_spec.version
+
+    def _convert_party_dict_to_party_inst(self):
+        if not self.runtime_parties:
+            self.runtime_parties = Parties()
+        elif isinstance(self.runtime_parties, dict):
+            runtime_parties = Parties()
+            for role, party_id in self.runtime_parties.items():
+                if role in self.component_spec.roles:
+                    runtime_parties.set_party(role=role, party_id=party_id)
+            self.runtime_parties = runtime_parties
