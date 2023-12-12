@@ -42,6 +42,7 @@ class Component(object):
         self._outputs = None
         self._task_parameters = dict()
         self._task_conf = TaskConf()
+        self._stage = None
 
         if self.yaml_define_path is None:
             raise ValueError("Component should have yaml define file, set yaml_define_path first please!")
@@ -115,6 +116,14 @@ class Component(object):
     def arbiter(self) -> "Component":
         inst = self.get_party_instance(role=SupportRole.ARBITER)[0]
         return inst
+
+    @property
+    def stage(self):
+        return self._stage
+
+    @stage.setter
+    def stage(self, stage):
+        self._stage = stage
 
     def get_party_instance(self, role="guest") -> 'Component':
         if role not in self.support_roles:

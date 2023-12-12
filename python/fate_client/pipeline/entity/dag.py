@@ -51,7 +51,10 @@ class DAG(object):
                 task["parties"] = cpn_runtime_parties.get_parties_spec()
 
             input_channels, input_artifacts = task_inst.get_runtime_input_artifacts(cpn_runtime_parties)
-            task_stage = ComponentStageSchedule.get_stage(input_artifacts, default_stage=stage)
+            if task_inst.stage is None:
+                task_stage = ComponentStageSchedule.get_stage(input_artifacts, default_stage='default')
+            else:
+                task_stage = task_inst.stage
 
             if input_channels:
                 inputs = RuntimeInputArtifacts(**input_channels)

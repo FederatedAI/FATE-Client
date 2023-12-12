@@ -165,6 +165,8 @@ class Pipeline(object):
         for task in task_list:
             self.add_task(task)
 
+        return self
+
     def compile(self) -> "Pipeline":
         self._dag.compile(task_insts=self._tasks,
                           parties=self._parties,
@@ -219,21 +221,6 @@ class Pipeline(object):
                             setattr(deploy_task, input_artifact_key, changed_channels[0])
 
             deploy_pipeline.add_task(deploy_task)
-
-        party_tasks = self._dag.dag_spec.dag.party_tasks
-        if not party_tasks:
-            return deploy_pipeline
-
-        for site_name, party_task_spec in party_tasks.items():
-            if not party_task_spec.tasks:
-                continue
-
-            for task_name, task_spec in party_task_spec.tasks.items():
-                if task_spec.inputs:
-                    try:
-                        getattr(deploy_pipeline, task_name).reset_source_inputs()
-                    except AttributeError:
-                        pass
 
         return deploy_pipeline
 
