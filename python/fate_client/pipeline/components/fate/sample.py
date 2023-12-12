@@ -25,7 +25,7 @@ class Sample(Component):
     def __init__(
         self,
         _name: str,
-        runtime_roles: List[str] = None,
+        runtime_parties: dict = None,
         replace: bool = False,
         frac: Union[float, dict] = None,
         n: int = None,
@@ -37,7 +37,7 @@ class Sample(Component):
         self._process_init_inputs(inputs)
         super(Sample, self).__init__()
         self._name = _name
-        self.runtime_roles = runtime_roles
+        self.runtime_parties = runtime_parties
         self.replace = replace
         self.frac = frac
         self.n = n

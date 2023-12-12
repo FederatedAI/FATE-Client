@@ -25,7 +25,7 @@ class Statistics(Component):
     def __init__(
         self,
         _name: str,
-        runtime_roles: List[str] = None,
+        runtime_parties: dict = None,
         metrics: Union[List[str], str] = None,
         bias: bool = True,
         skip_col: List[str] = PlaceHolder(),
@@ -37,7 +37,7 @@ class Statistics(Component):
         self._process_init_inputs(inputs)
         super(Statistics, self).__init__()
         self._name = _name
-        self.runtime_roles = runtime_roles
+        self.runtime_parties = runtime_parties
         self.metrics = metrics
         self.bias = bias
         self.skip_col = skip_col

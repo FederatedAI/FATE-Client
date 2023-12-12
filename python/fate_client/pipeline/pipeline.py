@@ -306,18 +306,19 @@ class FateFlowPipeline(Pipeline):
                                           name: str,
                                           meta: dict,
                                           extend_sid=True,
-                                          partitions=4,
-                                          site_name: str = None,
-                                          **kwargs):
-        data_warehouse = self._executor.upload(file=file,
-                                               head=head,
-                                               meta=meta,
-                                               partitions=partitions,
-                                               extend_sid=extend_sid,
-                                               role="local",
-                                               party_id="0",
-                                               **kwargs)
-        self._executor.transform_to_dataframe(namespace, name, data_warehouse, site_name=site_name, role="local", party_id="0")
+                                          partitions=4
+                                          ):
+        self._executor.upload(
+            file=file,
+            head=head,
+            meta=meta,
+            partitions=partitions,
+            extend_sid=extend_sid,
+            role="local",
+            party_id="0",
+            namespace=namespace,
+            name=name
+        )
 
     def get_task_info(self, task):
         if isinstance(task, Component):

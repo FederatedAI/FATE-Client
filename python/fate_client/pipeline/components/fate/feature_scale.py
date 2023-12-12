@@ -25,7 +25,7 @@ class FeatureScale(Component):
     def __init__(
         self,
         _name: str,
-        runtime_roles: List[str] = None,
+        runtime_parties: dict = None,
         method: str = PlaceHolder(),
         feature_range: Union[list, dict] = None,
         scale_col: List[str] = None,
@@ -40,7 +40,7 @@ class FeatureScale(Component):
         self._process_init_inputs(inputs)
         super(FeatureScale, self).__init__()
         self._name = _name
-        self.runtime_roles = runtime_roles
+        self.runtime_parties = runtime_parties
         self.method = method
         self.feature_range = feature_range
         self.scale_col = scale_col

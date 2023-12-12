@@ -115,33 +115,22 @@ class FateFlowExecutor(object):
                meta: dict,
                role,
                party_id,
+               namespace,
+               name,
                extend_sid=True,
                partitions=4,
                **kwargs):
         flow_job_invoker = FATEFlowJobInvoker()
 
-        return flow_job_invoker.upload_data(file=file,
-                                            head=head,
-                                            meta=meta,
-                                            extend_sid=extend_sid,
-                                            partitions=partitions,
-                                            role=role,
-                                            party_id=party_id,
-                                            **kwargs)
+        return flow_job_invoker.upload_file_and_convert_to_dataframe(
+            file=file,
+            head=head,
+            meta=meta,
+            extend_sid=extend_sid,
+            partitions=partitions,
+            role=role,
+            party_id=party_id,
+            namespace=namespace,
+            name=name,
+            **kwargs)
 
-    @staticmethod
-    def transform_to_dataframe(namespace: str,
-                               name: str,
-                               data_warehouse: dict,
-                               site_name: str,
-                               role: str,
-                               party_id: str):
-        flow_job_invoker = FATEFlowJobInvoker()
-
-        flow_job_invoker.transform_to_dataframe(namespace=namespace,
-                                                name=name,
-                                                data_warehouse=data_warehouse,
-                                                site_name=site_name,
-                                                role=role,
-                                                party_id=party_id
-                                                )
