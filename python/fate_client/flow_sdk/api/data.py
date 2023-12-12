@@ -14,6 +14,7 @@
 #  limitations under the License.
 #
 import os
+import json
 from ..utils.base_utils import BaseFlowAPI
 from ..utils.params_utils import filter_invalid_params
 from ..utils.io_utils import download_from_request
@@ -46,6 +47,17 @@ class Data(BaseFlowAPI):
             raise Exception(f"{file} is not exist, please check the file path")
         params = filter_invalid_params(**kwargs)
         return self._post(url='/data/component/upload', json=params)
+
+    def upload_file(self, file: str, head: bool, partitions: int, meta: dict, namespace: str = None, name: str = None,
+               extend_sid: bool = None, role: str = None, party_id: str = None):
+        kwargs = locals()
+        params = filter_invalid_params(**kwargs)
+        file_path = params.pop("file")
+        files = {'file': open(file_path, 'rb')}
+        meta = params.pop("meta")
+        params["meta"] = json.dumps(meta)
+
+        return self._post(url='/data/component/upload/file', files=files, data=params, handle_result=False)
 
     def dataframe_transformer(self, namespace: str, name: str, data_warehouse: dict, drop: bool = True,
                               site_name: str = None):
