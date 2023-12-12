@@ -52,7 +52,11 @@ def toy(ctx, **kwargs):
     if submit_result["code"] == 0:
         job_id = submit_result["job_id"]
         for t in range(kwargs["timeout"]):
-            r = flow_sdk.job.query(job_id=job_id, role="guest", party_id=kwargs["guest_party_id"])
+            party_id = kwargs["guest_party_id"]
+            info = flow_sdk.site.info()
+            if info.get("code") == 0:
+                party_id = info.get("data", {}).get("party_id", kwargs["guest_party_id"])
+            r = flow_sdk.job.query(job_id=job_id, party_id=party_id)
             if r["code"] == 0 and len(r["data"]):
                 job_status = r["data"][0]["status"]
                 print(f"toy test job {job_id} is {job_status}")

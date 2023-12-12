@@ -47,6 +47,23 @@ def upload(ctx, **kwargs):
     prettify(response)
 
 
+@data.command("upload-file")
+@cli_args.CONF_PATH
+@click.pass_context
+def upload_file(ctx, **kwargs):
+    """
+    \b
+    -description: Upload file to storage engine.
+
+    \b
+    -usage: flow data upload-file -c examples/upload/upload_guest.csv
+    """
+    config_data = preprocess(**kwargs)
+    client: FlowClient = ctx.obj["client"]
+    response = client.data.upload_file(**config_data)
+    prettify(response)
+
+
 @data.command("download-component")
 @cli_args.NAME_REQUIRED
 @cli_args.NAMESPACE_REQUIRED
