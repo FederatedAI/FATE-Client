@@ -389,12 +389,12 @@ class DagParser(object):
         task_name_set = set(task_name_list)
         for task_name in dag_parser.global_topological_sort():
             parties = dag_parser.get_task_runtime_parties(task_name)
-            data_tracer[task_name] = dict()
+            task_tracer = dict()
             for party_spec in parties:
-                if party_spec.role not in data_tracer[task_name]:
-                    data_tracer[task_name][party_spec.role] = dict()
+                if party_spec.role not in task_tracer:
+                    task_tracer[party_spec.role] = dict()
                 for party_id in party_spec.party_id:
-                    data_tracer[task_name][party_spec.role][party_id] = cls.trace_back_deploy_task(
+                    task_tracer[party_spec.role][party_id] = cls.trace_back_deploy_task(
                         task_name,
                         task_name_set,
                         dag_schema.dag,
@@ -404,6 +404,7 @@ class DagParser(object):
                         party_spec.role,
                         party_id
                     )
+            data_tracer[task_name] = task_tracer
 
         dag_spec = cls.deduce_dag(dag_parser, task_name_list, dag_schema.dag,
                                   component_specs, data_tracer, dag_parser.task_runtime_parties)
@@ -708,9 +709,9 @@ class DagParser(object):
         merge_channels = []
         i = 0
         while i < len(channels):
-            j = i
+            j = i + 1
             merge_channels.append(channels[i])
-            while j <  len(channels) and (channels[j].producer_task, channels[j].output_artifact_key) == \
+            while j < len(channels) and (channels[j].producer_task, channels[j].output_artifact_key) == \
                     (channels[i].producer_task, channels[i].output_artifact_key):
                 if channels[j].parties[0].role == merge_channels[-1].parties[-1].role:
                     merge_channels[-1].parties[-1].party_id.append(channels[j].parties[-1].party_id[0])
@@ -783,7 +784,7 @@ class DagParser(object):
                     if not up_component_spec.output_artifacts or not up_component_spec.output_artifacts.data:
                         continue
 
-                    test_output_data_key = cls.infer_test_output_data_key(up_component_spec.output_artifacts)
+                    test_output_data_key = cls.infer_test_output_data_key(up_component_spec.output_artifacts.data)
                     if role not in up_component_spec.output_artifacts.data[test_output_data_key].roles:
                         continue
 
