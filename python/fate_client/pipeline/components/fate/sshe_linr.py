@@ -36,7 +36,7 @@ class SSHELinR(Component):
             train_data: ArtifactType = PlaceHolder(),
             cv_data: ArtifactType = PlaceHolder(),
             cv_param: dict = PlaceHolder(),
-            reveal_every_epoch: bool = True,
+            reveal_every_epoch: bool = False,
             reveal_loss_freq: int = 1,
             output_cv_data: bool = True,
             validate_data: ArtifactType = PlaceHolder(),
