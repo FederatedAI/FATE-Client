@@ -26,7 +26,7 @@ class HeteroFeatureSelection(Component):
     def __init__(
         self,
         _name: str,
-        runtime_roles: List[str] = None,
+        runtime_parties: dict = None,
         method: List[str] = PlaceHolder(),
         select_col: List[str] = None,
         iv_param: dict = None,
@@ -43,7 +43,7 @@ class HeteroFeatureSelection(Component):
         self._process_init_inputs(inputs)
         super(HeteroFeatureSelection, self).__init__()
         self._name = _name
-        self.runtime_roles = runtime_roles
+        self.runtime_parties = runtime_parties
         self.method = method
         self.select_col = select_col
         self.iv_param = iv_param

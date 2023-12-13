@@ -42,6 +42,7 @@ class Pipeline(object):
 
         self._callback_handler = None
         self._init_callback_handler()
+        self._protocol_kind = "fate"
 
     def _init_callback_handler(self):
         self._callback_handler = CallbackHandler()
@@ -129,6 +130,14 @@ class Pipeline(object):
     def parties(self, parties):
         self._parties = parties
 
+    @property
+    def protocol_kind(self) -> str:
+        return self._protocol_kind
+
+    @protocol_kind.setter
+    def protocol_kind(self, protocol_kind):
+        self._protocol_kind = protocol_kind
+
     def add_callback(self, callback):
         self._callback_handler.add_callback(callback)
 
@@ -152,11 +161,18 @@ class Pipeline(object):
 
         return self
 
+    def add_tasks(self, task_list) -> "Pipeline":
+        for task in task_list:
+            self.add_task(task)
+
+        return self
+
     def compile(self) -> "Pipeline":
         self._dag.compile(task_insts=self._tasks,
                           parties=self._parties,
                           stage=self._stage,
-                          job_conf=self._job_conf.dict())
+                          job_conf=self._job_conf.dict(),
+                          protocol_kind=self._protocol_kind)
         return self
 
     def get_deployed_pipeline(self):
@@ -205,21 +221,6 @@ class Pipeline(object):
                             setattr(deploy_task, input_artifact_key, changed_channels[0])
 
             deploy_pipeline.add_task(deploy_task)
-
-        party_tasks = self._dag.dag_spec.dag.party_tasks
-        if not party_tasks:
-            return deploy_pipeline
-
-        for site_name, party_task_spec in party_tasks.items():
-            if not party_task_spec.tasks:
-                continue
-
-            for task_name, task_spec in party_task_spec.tasks.items():
-                if task_spec.inputs:
-                    try:
-                        getattr(deploy_pipeline, task_name).reset_source_inputs()
-                    except AttributeError:
-                        pass
 
         return deploy_pipeline
 
@@ -305,18 +306,19 @@ class FateFlowPipeline(Pipeline):
                                           name: str,
                                           meta: dict,
                                           extend_sid=True,
-                                          partitions=4,
-                                          site_name: str = None,
-                                          **kwargs):
-        data_warehouse = self._executor.upload(file=file,
-                                               head=head,
-                                               meta=meta,
-                                               partitions=partitions,
-                                               extend_sid=extend_sid,
-                                               role="local",
-                                               party_id="0",
-                                               **kwargs)
-        self._executor.transform_to_dataframe(namespace, name, data_warehouse, site_name=site_name, role="local", party_id="0")
+                                          partitions=4
+                                          ):
+        self._executor.upload(
+            file=file,
+            head=head,
+            meta=meta,
+            partitions=partitions,
+            extend_sid=extend_sid,
+            role="local",
+            party_id="0",
+            namespace=namespace,
+            name=name
+        )
 
     def get_task_info(self, task):
         if isinstance(task, Component):

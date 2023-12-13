@@ -12,26 +12,22 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-from typing import List
 
-from ..component_base import Component
-from ...conf.types import PlaceHolder
+from .bfia.translator.dsl_translator import Translator
+
+def _default_dag_post_process_func(dag_spec):
+    return dag_spec
 
 
-class Reader(Component):
-    yaml_define_path = "./component_define/fate/reader.yaml"
+adapter_map = {
+    "fate": {
+        "bfia": Translator.translate_dag_to_bfia_dag
+    },
+    "bfia": {
+        "fate": Translator.translate_bfia_dag_to_dag
+    }
+}
 
-    def __init__(
-        self,
-        _name: str,
-        runtime_parties: dict = None,
-        namespace: str = PlaceHolder(),
-        name: str = PlaceHolder()
-    ):
-        inputs = locals()
-        self._process_init_inputs(inputs)
-        super(Reader, self).__init__()
-        self._name = _name
-        self.runtime_parties = runtime_parties
-        self.name = name
-        self.namespace = namespace
+dag_post_process = {
+    "bfia": _default_dag_post_process_func
+}

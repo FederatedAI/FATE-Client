@@ -88,7 +88,7 @@ class HeteroNN(Component):
     def __init__(
         self,
         _name: str,
-        runtime_roles: List[str] = None,
+        runtime_parties: dict = None,
         runner_module: str = PlaceHolder(),
         runner_class: str = PlaceHolder(),
         runner_conf: dict = PlaceHolder(),
@@ -104,7 +104,7 @@ class HeteroNN(Component):
         self._process_init_inputs(inputs)
         super(HeteroNN, self).__init__()
         self._name = _name
-        self.runtime_roles = runtime_roles
+        self.runtime_parties = runtime_parties
         self.runner_module = runner_module
         self.runner_class = runner_class
         self.runner_conf = runner_conf

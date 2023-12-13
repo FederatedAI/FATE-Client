@@ -1,0 +1,164 @@
+component:
+  description: XGBoost算法
+  input_artifacts:
+    data:
+      train_data:
+        description: XGBoost算法
+        is_multi: false
+        optional: true
+        roles:
+        - guest
+        - host
+        stages:
+        - train
+        - predict
+        types:
+        - csv
+    model: {}
+  labels:
+  - ''
+  name: HeteroSecureBoost
+  output_artifacts:
+    data:
+      train_data:
+        description: XGBoost算法
+        is_multi: false
+        optional: true
+        roles:
+        - guest
+        - host
+        stages:
+        - train
+        - predict
+        types:
+        - csv
+    metric:
+      train-auc:
+        description: XGBoost算法
+        is_multi: false
+        optional: true
+        roles:
+        - guest
+        - host
+        stages:
+        - train
+        - predict
+        types:
+        - csv
+      train-ks:
+        description: XGBoost算法
+        is_multi: false
+        optional: true
+        roles:
+        - guest
+        - host
+        stages:
+        - train
+        - predict
+        types:
+        - csv
+      train-loss:
+        description: XGBoost算法
+        is_multi: false
+        optional: true
+        roles:
+        - guest
+        - host
+        stages:
+        - train
+        - predict
+        types:
+        - csv
+    model:
+      model:
+        description: XGBoost算法
+        is_multi: false
+        optional: true
+        roles:
+        - guest
+        - host
+        stages:
+        - default
+        types:
+        - csv
+  parameters:
+    id:
+      default: "id"
+      description: id字段名
+      optional: true
+      type: string
+    label:
+      default: y
+      description: label字段名
+      optional: true
+      type: string
+    bin_num:
+      default: '32'
+      description: 分位数
+      optional: true
+      type: integer
+    cv_param:
+      default: '{"n_splits": 5, "shuffle": false, "random_seed": 103, "need_cv": false}'
+      description: cv参数
+      optional: true
+      type: string
+    early_stop:
+      default: weight_diff
+      description: 早停策略
+      optional: true
+      type: string
+    early_stop_rounds:
+      default: null
+      description: 早停策略
+      optional: true
+      type: integer
+    learning_rate:
+      default: '0.15'
+      description: 学习率
+      optional: true
+      type: float
+    metrics:
+      default: '["auc", "ks"]'
+      description: 计算指标
+      optional: true
+      type: string
+    n_iter_no_change:
+      default: 'true'
+      description: n轮无变化
+      optional: true
+      type: boolean
+    num_trees:
+      default: '5'
+      description: 树个数
+      optional: true
+      type: integer
+    objective_param:
+      default: cross_entropy
+      description: 目标参数
+      optional: true
+      type: string
+    predict_param:
+      default: '{"threshold": 0.5}'
+      description: 预测参数
+      optional: true
+      type: string
+    subsample_feature_rate:
+      default: '1'
+      description: 子样本率
+      optional: true
+      type: integer
+    tol:
+      default: '0.0001'
+      description: 停止容忍度
+      optional: true
+      type: float
+    tree_param:
+      default: '{"max_depth": 3}'
+      description: 树参数
+      optional: true
+      type: string
+  provider: unionpay
+  roles:
+  - guest
+  - host
+  version: 2.0.0

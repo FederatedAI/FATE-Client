@@ -50,6 +50,14 @@ class Parties(object):
     def get_runtime_roles(self):
         return self._role_party_id_mappings.keys()
 
+    def get_party_inst_by_role(self, roles) -> "Parties":
+        party_inst = Parties()
+        for role in roles:
+            if role in self._role_party_id_mappings:
+                party_inst.set_party(role=role, party_id=self._role_party_id_mappings[role])
+
+        return party_inst
+
     def get_parties_spec(self, roles=None):
         if not roles:
             roles = self._role_party_id_mappings.keys()
@@ -63,3 +71,26 @@ class Parties(object):
             role_list.append(PartySpec(role=role, party_id=party_id_list))
 
         return role_list
+
+    def intersect(self, other: "Parties") -> "Parties":
+        intersect_parties = Parties()
+        for role, party_id_list in self._role_party_id_mappings.items():
+            if role not in other._role_party_id_mappings:
+                continue
+            common_party_id_list = list(set(party_id_list) & set(other._role_party_id_mappings[role]))
+            intersect_parties.set_party(role=role, party_id=common_party_id_list)
+
+        return intersect_parties
+
+    def __eq__(self, other):
+        if not isinstance(other, Parties):
+            return False
+
+        return self._role_party_id_mappings == other._role_party_id_mappings
+
+    def __len__(self):
+        return len(self._role_party_id_mappings)
+
+    def __iter__(self):
+        for role, party_id_list in self._role_party_id_mappings.items():
+            yield role, party_id_list

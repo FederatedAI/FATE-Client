@@ -25,7 +25,7 @@ class FeatureCorrelation(Component):
     def __init__(
             self,
             _name: str,
-            runtime_roles: List[str] = None,
+            runtime_parties: dict = None,
             calc_local_vif: bool = True,
             local_only: bool = False,
             skip_col: List[str] = PlaceHolder(),
@@ -36,7 +36,7 @@ class FeatureCorrelation(Component):
         self._process_init_inputs(inputs)
         super(FeatureCorrelation, self).__init__()
         self._name = _name
-        self.runtime_roles = runtime_roles
+        self.runtime_parties = runtime_parties
         self.local_only = local_only
         self.calc_local_vif = calc_local_vif
         self.skip_col = skip_col

@@ -24,7 +24,7 @@ class Evaluation(Component):
     def __init__(
         self,
         _name: str,
-        runtime_roles: List[str] = None,
+        runtime_parties: dict = None,
         default_eval_setting: Literal["binary", "multi", "regression"] = PlaceHolder(),
         metrics: List[str] = None,
         predict_column_name: str = None,
@@ -35,7 +35,7 @@ class Evaluation(Component):
         self._process_init_inputs(inputs)
         super(Evaluation, self).__init__()
         self._name = _name
-        self.runtime_roles = runtime_roles
+        self.runtime_parties = runtime_parties
         self.input_data = input_data
         self.default_eval_setting = default_eval_setting
         self.metrics = metrics
