@@ -49,7 +49,7 @@ class Data(BaseFlowAPI):
         return self._post(url='/data/component/upload', json=params)
 
     def upload_file(self, file: str, head: bool, partitions: int, meta: dict, namespace: str = None, name: str = None,
-               extend_sid: bool = None, role: str = None, party_id: str = None):
+                    extend_sid: bool = None, role: str = None, party_id: str = None):
         kwargs = locals()
         params = filter_invalid_params(**kwargs)
         file_path = params.pop("file")
