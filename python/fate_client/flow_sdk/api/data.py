@@ -57,7 +57,7 @@ class Data(BaseFlowAPI):
         meta = params.pop("meta")
         params["meta"] = json.dumps(meta)
 
-        return self._post(url='/data/component/upload/file', files=files, data=params, handle_result=False)
+        return self._post(url='/data/component/upload/file', files=files, data=params, handle_result=True)
 
     def dataframe_transformer(self, namespace: str, name: str, data_warehouse: dict, drop: bool = True,
                               site_name: str = None):
