@@ -34,7 +34,7 @@ component:
     model: {}
   output_artifacts:
     data:
-      data_output:
+      output_data:
         types:
           - data_unresolved
         optional: false

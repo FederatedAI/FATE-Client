@@ -387,17 +387,27 @@ class DagParser(object):
 
         data_tracer = dict()
         task_name_set = set(task_name_list)
-        for task_name in dag_parser.topological_sort():
-            trace_task_name = cls.trace_back_deploy_task(
-                task_name,
-                task_name_set,
-                dag_schema.dag,
-                component_specs,
-                data_tracer
-            )
-            data_tracer[task_name] = trace_task_name
+        for task_name in dag_parser.global_topological_sort():
+            parties = dag_parser.get_task_runtime_parties(task_name)
+            task_tracer = dict()
+            for party_spec in parties:
+                if party_spec.role not in task_tracer:
+                    task_tracer[party_spec.role] = dict()
+                for party_id in party_spec.party_id:
+                    task_tracer[party_spec.role][party_id] = cls.trace_back_deploy_task(
+                        task_name,
+                        task_name_set,
+                        dag_schema.dag,
+                        component_specs,
+                        data_tracer,
+                        dag_parser.task_runtime_parties,
+                        party_spec.role,
+                        party_id
+                    )
+            data_tracer[task_name] = task_tracer
 
-        dag_spec = cls.deduce_dag(dag_parser, task_name_list, dag_schema.dag, component_specs, data_tracer)
+        dag_spec = cls.deduce_dag(dag_parser, task_name_list, dag_schema.dag,
+                                  component_specs, data_tracer, dag_parser.task_runtime_parties)
         dag_spec = cls.erase_redundant_tasks(
             task_name_set,
             dag_spec
@@ -407,8 +417,8 @@ class DagParser(object):
 
     @classmethod
     def deduce_dag(cls, dag_parser: 'DagParser', task_name_list: list, dag_spec: DAGSpec,
-                   component_specs: Dict[str, ComponentSpec], data_tracer: dict):
-        stage = dag_spec.stage
+                   component_specs: Dict[str, ComponentSpec], data_tracer: dict,
+                   task_runtime_parties: Dict[str, List[PartySpec]]):
         deduced_dag = copy.deepcopy(dag_spec)
         deduced_dag.stage = Stage.PREDICT
 
@@ -416,7 +426,7 @@ class DagParser(object):
         linkage messages only occur in tasks field
         """
         task_name_set = set(task_name_list)
-        topological_task_list = list(dag_parser.topological_sort())
+        topological_task_list = list(dag_parser.global_topological_sort())
         for task_name in topological_task_list:
             if task_name not in task_name_set:
                 continue
@@ -428,20 +438,15 @@ class DagParser(object):
             if task.stage == Stage.PREDICT:
                 deduced_dag.tasks[task_name].stage = None
 
-            task_stage = task.stage if task.stage else stage
             """
             default stage should not distinguish fit & transform or fit & transform. 
             """
             component_spec = component_specs[task_name]
             if task.inputs and (data_input_artifacts := task.inputs.data):
                 for artifact_name, artifact_channel in data_input_artifacts.items():
-                    if isinstance(artifact_channel, DataWarehouseChannelSpec):
-                        continue
-
                     artifact_definition = component_spec.input_artifacts.data[artifact_name]
-
                     deduced_dag.tasks[task_name].inputs.data.pop(artifact_name)
-                    if artifact_name == InputDataKeyType.VALIDATE_DATA:
+                    if isinstance(artifact_channel, DataWarehouseChannelSpec) or artifact_name == InputDataKeyType.VALIDATE_DATA:
                         continue
                     elif artifact_name == InputDataKeyType.TRAIN_DATA:
                         """
@@ -464,22 +469,41 @@ class DagParser(object):
                                                                            component_spec.input_artifacts.data)
 
                     test_input_artifact_definition = component_spec.input_artifacts.data[test_input_key]
-                    artifact_source_type = list(artifact_channel.items())[0][0]
-                    runtime_output_channel = list(artifact_channel.items())[0][1]
-                    test_input_data = cls.infer_test_input_data(
-                        task_name_set,
-                        artifact_definition,
-                        test_input_artifact_definition,
-                        runtime_output_channel,
-                        dag_spec,
-                        component_specs,
-                        data_tracer
-                    )
-                    if test_input_data:
-                        if test_input_key not in deduced_dag.tasks[task_name].inputs.data:
-                            deduced_dag.tasks[task_name].inputs.data[test_input_key] = dict()
-                        deduced_dag.tasks[task_name].inputs.data[test_input_key][artifact_source_type] = \
-                            test_input_data
+                    for _, channel_list in artifact_channel.items():
+                        if not isinstance(channel_list, list):
+                            channel_list = [channel_list]
+                        for channel in channel_list:
+                            if isinstance(channel, DataWarehouseChannelSpec):
+                                continue
+                            assert isinstance(channel, RuntimeTaskOutputChannelSpec)
+                            parties = channel.parties if channel.parties else task_runtime_parties[channel.producer_task]
+
+                            for party_spec in parties:
+                                for party_id in party_spec.party_id:
+                                    test_input_data = cls.infer_test_input_data(
+                                        artifact_definition,
+                                        test_input_artifact_definition,
+                                        channel,
+                                        dag_spec,
+                                        component_specs,
+                                        data_tracer,
+                                        task_runtime_parties[task_name],
+                                        party_spec.role,
+                                        party_id
+                                    )
+                                    if test_input_data:
+                                        if test_input_key not in deduced_dag.tasks[task_name].inputs.data:
+                                            deduced_dag.tasks[task_name].inputs.data[test_input_key] = dict()
+                                        if _ not in deduced_dag.tasks[task_name].inputs.data[test_input_key]:
+                                            deduced_dag.tasks[task_name].inputs.data[test_input_key][_] = []
+                                        deduced_dag.tasks[task_name].inputs.data[test_input_key][_].extend(test_input_data)
+
+                        if channels := deduced_dag.tasks[task_name].inputs.data.get(test_input_key, {}).get(_):
+                            deduced_dag.tasks[task_name].inputs.data[test_input_key][_] = \
+                                cls.merge_artifact_channel_by_party(
+                                    channels,
+                                )
+
             if task.inputs and (model_input_artifacts := task.inputs.model):
                 for artifact_name in model_input_artifacts:
                     deduced_dag.tasks[task_name].inputs.model.pop(artifact_name)
@@ -626,63 +650,113 @@ class DagParser(object):
 
     @classmethod
     def infer_test_input_data(cls,
-                              task_name_set,
                               train_artifact_definition,
                               test_artifact_definition,
-                              output_channel: Union[RuntimeTaskOutputChannelSpec, List[RuntimeTaskOutputChannelSpec]],
+                              channel: RuntimeTaskOutputChannelSpec,
                               dag_spec,
                               component_specs,
-                              data_tracer: dict):
+                              data_tracer: dict,
+                              down_task_runtime_parties,
+                              role,
+                              party_id):
         if not (set(train_artifact_definition.types) & set(test_artifact_definition.types)):
             raise ValueError(f"train_artifact_definition's types are {train_artifact_definition.types[0]}, "
                              f"can not be changed to {test_artifact_definition.types[0]}")
-        if not isinstance(output_channel, list):
-            output_channel = [output_channel]
 
-        ret_output_channel = []
-        for channel in output_channel:
-            if isinstance(channel, DataWarehouseChannelSpec):
-                continue
+        can_link_down = False
+        for party_spec in down_task_runtime_parties:
+            if party_spec.role == role and party_id in party_spec.party_id:
+                can_link_down = True
+                break
 
-            upstream_task = data_tracer[channel.producer_task]
-            if upstream_task is None:
-                continue
-
-            test_artifact_data_key = cls.infer_test_output_data_key(
-                component_specs[upstream_task].output_artifacts.data
-            )
-            ret_output_channel.append(
-                RuntimeTaskOutputChannelSpec(
-                    producer_task=upstream_task,
-                    output_artifact_key=test_artifact_data_key
-                )
-            )
-
-        if not ret_output_channel:
+        if not can_link_down:
             return None
-        elif train_artifact_definition.is_multi:
-            return ret_output_channel
-        else:
-            return ret_output_channel[0]
+
+        if role not in data_tracer[channel.producer_task] or party_id not in data_tracer[channel.producer_task][role]:
+            return None
+
+        if role not in test_artifact_definition.roles or role not in train_artifact_definition.roles:
+            return None
+
+        parties = dag_spec.tasks[channel.producer_task].parties if dag_spec.tasks[channel.producer_task].parties else dag_spec.parties
+        can_link_up = False
+        for party_spec in parties:
+            if role == party_spec.role and party_id in party_spec.party_id:
+                can_link_up = True
+
+        if not can_link_up:
+            return None
+
+        upstream_task = data_tracer[channel.producer_task][role][party_id]
+        if not upstream_task:
+            return None
+
+        test_artifact_data_key = cls.infer_test_output_data_key(
+            component_specs[upstream_task].output_artifacts.data
+        )
+
+        return [
+            RuntimeTaskOutputChannelSpec(
+                producer_task=upstream_task,
+                output_artifact_key=test_artifact_data_key,
+                parties=[PartySpec(role=role, party_id=[party_id])]
+            )
+        ]
 
     @classmethod
-    def trace_back_deploy_task(cls, task_name, task_name_set, dag_spec: DAGSpec, component_specs, data_tracer: dict):
+    def merge_artifact_channel_by_party(cls, channels: List[RuntimeTaskOutputChannelSpec]):
+        channels.sort(key=lambda channel: (channel.producer_task, channel.output_artifact_key, channel.parties[0].role))
+        merge_channels = []
+        i = 0
+        while i < len(channels):
+            j = i + 1
+            merge_channels.append(channels[i])
+            while j < len(channels) and (channels[j].producer_task, channels[j].output_artifact_key) == \
+                    (channels[i].producer_task, channels[i].output_artifact_key):
+                if channels[j].parties[0].role == merge_channels[-1].parties[-1].role:
+                    merge_channels[-1].parties[-1].party_id.append(channels[j].parties[-1].party_id[0])
+                else:
+                    merge_channels[-1].parties.append(channels[j].parties[0])
+
+                j += 1
+
+            i = j
+
+        return merge_channels
+
+    @classmethod
+    def task_can_run(cls, role, party_id, component_spec: ComponentSpec, runtime_parties: List[PartySpec]):
+        if role not in component_spec.roles:
+            return False
+
+        for party_spec in runtime_parties:
+            if role == party_spec.role and party_id in party_spec.party_id:
+                return True
+
+        return False
+
+    @classmethod
+    def trace_back_deploy_task(
+            cls, task_name, task_name_set, dag_spec: DAGSpec,
+            component_specs: Dict[str, ComponentSpec], data_tracer: dict,
+            task_runtime_parties: Dict[str, List[PartySpec]], role, party_id):
+
         if task_name in task_name_set:
-            return task_name
+            if cls.task_can_run(role, party_id, component_specs[task_name], task_runtime_parties[task_name]):
+                return task_name
+            return None
 
         if task_name in data_tracer:
-            return data_tracer[task_name]
+            if party_id in data_tracer[task_name].get(role, {}):
+                return task_name
+            return None
 
         task_spec = dag_spec.tasks[task_name]
-        component_spec = component_specs[task_name]
 
         if task_spec.inputs is None or task_spec.inputs.data is None:
             return None
 
-        upstream_task = set()
         for artifact_name, artifact_channel in task_spec.inputs.data.items():
-            artifact_definition = component_spec.input_artifacts.data[artifact_name]
-
             if not task_spec.stage:
                 """
                 task stage is train, inherit from job is train
@@ -690,40 +764,43 @@ class DagParser(object):
                 if artifact_name == InputDataKeyType.VALIDATE_DATA:
                     continue
 
-            if artifact_definition.is_multi:
-                channels = list(artifact_channel.items())[0][1]
-                for channel in channels:
+            for _, channel_list in artifact_channel.items():
+                if not isinstance(channel_list, list):
+                    channel_list = [channel_list]
+
+                for channel in channel_list:
                     if isinstance(channel, DataWarehouseChannelSpec):
                         continue
+                    assert isinstance(channel, RuntimeTaskOutputChannelSpec), f"channel={channel} not support to deploy"
 
-                    upstream_task.add(
-                        cls.trace_back_deploy_task(
-                            channel.producer_task,
-                            task_name_set,
-                            dag_spec,
-                            component_specs,
-                            data_tracer)
-                    )
-            else:
-                channel = list(artifact_channel.items())[0][1]
-                if isinstance(channel, DataWarehouseChannelSpec):
-                    continue
+                    producer_task = channel.producer_task
+                    up_component_spec = component_specs[producer_task]
+                    if not cls.task_can_run(role,
+                                            party_id,
+                                            up_component_spec,
+                                            task_runtime_parties[task_name]):
+                        continue
 
-                upstream_task.add(
-                    cls.trace_back_deploy_task(
-                        channel.producer_task,
-                        task_name_set,
-                        dag_spec,
-                        component_specs,
-                        data_tracer)
-                )
+                    if not up_component_spec.output_artifacts or not up_component_spec.output_artifacts.data:
+                        continue
 
-        if not upstream_task:
-            return None
-        elif len(upstream_task) == 1:
-            return list(upstream_task)[0]
-        else:
-            return list(upstream_task)
+                    test_output_data_key = cls.infer_test_output_data_key(up_component_spec.output_artifacts.data)
+                    if role not in up_component_spec.output_artifacts.data[test_output_data_key].roles:
+                        continue
+
+                    if (up_input_name := cls.trace_back_deploy_task(
+                                                producer_task,
+                                                task_name_set,
+                                                dag_spec,
+                                                component_specs,
+                                                data_tracer,
+                                                task_runtime_parties,
+                                                role,
+                                                party_id)
+                        ):
+                        return up_input_name
+
+        return None
 
     @classmethod
     def translate_dag(cls, src, dst, *args, **kwargs):

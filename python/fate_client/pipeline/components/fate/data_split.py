@@ -25,7 +25,7 @@ class DataSplit(Component):
     def __init__(
         self,
         _name: str,
-        runtime_roles: List[str] = None,
+        runtime_parties: dict = None,
         input_data: ArtifactType = PlaceHolder(),
         train_size: Union[int, float] = None,
         validate_size: Union[int, float] = None,
@@ -38,7 +38,7 @@ class DataSplit(Component):
         self._process_init_inputs(inputs)
         super(DataSplit, self).__init__()
         self._name = _name
-        self.runtime_roles = runtime_roles
+        self.runtime_parties = runtime_parties
         self.input_data = input_data
         self.train_size = train_size
         self.validate_size = validate_size

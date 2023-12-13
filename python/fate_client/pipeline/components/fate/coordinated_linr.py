@@ -25,7 +25,7 @@ class CoordinatedLinR(Component):
     def __init__(
         self,
         _name: str,
-        runtime_roles: List[str] = None,
+        runtime_parties: dict = None,
         epochs: int = 20,
         early_stop: str = "diff",
         tol: float = 1e-4,
@@ -48,7 +48,7 @@ class CoordinatedLinR(Component):
         self._process_init_inputs(inputs)
         super(CoordinatedLinR, self).__init__()
         self._name = _name
-        self.runtime_roles = runtime_roles
+        self.runtime_parties = runtime_parties
         self.epochs = epochs
         self.early_stop = early_stop
         self.tol = tol

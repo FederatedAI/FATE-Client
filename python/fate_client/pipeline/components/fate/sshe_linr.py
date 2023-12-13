@@ -19,43 +19,42 @@ from ...conf.types import PlaceHolder
 from ...interface import ArtifactType
 
 
-class CoordinatedLR(Component):
-    yaml_define_path = "./component_define/fate/coordinated_lr.yaml"
+class SSHELinR(Component):
+    yaml_define_path = "./component_define/fate/sshe_linr.yaml"
 
     def __init__(
-        self,
-        _name: str,
-        runtime_parties: dict = None,
-        epochs: int = 20,
-        early_stop: str = "diff",
-        tol: float = 1e-4,
-        batch_size: int = None,
-        optimizer: dict = PlaceHolder(),
-        learning_rate_scheduler: dict = PlaceHolder(),
-        init_param: dict = PlaceHolder(),
-        threshold: float = 0.5,
-        train_data: ArtifactType = PlaceHolder(),
-        cv_data: ArtifactType = PlaceHolder(),
-        cv_param: dict = PlaceHolder(),
-        floating_point_precision: int = 23,
-        he_param: dict = PlaceHolder(),
-        output_cv_data: bool = True,
-        validate_data: ArtifactType = PlaceHolder(),
-        test_data: ArtifactType = PlaceHolder(),
-        input_model: ArtifactType = PlaceHolder(),
-        warm_start_model: ArtifactType = PlaceHolder(),
+            self,
+            _name: str,
+            runtime_parties: dict = None,
+            epochs: int = 20,
+            early_stop: str = "diff",
+            tol: float = 1e-4,
+            batch_size: int = None,
+            learning_rate: float = PlaceHolder(),
+            init_param: dict = PlaceHolder(),
+            threshold: float = 0.5,
+            train_data: ArtifactType = PlaceHolder(),
+            cv_data: ArtifactType = PlaceHolder(),
+            cv_param: dict = PlaceHolder(),
+            reveal_every_epoch: bool = False,
+            reveal_loss_freq: int = 1,
+            output_cv_data: bool = True,
+            validate_data: ArtifactType = PlaceHolder(),
+            test_data: ArtifactType = PlaceHolder(),
+            input_model: ArtifactType = PlaceHolder(),
+            warm_start_model: ArtifactType = PlaceHolder(),
     ):
         inputs = locals()
         self._process_init_inputs(inputs)
-        super(CoordinatedLR, self).__init__()
+        super(SSHELinR, self).__init__()
         self._name = _name
         self.runtime_parties = runtime_parties
         self.epochs = epochs
         self.early_stop = early_stop
         self.tol = tol
         self.batch_size = batch_size
-        self.optimizer = optimizer
-        self.learning_rate_scheduler = learning_rate_scheduler
+        self.reveal_every_epoch = reveal_every_epoch
+        self.learning_rate = learning_rate
         self.init_param = init_param
         self.threshold = threshold
         self.train_data = train_data
@@ -66,5 +65,4 @@ class CoordinatedLR(Component):
         self.cv_param = cv_param
         self.output_cv_data = output_cv_data
         self.warm_start_model = warm_start_model
-        self.floating_point_precision = floating_point_precision
-        self.he_param = he_param
+        self.reveal_loss_freq = reveal_loss_freq

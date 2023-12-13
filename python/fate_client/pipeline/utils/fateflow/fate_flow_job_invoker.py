@@ -117,32 +117,16 @@ class FATEFlowJobInvoker(object):
         except ValueError:
             return None
 
-    def upload_data(self, file, meta, head, extend_sid, role=None, party_id=None, **kwargs):
-        response = self._client.data.upload(file=file,
-                                            head=head,
-                                            meta=meta,
-                                            extend_sid=extend_sid,
-                                            **kwargs)
-        try:
-            code = response["code"]
-            if code != 0:
-                raise ValueError(f"Return code {code}!=0")
-
-            namespace = response["data"]["namespace"]
-            name = response["data"]["name"]
-            job_id = response["job_id"]
-        except BaseException:
-            raise ValueError(f"Upload data fails, response={response}")
-
-        self.monitor_status(job_id, role=role, party_id=party_id)
-        return dict(namespace=namespace, name=name)
-
-    def transform_to_dataframe(self, name, namespace, data_warehouse, site_name, role, party_id):
-        response = self._client.data.dataframe_transformer(namespace=namespace,
-                                                           name=name,
-                                                           site_name=site_name,
-                                                           data_warehouse=data_warehouse)
-
+    def upload_file_and_convert_to_dataframe(
+            self, file, meta, head, extend_sid,
+            namespace, name, role=None, party_id=None, **kwargs):
+        response = self._client.data.upload_file(file=file,
+                                                 head=head,
+                                                 meta=meta,
+                                                 extend_sid=extend_sid,
+                                                 namespace=namespace,
+                                                 name=name,
+                                                 **kwargs)
         try:
             code = response["code"]
             if code != 0:
@@ -153,8 +137,6 @@ class FATEFlowJobInvoker(object):
             raise ValueError(f"Upload data fails, response={response}")
 
         self.monitor_status(job_id, role=role, party_id=party_id)
-
-        return code
 
     def get_output_data(self, job_id, role, party_id, task_name):
         with tempfile.TemporaryDirectory() as data_dir:

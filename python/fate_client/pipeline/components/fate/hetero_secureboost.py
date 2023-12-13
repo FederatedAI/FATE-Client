@@ -25,7 +25,7 @@ class HeteroSecureBoost(Component):
     def __init__(
         self,
         _name: str,
-        runtime_roles: List[str] = None,
+        runtime_parties: dict = None,
         train_data: ArtifactType = PlaceHolder(),
         validate_data: ArtifactType = PlaceHolder(),
         num_trees: int = 20,
@@ -48,17 +48,19 @@ class HeteroSecureBoost(Component):
         split_info_pack: bool = True,
         hist_sub: bool = True,
         he_param: dict = PlaceHolder(),
+        cv_param: dict = PlaceHolder(),
         train_data_output: ArtifactType = PlaceHolder(),
         train_model_output: ArtifactType = PlaceHolder(),
         train_model_input: ArtifactType = PlaceHolder(),
         test_data: ArtifactType = PlaceHolder(),
         predict_model_input: ArtifactType = PlaceHolder(),
+        cv_data: ArtifactType = PlaceHolder()
     ):
         inputs = locals()
         self._process_init_inputs(inputs)
         super(HeteroSecureBoost, self).__init__()
         self._name = _name
-        self.runtime_roles = runtime_roles
+        self.runtime_parties = runtime_parties
         self.train_data = train_data
         self.validate_data = validate_data
         self.train_model_input = train_model_input
@@ -88,3 +90,5 @@ class HeteroSecureBoost(Component):
         self.train_model_output = train_model_output
         self.test_data = test_data
         self.predict_model_input = predict_model_input
+        self.cv_param = cv_param
+        self.cv_data = cv_data

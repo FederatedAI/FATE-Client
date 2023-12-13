@@ -26,7 +26,7 @@ class HeteroFeatureBinning(Component):
     def __init__(
         self,
         _name: str,
-        runtime_roles: List[str] = None,
+        runtime_parties: dict = None,
         method: str = PlaceHolder(),
         n_bins: int = None,
         split_pt_dict: dict = None,
@@ -49,7 +49,7 @@ class HeteroFeatureBinning(Component):
         self._process_init_inputs(inputs)
         super(HeteroFeatureBinning, self).__init__()
         self._name = _name
-        self.runtime_roles = runtime_roles
+        self.runtime_parties = runtime_parties
         self.method = method
         self.n_bins = n_bins
         self.split_pt_dict = split_pt_dict

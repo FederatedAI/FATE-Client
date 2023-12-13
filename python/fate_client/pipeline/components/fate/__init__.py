@@ -16,17 +16,19 @@
 from .coordinated_linr import CoordinatedLinR
 from .coordinated_lr import CoordinatedLR
 from .data_split import DataSplit
-
 # from .multi_input import MultiInput
 from .dataframe_io_test import DataFrameIOTest
 from .dataframe_transformer import DataFrameTransformer
 from .evaluation import Evaluation
+from .feature_correlation import FeatureCorrelation
 from .feature_scale import FeatureScale
 from .hetero_feature_binning import HeteroFeatureBinning
 from .hetero_feature_selection import HeteroFeatureSelection
 from .psi import PSI
 from .reader import Reader
 from .sample import Sample
+from .sshe_linr import SSHELinR
+from .sshe_lr import SSHELR
 from .statistics import Statistics
 from .union import Union
 from .homo_lr import HomoLR
