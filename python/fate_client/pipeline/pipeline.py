@@ -13,6 +13,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 import copy
+import uuid
+from types import SimpleNamespace
 from ruamel import yaml
 from .executor import FateFlowExecutor
 from .entity import DAG
@@ -44,6 +46,9 @@ class Pipeline(object):
         self._init_callback_handler()
         self._protocol_kind = "fate"
 
+        self.__party_pipeline = dict()
+        self._callable = True
+
     def _init_callback_handler(self):
         self._callback_handler = CallbackHandler()
         self._callback_handler.add_callback(JobInfoCallBack())
@@ -59,6 +64,9 @@ class Pipeline(object):
     def set_stage(self, stage):
         self._stage = stage
         return self
+
+    def callable(self):
+        return self._callable
 
     @property
     def callback_handler(self):
@@ -120,6 +128,7 @@ class Pipeline(object):
                 party_id = [str(_id) for _id in party_id]
             self._parties.set_party(role, party_id)
 
+        self._job_conf.parties = self._parties
         return self
 
     @property
@@ -142,6 +151,8 @@ class Pipeline(object):
         self._callback_handler.add_callback(callback)
 
     def add_task(self, task) -> "Pipeline":
+        if not isinstance(task, (Component, Pipeline)):
+            raise ValueError("add_task only accepts Component of Pipeline")
         if isinstance(task, Component):
             if task.task_name in self._tasks:
                 raise ValueError(f"Task {task.task_name} has been added before")
@@ -162,16 +173,28 @@ class Pipeline(object):
         return self
 
     def add_tasks(self, task_list) -> "Pipeline":
+        if not isinstance(task_list, list):
+            raise ValueError("add_tasks only accepts list of Component or Pipeline objects")
         for task in task_list:
             self.add_task(task)
 
         return self
 
     def compile(self) -> "Pipeline":
+        party_confs = dict()
+        for role, party_id_list in self._parties:
+            for idx, party_id in enumerate(party_id_list):
+                conf = self._get_role_conf(role, idx)
+                if not conf:
+                    continue
+
+                role_party_key = f"{role}_{party_id}"
+                party_confs[role_party_key] = conf
+
         self._dag.compile(task_insts=self._tasks,
                           parties=self._parties,
                           stage=self._stage,
-                          job_conf=self._job_conf.dict(),
+                          job_conf=SimpleNamespace(global_conf=self._job_conf.dict(), parties_conf=party_confs),
                           protocol_kind=self._protocol_kind)
         return self
 
@@ -282,6 +305,54 @@ class Pipeline(object):
 
         return yaml.dump(self._predict_dag.dict(exclude_defaults=True))
 
+    def _get_party_pipeline(self, role) -> "Pipeline":
+        if role not in self._parties.get_runtime_roles():
+            raise ValueError(f"Pipeline does not support role={role}")
+
+        if role not in self.__party_pipeline:
+            self.__party_pipeline[role] = dict()
+
+        index = str(uuid.uuid1())
+
+        party_pipeline = Pipeline(executor=self._executor)
+        party_pipeline.parties = self._parties
+        party_pipeline.__party_pipeline = dict()
+        party_pipeline._callable = False
+
+        self.__party_pipeline[role][index] = party_pipeline
+
+        return party_pipeline
+
+    @property
+    def guest(self):
+        return self._get_party_pipeline(role="guest")[0]
+
+    @property
+    def hosts(self):
+        return self._get_party_pipeline(role="host")
+
+    @property
+    def arbiter(self):
+        return self._get_party_pipeline(role="arbiter")[0]
+
+    def _get_role_conf(self, role, index):
+        conf = dict()
+        if role not in self.__party_pipeline:
+            return conf
+
+        index = str(index)
+        role_pipeline_dict = self.__party_pipeline[role]
+
+        for _, party_pipeline in role_pipeline_dict.items():
+            for party_index, party_inst in party_pipeline.__party_pipeline.items():
+                party_index = party_index.split("|")
+                if index not in party_index:
+                    continue
+
+                conf.update(party_inst.conf.dict())
+
+        return conf
+
     def __getattr__(self, attr):
         if attr in self._tasks:
             return self._tasks[attr]
@@ -289,10 +360,27 @@ class Pipeline(object):
         return self.__getattribute__(attr)
 
     def __getitem__(self, item):
-        if item not in self._tasks:
-            raise ValueError(f"Component {item} has not been added in pipeline")
+        if isinstance(item, str) and item in self._tasks:
+            return self._tasks[item]
+        elif isinstance(item, (int, list, slice)):
+            if isinstance(item, slice):
+                if item.start is None or item.stop is None:
+                    raise ValueError(f"Slice {item} is not support, start and stop should be given")
+                start = item.start
+                stop = item.stop
+                step = item.step if item.step else 1 if start < stop else -1
+                item = [idx for idx in range(start, stop, step)]
+                if len(item) == 1:
+                    item = item[0]
 
-        return self._tasks[item]
+            if isinstance(item, list):
+                item.sort()
+
+            index_key = str(item) if isinstance(item, int) else "|".join(map(str, item))
+            self.__party_pipeline[index_key] = Pipeline(executor=self._executor)
+            return self.__party_pipeline[index_key]
+        else:
+            return NotImplementedError(f"Not support get item={item}")
 
 
 class FateFlowPipeline(Pipeline):
