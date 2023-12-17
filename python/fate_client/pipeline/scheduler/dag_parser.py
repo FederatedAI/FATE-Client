@@ -133,35 +133,48 @@ class DagParser(object):
             for input_key, output_specs_dict in artifacts.items():
                 for artifact_source, channel_spec_list in output_specs_dict.items():
                     if artifact_source == ArtifactSourceType.MODEL_WAREHOUSE:
-                        if isinstance(channel_spec_list, list):
-                            inputs = []
-                            for channel in channel_spec_list:
-                                model_warehouse_channel = ModelWarehouseChannelSpec(**channel.dict(exclude_defaults=True))
-                                if model_warehouse_channel.model_id is None:
-                                    model_warehouse_channel.model_id = \
-                                        self._conf.get("model_warehouse", {}).get("model_id", None)
-                                    model_warehouse_channel.model_version = \
-                                        self._conf.get("model_warehouse", {}).get("model_version", None)
-                                inputs.append(model_warehouse_channel)
-                        else:
-                            inputs = ModelWarehouseChannelSpec(**channel_spec_list.dict(exclude_defaults=True))
-                            if inputs.model_id is None:
-                                inputs.model_id = self._conf.get("model_warehouse", {}).get("model_id", None)
-                                inputs.model_version = self._conf.get("model_warehouse", {}).get("model_version", None)
+                        is_list = True
+                        if not isinstance(channel_spec_list, list):
+                            is_list = False
+                            channel_spec_list = [channel_spec_list]
+                        inputs = []
+                        for channel in channel_spec_list:
+                            model_warehouse_channel = ModelWarehouseChannelSpec(**channel.dict(exclude_defaults=True))
+                            if model_warehouse_channel.parties and not self.task_can_run(
+                                    role, party_id, runtime_parties=model_warehouse_channel.parties):
+                                continue
+
+                            if model_warehouse_channel.model_id is None:
+                                model_warehouse_channel.model_id = \
+                                    self._conf.get("model_warehouse", {}).get("model_id", None)
+                                model_warehouse_channel.model_version = \
+                                    self._conf.get("model_warehouse", {}).get("model_version", None)
+                            inputs.append(model_warehouse_channel)
+
+                        if not inputs:
+                            continue
 
                         if input_type not in upstream_inputs:
                             upstream_inputs[input_type] = dict()
-                        upstream_inputs[input_type][input_key] = inputs
-                    elif artifact_source == ArtifactSourceType.MODEL_WAREHOUSE:
-                        if isinstance(channel_spec_list, list):
-                            inputs = [DataWarehouseChannelSpec(**channel.dict(exclude_defaults=True))
-                                      for channel in channel_spec_list]
-                        else:
-                            inputs = DataWarehouseChannelSpec(**channel_spec_list.dict(exclude_defaults=True))
+                        upstream_inputs[input_type][input_key] = inputs if is_list else inputs[0]
+                    elif artifact_source == ArtifactSourceType.DATA_WAREHOUSE:
+                        is_list = True
+                        if not isinstance(channel_spec_list, list):
+                            is_list = False
+                            channel_spec_list = [channel_spec_list]
+                        inputs = []
+                        for channel in channel_spec_list:
+                            if channel.parties and \
+                                    not self.task_can_run(role, party_id, runtime_parties=channel.parties):
+                                continue
+                            inputs.append(DataWarehouseChannelSpec(**channel.dict(exclude_defaults=True)))
 
+                        if not inputs:
+                            continue
                         if input_type not in upstream_inputs:
                             upstream_inputs[input_type] = dict()
-                        upstream_inputs[input_type][input_key] = inputs
+
+                        upstream_inputs[input_type][input_key] = inputs if is_list else inputs[0]
                     else:
                         if not isinstance(channel_spec_list, list):
                             channel_spec_list = [channel_spec_list]
@@ -175,7 +188,6 @@ class DagParser(object):
                             else:
                                 if channel_spec.producer_task not in self._dag[role][party_id].nodes:
                                     continue
-
                             filter_channel_spec_list.append(channel_spec)
 
                         if not filter_channel_spec_list:
@@ -186,6 +198,9 @@ class DagParser(object):
                                       for channel in filter_channel_spec_list]
                         else:
                             inputs = RuntimeTaskOutputChannelSpec(**filter_channel_spec_list[0].dict(exclude_defaults=True))
+
+                        if not inputs:
+                            continue
 
                         if input_type not in upstream_inputs:
                             upstream_inputs[input_type] = dict()
@@ -205,33 +220,32 @@ class DagParser(object):
         if not task_spec.outputs:
             return
 
-        runtime_roles = self._tasks[name].runtime_roles
-        outputs = dict()
+        parties = task_spec.parties if task_spec.parties else dag.parties
 
-        """
-        role.party_id.output_type.output_artifact
-        role.party_id.output_type.output_artifact.roles = runtime_roles
-        """
         for output_type, outputs_dict in iter(task_spec.outputs):
             if not outputs_dict:
                 continue
 
-            if output_type not in outputs:
-                outputs[output_type] = dict()
+            for outputs_key, output_artifact in outputs_dict.items():
+                output_parties = output_artifact.parties if output_artifact.parties else parties
+                for party_spec in output_parties:
+                    for party_id in party_spec.party_id:
+                        if not self.task_can_run(party_spec.role, party_id, runtime_parties=parties):
+                            continue
 
-            for output_key, output_artifact in outputs_dict.items():
-                outputs[output_type][output_key] = output_artifact
+                        if outputs_key not in self._tasks[party_spec.role][party_id][name].outputs:
+                            self._tasks[party_spec.role][party_id][name].outputs[output_type] = dict()
 
-        outputs = self.check_and_add_runtime_roles(outputs, runtime_roles, artifact_type="output")
-        party_outputs = dict()
-        for party_spec in dag.parties:
-            if party_spec.role not in party_outputs:
-                party_outputs[party_spec.role] = dict()
+                        self._tasks[party_spec.role][party_id][name].outputs[output_type][outputs_key] = output_artifact
 
+        for party_spec in parties:
             for party_id in party_spec.party_id:
-                party_outputs[party_spec.role][party_id] = copy.deepcopy(outputs)
-
-        self._tasks[name].outputs = party_outputs
+                self._tasks[party_spec.role][party_id][name].outputs = self.check_and_add_runtime_party(
+                    self._tasks[party_spec.role][party_id][name].outputs,
+                    party_spec.role,
+                    party_id,
+                    artifact_type="output"
+                )
 
     def _add_edge(self, src, dst, role, party_id, attrs=None):
         if not attrs:
@@ -282,12 +296,11 @@ class DagParser(object):
                             self._tasks[party.role][party_id][task_name].runtime_parameters.update(parameters)
 
     def get_runtime_roles_on_party(self, task_name, party_id):
-        task: TaskNodeInfo = self._tasks[task_name]
-        task_runtime_parties = task.runtime_parties
+        task_runtime_parties = self._task_runtime_parties[task_name]
 
         runtime_roles = set()
         for party_spec in task_runtime_parties:
-            if party_spec.party_id == party_id:
+            if party_id in party_spec.party_id:
                 runtime_roles.add(party_spec.role)
 
         return list(runtime_roles)
@@ -511,14 +524,23 @@ class DagParser(object):
             model_input_artifact_key, model_output_artifact_key = cls.infer_model_artifact(
                 component_spec.input_artifacts, component_spec.output_artifacts)
             if model_input_artifact_key and model_output_artifact_key:
-                deduced_dag.tasks[task_name].inputs.model = {
-                    model_input_artifact_key: {
-                        ArtifactSourceType.MODEL_WAREHOUSE: ModelWarehouseChannelSpec(
-                            producer_task=task_name,
-                            output_artifact_key=model_output_artifact_key
-                        )
+                parties = task_runtime_parties[task_name]
+                parties = list(filter(
+                    lambda party: \
+                        party.role in component_specs[task_name].output_artifacts.model[model_output_artifact_key].roles,
+                    parties)
+                )
+
+                if parties:
+                    deduced_dag.tasks[task_name].inputs.model = {
+                        model_input_artifact_key: {
+                            ArtifactSourceType.MODEL_WAREHOUSE: ModelWarehouseChannelSpec(
+                                producer_task=task_name,
+                                output_artifact_key=model_output_artifact_key,
+                                parties=parties
+                            )
+                        }
                     }
-                }
 
             if deduced_dag.tasks[task_name].inputs:
                 deduced_dag.tasks[task_name].dependent_tasks = cls.infer_dependent_tasks(
@@ -725,8 +747,8 @@ class DagParser(object):
         return merge_channels
 
     @classmethod
-    def task_can_run(cls, role, party_id, component_spec: ComponentSpec, runtime_parties: List[PartySpec]):
-        if role not in component_spec.roles:
+    def task_can_run(cls, role, party_id, component_spec: ComponentSpec=None, runtime_parties: List[PartySpec]=None):
+        if component_spec and role not in component_spec.roles:
             return False
 
         for party_spec in runtime_parties:
