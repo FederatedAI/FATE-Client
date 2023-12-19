@@ -306,6 +306,13 @@ class DagParser(object):
         return list(runtime_roles)
 
     def get_task_node(self, role, party_id, task_name):
+        if role not in self._tasks:
+            raise ValueError(f"role={role} does ont exist in dag")
+        if party_id not in self._tasks[role]:
+            raise ValueError(f"role={role}, party_id={party_id} does not exist in dag")
+        if task_name not in self._tasks[role][party_id]:
+            raise ValueError(f"role={role}, party_id={party_id} does not has task {task_name}")
+
         return self._tasks[role][party_id][task_name]
 
     def get_need_revisit_tasks(self, visited_tasks, failed_tasks, role, party_id):
@@ -351,6 +358,7 @@ class DagParser(object):
         return nx.topological_sort(self._global_dag)
 
     def party_topological_sort(self, role, party_id):
+        assert role in self._dag or party_id in self._dag[role], f"role={role}, party_id={party_id} does not exist"
         return nx.topological_sort(self._dag[role][party_id])
 
     def party_predecessors(self, role, party_id, task):
