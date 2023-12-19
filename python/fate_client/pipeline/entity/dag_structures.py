@@ -103,8 +103,10 @@ class PartyTaskSpec(BaseModel):
 
 
 class TaskConfSpec(BaseModel):
-    run: Optional[Dict]
+    engine_run: Optional[Dict]
     provider: Optional[str]
+    timeout: Optional[int]
+    launcher_name: Optional[str] = "default"
 
 
 class EngineRunSpec(BaseModel):
