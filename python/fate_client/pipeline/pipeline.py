@@ -188,7 +188,7 @@ class Pipeline(object):
                 if not conf:
                     continue
 
-                role_party_key = f"{role}_{party_id}"
+                role_party_key = (role, party_id)
                 party_confs[role_party_key] = conf
 
         self._dag.compile(task_insts=self._tasks,

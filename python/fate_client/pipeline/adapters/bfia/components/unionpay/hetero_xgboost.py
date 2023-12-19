@@ -23,6 +23,7 @@ class HeteroSecureBoost(Component):
     def __init__(
         self,
         _name: str,
+        runtime_parties: str = None,
         id: str = PlaceHolder(),
         label: str = PlaceHolder(),
         objective_param: str = PlaceHolder(),
@@ -44,6 +45,7 @@ class HeteroSecureBoost(Component):
         self._process_init_inputs(inputs)
         super(HeteroSecureBoost, self).__init__()
         self._name = _name
+        self.runtime_parties = runtime_parties
         self.id = id
         self.label = label
         self.objective_param = objective_param

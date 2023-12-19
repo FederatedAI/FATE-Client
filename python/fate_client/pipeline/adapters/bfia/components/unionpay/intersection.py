@@ -25,6 +25,7 @@ class Intersection(Component):
     def __init__(
         self,
         _name: str,
+        runtime_parties: dict = None,
         id: str = PlaceHolder(),
         intersect_method: str = PlaceHolder(),
         sync_intersect_ids: bool = PlaceHolder(),
@@ -44,6 +45,7 @@ class Intersection(Component):
         self._process_init_inputs(inputs)
         super(Intersection, self).__init__()
         self._name = _name
+        self.runtime_parties = runtime_parties
         self.id = id
         self.intersect_method = intersect_method
         self.syn_intersect_ids = sync_intersect_ids
