@@ -4,6 +4,11 @@ from typing import Union, Literal
 from enum import Enum
 
 
+"""
+Homo NN Parameters
+"""
+
+
 class AggregateStrategy(Enum):
     EPOCH = "epoch"
     STEP = "steps"
@@ -93,6 +98,11 @@ class FedAVGArguments(FedArguments):
     pass
 
 
+"""
+Hetero NN Model Strategy Parameters
+"""
+
+
 @dataclass
 class Args(object):
     def to_dict(self):
@@ -148,8 +158,64 @@ class FedPassArgument(StdAggLayerArgument):
 
 
 @dataclass
-class HESSArgument(object):
-    pass
+class SSHEArgument(Args):
+
+    guest_in_features: int = 8
+    host_in_features: int = 8
+    out_features: int = 8
+    layer_lr: float = 0.01
+    precision_bits: int = None
+
+    def to_dict(self):
+        d = super().to_dict()
+        d['agg_type'] = 'hess'
+        return d
+
+def parse_agglayer_conf(agglayer_arg_conf):
+
+    import copy
+    if 'agg_type' not in agglayer_arg_conf:
+        raise ValueError('can not load agg layer conf, keyword agg_type not found')
+    agglayer_arg_conf = copy.deepcopy(agglayer_arg_conf)
+    agg_type = agglayer_arg_conf['agg_type']
+    agglayer_arg_conf.pop('agg_type')
+    if agg_type == 'fed_pass':
+        agglayer_arg = FedPassArgument(**agglayer_arg_conf)
+    elif agg_type == 'std':
+        agglayer_arg = StdAggLayerArgument(**agglayer_arg_conf)
+    else:
+        raise ValueError(f'agg type {agg_type} not supported')
+
+    return agglayer_arg
+
+"""
+Top & Bottom Model Strategy
+"""
+
+@dataclass
+class TopModelStrategyArguments(Args):
+
+    protect_strategy: Literal['fedpass'] = None
+    fed_pass_arg: Union[FedPassArgument, dict] = None
+    add_output_layer: Literal[None, 'sigmoid', 'softmax'] = None
+
+    def __post_init__(self):
+
+        if self.protect_strategy == 'fedpass':
+            if isinstance(self.fed_pass_arg, dict):
+                self.fed_pass_arg = FedPassArgument(**self.fed_pass_arg)
+            if not isinstance(self.fed_pass_arg, FedPassArgument):
+                raise TypeError("fed_pass_arg must be an instance of FedPassArgument for protect_strategy 'fedpass'")
+
+        assert self.add_output_layer in [None, 'sigmoid', 'softmax'], \
+            "add_output_layer must be None, 'sigmoid' or 'softmax'"
+
+    def to_dict(self):
+        d = super().to_dict()
+        if 'fed_pass_arg' in d:
+            d['fed_pass_arg'] = d['fed_pass_arg'].to_dict()
+            d['fed_pass_arg'].pop('agg_type')
+        return d
 
 
 def parse_agglayer_conf(agglayer_arg_conf):
