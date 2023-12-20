@@ -59,8 +59,8 @@ InputArtifactSpec = TypeVar("InputArtifactSpec",
 
 
 class RuntimeInputArtifacts(BaseModel):
-    data: Optional[Dict[str, Dict[str, Union[InputArtifactSpec, List[InputArtifactSpec]]]]]
-    model: Optional[Dict[str, Dict[str, Union[InputArtifactSpec, List[InputArtifactSpec]]]]]
+    data: Optional[Dict[str, Dict[str, Union[List[InputArtifactSpec], InputArtifactSpec]]]]
+    model: Optional[Dict[str, Dict[str, Union[List[InputArtifactSpec], InputArtifactSpec]]]]
 
 
 class ModelWarehouseConfSpec(BaseModel):

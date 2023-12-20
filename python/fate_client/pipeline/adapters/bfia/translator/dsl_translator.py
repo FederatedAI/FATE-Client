@@ -56,8 +56,8 @@ class Translator(object):
         flow_id = None
         old_job_id = None
         if dag_schema.dag.conf and dag_schema.dag.conf.extra:
-            flow_id = dag_schema.dag.conf.extra.get("flow_id", None)
-            old_job_id = dag_schema.dag.conf.extra.get("old_job_id", None)
+            flow_id = dag_schema.dag.conf.extra.get("flow_id", "")
+            old_job_id = dag_schema.dag.conf.extra.get("old_job_id", "")
 
         bfia_dag = BFIADagSpec(
             flow_id=flow_id,

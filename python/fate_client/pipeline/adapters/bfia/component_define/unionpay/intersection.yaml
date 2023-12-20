@@ -113,7 +113,7 @@ component:
       description: 是否使用哈希
       optional: true
       type: string
-  provider: FATE
+  provider: unionpay
   roles:
   - guest
   - host

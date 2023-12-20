@@ -67,7 +67,7 @@ class DagParser(object):
             if task_spec.stage:
                 task_stage = task_spec.stage
 
-            self._global_dag.add_node(name)
+            self._global_dag.add_node(name, component_ref=component_ref)
 
             self._task_runtime_parties[name] = parties
 
@@ -356,6 +356,9 @@ class DagParser(object):
 
     def global_topological_sort(self):
         return nx.topological_sort(self._global_dag)
+
+    def get_component_ref(self, task_name):
+        return self._global_dag.nodes[task_name]["component_ref"]
 
     def party_topological_sort(self, role, party_id):
         assert role in self._dag or party_id in self._dag[role], f"role={role}, party_id={party_id} does not exist"

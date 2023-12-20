@@ -15,7 +15,15 @@
 
 from .bfia.translator.dsl_translator import Translator
 
-def _default_dag_post_process_func(dag_spec):
+def _default_dag_post_process_func(dag_spec, task_insts):
+    task_names = dag_spec.tasks.keys()
+    for task_name in task_names:
+        provider = task_insts[task_name].provider
+        version = task_insts[task_name].version
+        if not dag_spec.tasks[task_name].conf:
+            dag_spec.tasks[task_name].conf = dict()
+        dag_spec.tasks[task_name].conf.update(dict(provider=provider, version=version))
+
     return dag_spec
 
 
