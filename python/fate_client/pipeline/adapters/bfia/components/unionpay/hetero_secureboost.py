@@ -18,12 +18,12 @@ from fate_client.pipeline.interface import ArtifactType
 
 
 class HeteroSecureBoost(Component):
-    yaml_define_path = "./adapters/bfia/component_define/unionpay/hetero_xgboost.yaml"
+    yaml_define_path = "./adapters/bfia/component_define/unionpay/hetero_secureboost.yaml"
 
     def __init__(
         self,
         _name: str,
-        runtime_parties: str = None,
+        runtime_parties: dict = None,
         id: str = PlaceHolder(),
         label: str = PlaceHolder(),
         objective_param: str = PlaceHolder(),
