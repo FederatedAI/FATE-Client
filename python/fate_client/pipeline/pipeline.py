@@ -408,6 +408,9 @@ class FateFlowPipeline(Pipeline):
             name=name
         )
 
+    def bind_local_path(self, path, namespace, name):
+        self._executor.bind_local_path(namespace=namespace, name=name, path=path)
+
     def get_task_info(self, task):
         if isinstance(task, Component):
             task = task.task_name

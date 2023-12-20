@@ -117,6 +117,16 @@ class FATEFlowJobInvoker(object):
         except ValueError:
             return None
 
+    def bind_local_path(self, path, namespace, name):
+        response = self._client.table.bind_path(path=path, namespace=namespace, name=name)
+        try:
+            code = response["code"]
+            if code != 0:
+                raise ValueError(f"Return code {code} != 0")
+            print(f"bind path success")
+        except BaseException:
+            raise ValueError(f"bind path fails, response={response}")
+
     def upload_file_and_convert_to_dataframe(
             self, file, meta, head, extend_sid,
             namespace, name, role=None, party_id=None, **kwargs):
