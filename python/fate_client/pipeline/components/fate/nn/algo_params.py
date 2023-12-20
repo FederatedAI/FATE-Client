@@ -2,6 +2,7 @@ from transformers import TrainingArguments as _hf_TrainingArguments
 from dataclasses import dataclass, field, fields
 from typing import Union, Literal
 from enum import Enum
+from typing import Optional
 
 
 """
@@ -65,6 +66,10 @@ class _TrainingArguments(_hf_TrainingArguments):
     # by default, we use constant learning rate, the same as FATE-1.X
     lr_scheduler_type: str = field(default="constant")
     log_level: str = field(default="info")
+    deepspeed: Optional[str] = field(default=None)
+    save_safetensors: bool = field(default=False)
+    use_cpu: bool = field(default=False)
+
 
     def __post_init__(self):
         self.push_to_hub = False
@@ -77,6 +82,7 @@ class _TrainingArguments(_hf_TrainingArguments):
         self.push_to_hub_token = None
 
         super().__post_init__()
+
 
 
 @dataclass
@@ -118,19 +124,7 @@ class Args(object):
 
 
 @dataclass
-class StdAggLayerArgument(Args):
-
-    merge_type: Literal['sum', 'concat'] = 'sum'
-    concat_dim = 1
-
-    def to_dict(self):
-        d = super().to_dict()
-        d['agg_type'] = 'std'
-        return d
-
-
-@dataclass
-class FedPassArgument(StdAggLayerArgument):
+class FedPassArgument(Args):
 
     layer_type: Literal['conv', 'linear'] = 'conv'
     in_channels_or_features: int = 8
@@ -181,8 +175,6 @@ def parse_agglayer_conf(agglayer_arg_conf):
     agglayer_arg_conf.pop('agg_type')
     if agg_type == 'fed_pass':
         agglayer_arg = FedPassArgument(**agglayer_arg_conf)
-    elif agg_type == 'std':
-        agglayer_arg = StdAggLayerArgument(**agglayer_arg_conf)
     else:
         raise ValueError(f'agg type {agg_type} not supported')
 
@@ -226,8 +218,6 @@ def parse_agglayer_conf(agglayer_arg_conf):
     agglayer_arg_conf.pop('agg_type')
     if agg_type == 'fed_pass':
         agglayer_arg = FedPassArgument(**agglayer_arg_conf['fed_pass_arg'])
-    elif agg_type == 'std':
-        agglayer_arg = StdAggLayerArgument(**agglayer_arg_conf['std_arg'])
     else:
         raise ValueError(f'agg type {agg_type} not supported')
 

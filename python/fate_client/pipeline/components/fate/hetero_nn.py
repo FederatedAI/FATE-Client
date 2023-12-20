@@ -31,8 +31,8 @@ from fate_client.pipeline.components.fate.nn.torch.base import (
 from fate_client.pipeline.components.fate.nn.algo_params import (
     TrainingArguments,
     FedPassArgument,
-    StdAggLayerArgument,
-    TopModelStrategyArguments
+    TopModelStrategyArguments,
+    SSHEArgument
 )
 from typing import Union, Optional, Dict, Literal
 
@@ -40,7 +40,7 @@ from typing import Union, Optional, Dict, Literal
 def get_config_of_default_runner(
         bottom_model: Union[TorchModule, Sequential, ModelLoader] = None,
         top_model: Union[TorchModule, Sequential, ModelLoader] = None,
-        agglayer_arg: Union[StdAggLayerArgument, FedPassArgument] = None,
+        agglayer_arg: Union[FedPassArgument, SSHEArgument] = None,
         top_model_strategy_arg: Optional[TopModelStrategyArguments] = None,
         optimizer: Union[TorchOptimizer, Loader] = None,
         loss: Union[TorchModule, CustFuncLoader] = None,
@@ -64,7 +64,7 @@ def get_config_of_default_runner(
             f"The top model is of type {type(top_model)}, not TorchModule, Sequential, or ModelLoader. Remember to use patched_torch_hook for passing NN Modules or Optimizers."
         )
 
-    if agglayer_arg is not None and not isinstance(agglayer_arg, (StdAggLayerArgument, FedPassArgument)):
+    if agglayer_arg is not None and not isinstance(agglayer_arg, (FedPassArgument, SSHEArgument)):
         raise ValueError(
             f"The agglayer_arg_conf is of type {type(agglayer_arg)}, not StdAggLayerArgument or FedPassArgument. "
         )
