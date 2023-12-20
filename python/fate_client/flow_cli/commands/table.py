@@ -73,10 +73,10 @@ def delete(ctx, **kwargs):
 def bind(ctx, **kwargs):
     """
     \b
-    -description: Delete data table.
+    -description: Bind data table.
 
     \b
-    -usage: flow table delete --name xxx --namespace xxx
+    -usage: flow table bind --name xxx --namespace xxx -o /data/xxx
     """
     client: FlowClient = ctx.obj["client"]
     response = client.table.bind_path(**kwargs)
