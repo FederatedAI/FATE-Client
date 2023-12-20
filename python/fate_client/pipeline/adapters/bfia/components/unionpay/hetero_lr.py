@@ -23,6 +23,7 @@ class HeteroLR(Component):
     def __init__(
         self,
         _name: str,
+        runtime_parties: dict = None,
         id: str = PlaceHolder(),
         label: str = PlaceHolder(),
         penalty: str = PlaceHolder(),
@@ -40,6 +41,7 @@ class HeteroLR(Component):
         self._process_init_inputs(inputs)
         super(HeteroLR, self).__init__()
         self._name = _name
+        self.runtime_parties = runtime_parties
         self.id = id
         self.label = label
         self.penalty = penalty
