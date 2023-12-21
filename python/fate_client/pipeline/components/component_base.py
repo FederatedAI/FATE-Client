@@ -362,6 +362,17 @@ class Component(object):
         runtime_input_channels = dict()
         input_artifacts = dict()
 
+        def _channel_parties_to_party_inst(channel_parties):
+            channel_party_inst = Parties()
+            if isinstance(channel_parties, dict):
+                for role, party_id in channel_parties.items():
+                    channel_party_inst.set_party(role=role, party_id=party_id)
+            else:
+                for party_spec in channel_parties:
+                    channel_party_inst.set_party(role=party_spec.role, party_id=party_spec.party_id)
+
+            return channel_party_inst
+
         self._convert_party_dict_to_party_inst()
         for input_artifact_type, artifacts in input_artifacts_dict.items():
             if not artifacts:
@@ -388,11 +399,10 @@ class Component(object):
                         if not channel.parties:
                             artifact = channel.get_spec(parties=cpn_runtime_parties.get_parties_spec())
                         else:
-                            channel_party_inst = Parties()
-                            for party_spec in channel.parties:
-                                channel_party_inst.set_party(role=party_spec.role, party_id=party_spec.party_id)
                             artifact = channel.get_spec(
-                                parties=cpn_runtime_parties.intersect(channel_party_inst).get_parties_spec()
+                                parties=cpn_runtime_parties.intersect(
+                                    _channel_parties_to_party_inst(channel.parties)
+                                ).get_parties_spec()
                             )
 
                         artifact_list.append(artifact)
@@ -403,11 +413,10 @@ class Component(object):
                     if not channels.parties:
                         artifact = channels.get_spec(parties=cpn_runtime_parties.get_parties_spec())
                     else:
-                        channel_party_inst = Parties()
-                        for party_spec in channels.parties:
-                            channel_party_inst.set_party(role=party_spec.role, party_id=party_spec.party_id)
                         artifact = channels.get_spec(
-                            parties=cpn_runtime_parties.intersect(channel_party_inst).get_parties_spec()
+                            parties=cpn_runtime_parties.intersect(
+                                _channel_parties_to_party_inst(channels.parties)
+                            ).get_parties_spec()
                         )
 
                     runtime_input_channels[input_artifact_type][artifact_key] = {channels.source: artifact}

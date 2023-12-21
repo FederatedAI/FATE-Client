@@ -97,7 +97,7 @@ class DAG(object):
 
                         if task_name not in party_tasks[role_party_key].tasks:
                             party_tasks[role_party_key].tasks[task_name] = PartyTaskRefSpec(
-                                conf = task_role_conf
+                                conf=task_role_conf
                             )
                         else:
                             party_tasks[role_party_key].tasks[task_name].conf = task_role_conf
@@ -117,11 +117,15 @@ class DAG(object):
             self._dag_spec.conf = JobConfSpec(**job_conf.global_conf)
 
         if job_conf.parties_conf:
-            for party_key, party_conf in job_conf.parties_conf.items():
+            for (role, party_id), party_conf in job_conf.parties_conf.items():
+                party_key = f"{role}_{party_id}"
                 if party_key in party_tasks:
                     party_tasks[party_key].conf = party_conf
                 else:
-                    party_tasks[party_key] = PartyTaskSpec(conf=party_conf)
+                    party_tasks[party_key] = PartyTaskSpec(
+                        conf=party_conf,
+                        parties=[PartySpec(role=role, party_id=[party_id])]
+                    )
 
         if party_tasks:
             self._dag_spec.party_tasks = party_tasks
@@ -129,10 +133,10 @@ class DAG(object):
         self._kind = protocol_kind
         self._is_compiled = True
 
-        self._dag_spec = post_process(protocol_kind, self._dag_spec)
+        self._dag_spec = post_process(protocol_kind, self._dag_spec, task_insts)
 
 
-def post_process(protocol_kind, pre_dag_spec: DAGSpec):
+def post_process(protocol_kind, pre_dag_spec: DAGSpec, task_insts):
     def _default_post_process(dag_spec: DAGSpec):
         post_dag_spec = copy.deepcopy(dag_spec)
         for task in post_dag_spec.tasks:
@@ -149,6 +153,6 @@ def post_process(protocol_kind, pre_dag_spec: DAGSpec):
     else:
         try:
             from ..adapters import dag_post_process
-            return dag_post_process[protocol_kind](pre_dag_spec)
+            return dag_post_process[protocol_kind](pre_dag_spec, task_insts)
         except KeyError:
             return pre_dag_spec
