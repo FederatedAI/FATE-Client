@@ -65,10 +65,10 @@ class DAG(object):
             if dependent_tasks:
                 task["dependent_tasks"] = dependent_tasks
 
-            task["conf"] = dict(provider=task_inst.provider, version=task_inst.version)
             if task_inst.conf.dict():
+                if "conf" not in task:
+                    task["conf"] = dict()
                 task["conf"].update(task_inst.conf.dict())
-
 
             common_parameters = task_inst.get_task_parameters()
 
@@ -87,9 +87,20 @@ class DAG(object):
                             parameters=role_parameters
                         )
 
-                    role_conf = task_inst.get_role_conf(role, idx)
-                    if role_conf:
-                        party_tasks[role_party_key].conf = role_conf
+                    task_role_conf = task_inst.get_role_conf(role, idx)
+                    if task_role_conf:
+                        if role_party_key not in party_tasks:
+                            party_tasks[role_party_key] = PartyTaskSpec(
+                                parties=[PartySpec(role=role, party_id=[party_id])],
+                                tasks=dict()
+                            )
+
+                        if task_name not in party_tasks[role_party_key].tasks:
+                            party_tasks[role_party_key].tasks[task_name] = PartyTaskRefSpec(
+                                conf=task_role_conf
+                            )
+                        else:
+                            party_tasks[role_party_key].tasks[task_name].conf = task_role_conf
 
             if task_stage != stage:
                 task["stage"] = task_stage
@@ -102,18 +113,30 @@ class DAG(object):
             stage=stage,
             tasks=tasks
         )
-        if job_conf:
-            self._dag_spec.conf = JobConfSpec(**job_conf)
+        if job_conf.global_conf:
+            self._dag_spec.conf = JobConfSpec(**job_conf.global_conf)
+
+        if job_conf.parties_conf:
+            for (role, party_id), party_conf in job_conf.parties_conf.items():
+                party_key = f"{role}_{party_id}"
+                if party_key in party_tasks:
+                    party_tasks[party_key].conf = party_conf
+                else:
+                    party_tasks[party_key] = PartyTaskSpec(
+                        conf=party_conf,
+                        parties=[PartySpec(role=role, party_id=[party_id])]
+                    )
+
         if party_tasks:
             self._dag_spec.party_tasks = party_tasks
 
         self._kind = protocol_kind
         self._is_compiled = True
 
-        self._dag_spec = post_process(protocol_kind, self._dag_spec)
+        self._dag_spec = post_process(protocol_kind, self._dag_spec, task_insts)
 
 
-def post_process(protocol_kind, pre_dag_spec: DAGSpec):
+def post_process(protocol_kind, pre_dag_spec: DAGSpec, task_insts):
     def _default_post_process(dag_spec: DAGSpec):
         post_dag_spec = copy.deepcopy(dag_spec)
         for task in post_dag_spec.tasks:
@@ -123,11 +146,6 @@ def post_process(protocol_kind, pre_dag_spec: DAGSpec):
             if not post_dag_spec.tasks[task].conf:
                 continue
 
-            if "provider" in post_dag_spec.tasks[task].conf:
-                post_dag_spec.tasks[task].conf.pop("provider")
-            if "version" in post_dag_spec.tasks[task].conf:
-                post_dag_spec.tasks[task].conf.pop("version")
-
         return post_dag_spec
 
     if protocol_kind == "fate":
@@ -135,8 +153,6 @@ def post_process(protocol_kind, pre_dag_spec: DAGSpec):
     else:
         try:
             from ..adapters import dag_post_process
-            return dag_post_process[protocol_kind](pre_dag_spec)
+            return dag_post_process[protocol_kind](pre_dag_spec, task_insts)
         except KeyError:
             return pre_dag_spec
-
-

@@ -33,6 +33,8 @@ class Parties(object):
             self._role_party_index_mapping[role] = dict()
 
         for pid in party_id:
+            if not isinstance(pid, str):
+                raise ValueError(f"party_id={pid} should be str, but type={type(pid)}")
             if pid in self._role_party_index_mapping[role]:
                 raise ValueError(f"role {role}, party {pid} has been added before")
             self._role_party_index_mapping[role][pid] = len(self._role_party_id_mappings[role])

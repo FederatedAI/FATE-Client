@@ -134,3 +134,8 @@ class FateFlowExecutor(object):
             name=name,
             **kwargs)
 
+    @staticmethod
+    def bind_local_path(path: str, namespace: str, name: str):
+        flow_job_invoker = FATEFlowJobInvoker()
+        return flow_job_invoker.bind_local_path(path=path, namespace=namespace, name=name)
+

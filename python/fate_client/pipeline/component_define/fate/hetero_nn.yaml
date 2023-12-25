@@ -53,6 +53,7 @@ component:
       train_data:
         types:
           - dataframe
+          - data_directory
         optional: false
         stages:
           - train
@@ -64,6 +65,7 @@ component:
       validate_data:
         types:
           - dataframe
+          - data_directory
         optional: true
         stages:
           - train
@@ -75,6 +77,7 @@ component:
       test_data:
         types:
           - dataframe
+          - data_directory
         optional: false
         stages:
           - predict

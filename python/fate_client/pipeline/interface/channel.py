@@ -62,16 +62,12 @@ class DataWarehouseChannel(abc.ABC):
             name: str = None,
             namespace: str = None,
             dataset_id: str = None,
-            job_id: str = None,
-            producer_task: str = None,
-            output_artifact_key: str = None,
+            parties: Optional[Union[dict, List[PartySpec]]] = None,
     ):
         self.name = name
         self.namespace = namespace
         self.dataset_id = dataset_id
-        self.job_id = job_id
-        self.producer_task = producer_task
-        self.output_artifact_key = output_artifact_key
+        self.parties = parties
         self.source = ArtifactSourceType.DATA_WAREHOUSE
 
     def get_spec(self, **kwargs):
@@ -80,9 +76,6 @@ class DataWarehouseChannel(abc.ABC):
             name=self.name,
             namespace=self.namespace,
             dataset_id=self.dataset_id,
-            job_id=self.job_id,
-            producer_task=self.producer_task,
-            output_artifact_key=self.output_artifact_key,
             parties=parties
         )
 
@@ -90,9 +83,7 @@ class DataWarehouseChannel(abc.ABC):
         return "{" + f"channel:name={self.name};" \
                      f"namespace={self.namespace};" \
                      f"dataset_id={self.dataset_id};" \
-                     f"job_id={self.job_id};" \
-                     f"producer_task={self.producer_task};" \
-                     f"output_artifact_key={self.output_artifact_key};" \
+                     f"parties={self.parties};" \
                      f"source={self.source};" + "}"
 
     def __repr__(self):
