@@ -102,6 +102,7 @@ SITE_APP_TOKEN_DESC = "App token for the site"
 
 GUEST_PARTY_ID_DESC = "Site ID of the guest"
 HOST_PARTY_ID_DESC = "Site ID of the host"
+ARBITER_PARTY_ID_DESC = "Site ID of the arbiter"
 CLIENT_PATH_DESC = "Directory or file path on the client"
 TIMEOUT_DESC = "Timeout limit"
 TASK_CORES_DESC = "Task cores"

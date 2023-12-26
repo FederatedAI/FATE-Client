@@ -23,12 +23,12 @@ class Provider(BaseFlowAPI):
         """
 
         Args:
-            name:
-            device:
-            version:
-            metadata:
-            protocol:
-            components_description:
+            name: name.
+            device: device.
+            version: version.
+            metadata: metadata.
+            protocol: protocol.
+            components_description: components description.
 
         Returns:
         {'code': 0, 'message': 'device success','data':None}
@@ -41,10 +41,10 @@ class Provider(BaseFlowAPI):
         """
 
         Args:
-            name:
-            device:
-            version:
-            provider_name:
+            name: name
+            device: device
+            version: version
+            provider_name: provider name
 
         Returns:
         {'code': 0, 'message': 'success','data':[{...},{...}]}
@@ -57,10 +57,10 @@ class Provider(BaseFlowAPI):
         """
 
         Args:
-            name:
-            device:
-            version:
-            provider_name:
+            name: name
+            device: device
+            version: version
+            provider_name: provider name
 
         Returns:
         {'code': 0, 'message': 'success','data':{...}}

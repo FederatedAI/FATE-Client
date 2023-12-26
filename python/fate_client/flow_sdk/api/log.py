@@ -24,12 +24,12 @@ class Log(BaseFlowAPI):
         get log file count
 
         Args:
-            log_type:
-            job_id:
-            role:
-            party_id:
-            task_name:
-            instance_id:
+            log_type: log type such as: "task_error","task_warning","task_error","task_debug","fate_flow_schedule","fate_flow_schedule_error".
+            job_id: job id.
+            role: role, such as: "guest", "host".
+            party_id: party id, such as: "9999", "10000".
+            task_name: task name, such as:'psi_0...'
+            instance_id: instance id.
 
         Returns:
         {'code': 0, 'message': 'success','data':num]}
@@ -44,16 +44,16 @@ class Log(BaseFlowAPI):
         query log
 
         Args:
-            log_type:
-            job_id:
-            role:
-            party_id:
-            task_name:
-            begin:
-            end:
-            instance_id:
+            log_type: log type such as: "info","warning","error","debug","fate_flow_schedule","fate_flow_schedule_error".
+            job_id: job id.
+            role: role, such as: "guest", "host".
+            party_id: party id, such as: "9999", "10000".
+            task_name: task name, such as:'psi_0',...
+            begin: num, starting line number.
+            end: num, ending line number.
+            instance_id: instance id.
         Returns:
-            {'code': 0, 'message': 'success','data':num]}
+            {'code': 0, 'message': 'success','data':[]}
         """
         kwargs = locals()
         params = filter_invalid_params(**kwargs)
