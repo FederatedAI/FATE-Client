@@ -78,8 +78,8 @@ class FATEFlowJobInvoker(object):
                 raise ValueError(f"Return code {code}!=0")
 
             job_id = response["job_id"]
-            model_id = response["data"].get("model_id", None)
-            model_version = response["data"].get("model_version", None)
+            model_id = response["data"]["model_id"]
+            model_version = response["data"]["model_version"]
             return job_id, model_id, model_version
         except BaseException:
             raise ValueError(f"submit job is failed, response={response}")
