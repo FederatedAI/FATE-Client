@@ -35,6 +35,7 @@ class HeteroLR(Component):
         init_param: str = PlaceHolder(),
         max_iter: int = PlaceHolder(),
         early_stop: str = PlaceHolder(),
+        connect_engine: str = "mesh",
         train_data: ArtifactType = PlaceHolder()
     ):
         inputs = locals()
@@ -53,4 +54,5 @@ class HeteroLR(Component):
         self.init_param = init_param
         self.max_iter = max_iter
         self.early_stop = early_stop
+        self.connect_engine = connect_engine
         self.train_data = train_data
