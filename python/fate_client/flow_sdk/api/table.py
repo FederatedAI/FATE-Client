@@ -53,7 +53,7 @@ class Table(BaseFlowAPI):
         Args:
             namespace: namespace
             name: name
-            path: path
+            path: path, /data/xxx
 
         Returns:
         {'code': 0, 'message': 'success'}

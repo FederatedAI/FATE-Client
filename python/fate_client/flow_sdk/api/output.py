@@ -59,10 +59,10 @@ class Output(BaseFlowAPI):
         """
 
         Args:
-            job_id:
+            job_id: job id
             role: role, such as: "guest", "host".
-            party_id:
-            task_name:
+            party_id: party id.
+            task_name: task name.
 
 
         Returns:
@@ -76,10 +76,10 @@ class Output(BaseFlowAPI):
         """
 
         Args:
-            job_id:
+            job_id: job id
             role: role, such as: "guest", "host".
-            party_id:
-            task_name:
+            party_id: party id.
+            task_name: task name.
 
         Returns:
         {'code': 0, 'message': 'success','data':str}
@@ -132,13 +132,12 @@ class Output(BaseFlowAPI):
         """
         download data
         Args:
-            job_id:
+            job_id: job id.
             role: role, such as: "guest", "host".
             party_id:  party id.
             task_name: task name.
             output_key: output key.
             path: download path, such as: /data/projects/xxx.
-
 
         Returns:
             If "download_dir" is passed, json will be returned, eg: {'code': 0, 'message': 'download success, please check the path'}
@@ -179,7 +178,7 @@ class Output(BaseFlowAPI):
             task_name: task name.
 
         Returns:
-            {'code': 0, 'message': 'success','data': {}}
+            {'code': 0, 'message': 'success','data': [...]}
         """
         kwargs = locals()
         params = filter_invalid_params(**kwargs)
