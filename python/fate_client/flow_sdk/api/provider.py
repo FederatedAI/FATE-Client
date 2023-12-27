@@ -27,7 +27,7 @@ class Provider(BaseFlowAPI):
             device: device.
             version: version.
             metadata: metadata.
-            protocol: protocol.
+            protocol: protocol, such as:fate,bfia...
             components_description: components description.
 
         Returns:
