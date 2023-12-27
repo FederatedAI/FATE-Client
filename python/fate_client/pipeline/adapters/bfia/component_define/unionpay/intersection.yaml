@@ -113,6 +113,11 @@ component:
       description: 是否使用哈希
       optional: true
       type: string
+    connect_engine:
+      default: "mesh"
+      description: 通信引擎
+      optional: true
+      type: str
   provider: unionpay
   roles:
   - guest

@@ -47,11 +47,15 @@ class Model(BaseFlowAPI):
 
     def export(self, role: str, model_id: str, model_version: str, party_id: str, path: str):
         """
-
+        export model data
         Args:
-
+            role: role.
+            model_id: model_id.
+            model_version: model_version.
+            party_id: party_id.
+            path: path, /data/xxx
         Returns:
-
+            {"code":0,"data":{"status":"xxx"},"message":"success"}
         """
         kwargs = locals()
         params = filter_invalid_params(**kwargs)
@@ -59,9 +63,11 @@ class Model(BaseFlowAPI):
 
     def import_model(self, model_id: str, model_version: str, path: str):
         """
-
+        import model data
         Args:
-
+            model_id: model_id.
+            model_version: model_version.
+            path: path, /data/xxx.
         Returns:
 
         """
@@ -73,9 +79,14 @@ class Model(BaseFlowAPI):
     def delete_model(self, model_id: str, model_version: str, role: str = None,
                      party_id: str = None, task_name: str = None, output_key: str = None):
         """
-
+        delete model
         Args:
-
+            model_id: model_id
+            model_version: model_version
+            role: role, such as: "guest", "host"
+            party_id: party id, such as: "9999", "10000"
+            task_name: task name
+            output_key: output key, Primary key for output data or model of the task
         Returns:
 
         """

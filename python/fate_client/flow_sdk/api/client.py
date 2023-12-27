@@ -57,7 +57,7 @@ class Client(BaseFlowAPI):
             app_name: app_name.
 
         Returns:
-        {"code":0,"data":{"xxx":"xxx",},"message":"success"}
+        {"code":0,"data":{"app_id":"xxx","app_name":"xxx","app_token":"xxx","app_type":"xxx"},"message":"success"}
         """
         kwargs = locals()
         params = filter_invalid_params(**kwargs)
@@ -123,7 +123,7 @@ class Client(BaseFlowAPI):
 
     def delete_partner(self, party_id: str = None):
         """
-        Delete client
+        Delete partner
 
         Args:
             party_id: party_id.
@@ -137,7 +137,7 @@ class Client(BaseFlowAPI):
 
     def query_partner(self, party_id: str = None):
         """
-        Query client
+        Query partner
 
         Args:
             party_id: party_id.

@@ -120,6 +120,11 @@ component:
       description: 最小损失值
       optional: true
       type: float
+    connect_engine:
+      default: "mesh"
+      description: 通信引擎
+      optional: true
+      type: str
   provider: unionpay
   roles:
   - guest

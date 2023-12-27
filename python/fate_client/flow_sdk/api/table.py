@@ -20,10 +20,11 @@ from ..utils.params_utils import filter_invalid_params
 class Table(BaseFlowAPI):
     def query(self, namespace: str = None, name: str = None, display: bool = False):
         """
-
+        query table
         Args:
-            namespace:
-            name:
+            namespace: namespace
+            name: name
+            display: bool
 
         Returns:
         {'code': 0, 'message': 'success','data':{...}}
@@ -34,10 +35,10 @@ class Table(BaseFlowAPI):
 
     def delete(self, namespace: str = None, name: str = None):
         """
-
+        delete table
         Args:
-            namespace:
-            name:
+            namespace: namespace
+            name: name
 
         Returns:
         {'code': 0, 'message': 'success','data':{...}}
@@ -48,11 +49,11 @@ class Table(BaseFlowAPI):
 
     def bind_path(self, namespace: str, name: str, path: str):
         """
-
+        bind path
         Args:
-            namespace
-            name
-            path
+            namespace: namespace
+            name: name
+            path: path, /data/xxx
 
         Returns:
         {'code': 0, 'message': 'success'}

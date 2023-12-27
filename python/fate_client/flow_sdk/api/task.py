@@ -24,13 +24,13 @@ class Task(BaseFlowAPI):
         task query info
 
         Args:
-            job_id: job id
-            role: role, such as: "guest", "host"
-            party_id: party id, such as: "9999", "10000"
-            task_name: task name
-            status: task status
-            task_id: task id
-            task_version: task version
+            job_id: job id.
+            role: role, such as: "guest", "host".
+            party_id: party id, such as: "9999", "10000".
+            task_name: task name.
+            status: task status.
+            task_id: task id.
+            task_version: task version.
 
         Returns:
         {'code': 0, 'message': 'success','data':[{...},{...}]}
