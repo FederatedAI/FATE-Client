@@ -39,6 +39,7 @@ class HeteroSecureBoost(Component):
         early_stop: str = PlaceHolder(),
         early_stopping_rounds: int = PlaceHolder(),
         tree_param: str = PlaceHolder(),
+        connect_engine: str = "mesh",
         train_data: ArtifactType = PlaceHolder()
     ):
         inputs = locals()
@@ -59,5 +60,6 @@ class HeteroSecureBoost(Component):
         self.cv_param = cv_param
         self.metrics = metrics
         self.tree_param = tree_param
+        self.connect_engine = connect_engine
         self.early_stop = early_stop
         self.train_data = train_data

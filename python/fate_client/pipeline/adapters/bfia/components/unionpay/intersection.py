@@ -39,6 +39,7 @@ class Intersection(Component):
         salt: str = PlaceHolder(),
         base64: bool = PlaceHolder(),
         join_role: str = PlaceHolder(),
+        connect_engine: str = "mesh",
         train_data: ArtifactType = PlaceHolder()
     ):
         inputs = locals()
@@ -59,5 +60,6 @@ class Intersection(Component):
         self.salt = salt
         self.base64 = base64
         self.join_role = join_role
+        self.connect_engine = connect_engine
         self.train_data = train_data
 
