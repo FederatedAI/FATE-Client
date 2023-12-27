@@ -6,4 +6,4 @@
 * Federated DSL IR extension enhancement: supports multi-party asymmetric scheduling
 * Support mutual translation between Standardized Fate-2.0.0 DSL IR and UnionPay's BFIA protocol.
 * Support components with UnionPay's BFIA protocol through adapter mode
-* Flow CLI and PipeLine share configuration
+* Migrated Flow CLI and Flow SDK
