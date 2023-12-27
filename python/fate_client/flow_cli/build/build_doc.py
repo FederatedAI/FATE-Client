@@ -166,5 +166,6 @@ def make_markdown():
 
     write_init(_init_comm_list)
 
+if __name__ == '__main__':
 
-make_markdown()
+    make_markdown()

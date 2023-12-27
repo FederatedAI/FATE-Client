@@ -20,6 +20,7 @@ from ..utils.params_utils import filter_invalid_params
 class Site(BaseFlowAPI):
     def info(self):
         """
+        get site party_id
 
         Returns:
         {'code': 0, 'message': 'success','data':{"party_id": xxxxx}}
