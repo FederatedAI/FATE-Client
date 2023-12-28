@@ -1,0 +1,13 @@
+flow_service:
+  api_version: v2
+  ip: 127.0.0.1
+  port: 9380
+  app_id:
+  app_token:
+
+pipeline:
+  log_directory:
+  console_display_log:
+  site_info:
+    local_role: guest
+    local_party_id: '9999'
