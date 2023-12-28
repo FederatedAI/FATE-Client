@@ -27,20 +27,18 @@ class Data(BaseFlowAPI):
         upload data
 
         Args:
-            file: file
-            head:
-            namespace:
-            name:
-            partitions:
-            extend_sid:
-            meta:
-            role:
-            party_id:
-
-
+            file: file, such as: "/data/xxx.csv"
+            head: bool
+            namespace: namespace
+            name: name
+            partitions: num
+            extend_sid: bool
+            meta: meta
+            role: role, such as: "guest", "host".
+            party_id: party id.
 
         Returns:
-        {'code': 0, 'message': 'success','data':{...}]}
+            {'code': 0, 'message': 'success','data':{...}]}
         """
         kwargs = locals()
         if not os.path.exists(file):
@@ -50,6 +48,23 @@ class Data(BaseFlowAPI):
 
     def upload_file(self, file: str, head: bool, partitions: int, meta: dict, namespace: str = None, name: str = None,
                     extend_sid: bool = None, role: str = None, party_id: str = None):
+        """
+       upload file
+
+        Args:
+            file: file, such as: "/data/xxx.csv"
+            head: bool
+            namespace: namespace
+            name: name
+            partitions: num
+            extend_sid: bool
+            meta: meta
+            role: role, such as: "guest", "host".
+            party_id: party id.
+
+        Returns:
+            {'code': 0, 'message': 'success','data':{...}]}
+        """
         kwargs = locals()
         params = filter_invalid_params(**kwargs)
         file_path = params.pop("file")
@@ -63,14 +78,14 @@ class Data(BaseFlowAPI):
                               site_name: str = None):
         """
         Args:
-            namespace:
-            name:
+            namespace: namespace
+            name: name
             data_warehouse: {"namespace": xxx, "name": xxx}
             drop: destroy table if the table exist
             site_name: site name
 
         Returns:
-        {'code': 0, 'message': 'success','data':{...}]}
+            {'code': 0, 'message': 'success','data':{...}]}
         """
         kwargs = locals()
         params = filter_invalid_params(**kwargs)
@@ -81,11 +96,11 @@ class Data(BaseFlowAPI):
         download data
 
         Args:
-            namespace:
-            name:
+            namespace: namespace
+            name: name
 
         Returns:
-
+            {'code': 0, 'message': 'success','data':{...}]}
         """
         kwargs = locals()
         params = filter_invalid_params(**kwargs)
@@ -94,14 +109,14 @@ class Data(BaseFlowAPI):
 
     def download_component(self, namespace: str = None, name: str = None, path: str = None):
         """
-        download
+        download component
 
         Args:
             namespace:
             name:
 
         Returns:
-
+            {'code': 0, 'message': 'success','data':{...}]}
         """
         kwargs = locals()
         params = filter_invalid_params(**kwargs)

@@ -156,6 +156,9 @@ class DagParser(object):
 
                         if input_type not in upstream_inputs:
                             upstream_inputs[input_type] = dict()
+
+                        if is_list and len(inputs) == 1:
+                            is_list = False
                         upstream_inputs[input_type][input_key] = inputs if is_list else inputs[0]
                     elif artifact_source == ArtifactSourceType.DATA_WAREHOUSE:
                         is_list = True
@@ -174,6 +177,8 @@ class DagParser(object):
                         if input_type not in upstream_inputs:
                             upstream_inputs[input_type] = dict()
 
+                        if is_list and len(inputs) == 1:
+                            is_list = False
                         upstream_inputs[input_type][input_key] = inputs if is_list else inputs[0]
                     else:
                         if not isinstance(channel_spec_list, list):

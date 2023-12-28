@@ -23,8 +23,8 @@ class Permission(BaseFlowAPI):
         add role to user
 
         Args:
-            app_id:
-            role:
+            app_id: app id.
+            role: role,such as: "site", "client", "super_client".
 
         Returns:
         {'code': 0, 'message': 'success','data':None}
@@ -38,8 +38,8 @@ class Permission(BaseFlowAPI):
         delete role to user
 
         Args:
-            app_id:
-            role:
+            app_id: app id
+            role: role,such as: "site", "client", "super_client".
 
         Returns:
         {'code': 0, 'message': 'success','data':None}
@@ -53,7 +53,7 @@ class Permission(BaseFlowAPI):
         query user permission
 
         Args:
-            app_id:
+            app_id: app id.
 
         Returns:
         {'code': 0, 'message': 'success','data':{...}}
@@ -75,6 +75,11 @@ class Permission(BaseFlowAPI):
     def grant_resource(self, party_id: str, component: str = None, dataset: dict = None):
         """
         grant resource
+        Args:
+            party_id: party id.
+            component: component.
+            dataset: {'name':xxx,'namespace':xxx}.
+
         Returns:
         {'code': 0, 'message': 'success','data':[...]}
         """
@@ -85,6 +90,10 @@ class Permission(BaseFlowAPI):
     def delete_resource(self, party_id: str, component: str = None, dataset: dict = None):
         """
         delete resource
+        Args:
+            party_id: party id.
+            component: component.
+            dataset: {'name':xxx,'namespace':xxx}.
         Returns:
         {'code': 0, 'message': 'success','data':[...]}
         """
@@ -94,7 +103,10 @@ class Permission(BaseFlowAPI):
 
     def query_resource(self, party_id: str, component: str = None, dataset: dict = None):
         """
-        delete resource
+        query resource
+            party_id: party id.
+            component: component.
+            dataset: {'name':xxx,'namespace':xxx}.
         Returns:
         {'code': 0, 'message': 'success','data':[...]}
         """

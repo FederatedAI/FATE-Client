@@ -16,6 +16,22 @@ flow data upload [OPTIONS]
 flow data upload -c examples/upload/upload_guest.json
 ```
 
+### upload-file
+Upload file to storage engine.
+```bash
+flow data upload-file [OPTIONS]
+```
+**Options**
+
+| parameters | short-format | long-format | required | type | description |
+| :-------- |:-----|:-------------| :--- | :----- |------|
+| conf_path | `-c` | `--conf-path` | yes | path | Configuration file path |
+
+**Usage**
+```bash
+flow data upload-file -c examples/upload/upload_guest.csv
+```
+
 ### download-component
 Asynchronously downloading data through download component.
 ```bash
