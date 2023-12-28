@@ -12,7 +12,6 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-from typing import List, Union
 from ...conf.types import PlaceHolder
 from ..component_base import Component
 from ...interface import ArtifactType
@@ -24,18 +23,18 @@ class DataFrameTransformer(Component):
     def __init__(
         self,
         _name: str,
+        runtime_parties: dict = None,
         table: ArtifactType = PlaceHolder(),
         name: str = PlaceHolder(),
         namespace: str = PlaceHolder(),
-        anonymous_role: str = PlaceHolder(),
-        anonymous_party_id: str = PlaceHolder(),
+        site_name: str = PlaceHolder()
     ):
         inputs = locals()
         self._process_init_inputs(inputs)
         super(DataFrameTransformer, self).__init__()
         self._name = _name
+        self.runtime_parties = runtime_parties
         self.table = table
         self.name = name
         self.namespace = namespace
-        self.anonymous_role = anonymous_role
-        self.anonymous_party_id = anonymous_party_id
+        self.site_name = site_name
