@@ -19,7 +19,7 @@ from .dag_structures import RuntimeInputArtifacts, DAGSpec, DAGSchema, \
     TaskSpec, PartyTaskRefSpec, PartyTaskSpec, JobConfSpec
 from ..scheduler.component_stage import ComponentStageSchedule
 
-SCHEMA_VERSION = "2.0.0.beta"
+SCHEMA_VERSION = "2.0.0"
 
 
 class DAG(object):
