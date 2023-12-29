@@ -5,5 +5,5 @@ Fate-Client contains Pipeline, Flow Cli and Flow SDK:
 * Flow SDK provides multiple python api to allow user to interactive with fate_flow, also a based tool used by Flow Cli and Pipeline.
 
 ## Tutorials
-[FATE-Flow-Cli](./doc/cli_index.md)  
-[Pipeline](./doc/pipeline.md)
+[FATE-Flow-Cli Using Guide](./doc/cli_index.md)  
+[Pipeline Using Guide](./doc/pipeline.md)
