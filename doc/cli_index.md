@@ -72,7 +72,7 @@ server information for Client. Client cli provides a command line tool for quick
 Run the following command for more information.
 
 
-## Interface of Flow Client 
+## Interface of Flow Client Cli
 
 ### Client
 Client operational.
