@@ -9,19 +9,19 @@ pipeline.
 
 ## A FATE Job is A Directed Acyclic Graph
 
-A FATE job is a dag that consists of algorithm component nodes. FATE
+A FATE job is a dag that consists of algorithm task nodes. FATE
 pipeline provides easy-to-use tools to configure order and setting of
 the tasks.
 
 FATE is written in a modular style. Modules are designed to have input
-and output data and model. Therefore, two components are connected when
-a downsteam component takes output from another component as input. By
-tracing how one data set is processed through FATE components, we can see
+and output data and model. Therefore, two tasks are connected when
+a downstream task takes output from another task as input. By
+tracing how one data set is processed through FATE tasks, we can see
 that a FATE job is in fact formed by a sequence of sub-tasks. For
 example, in the [tutorial](https://github.com/FederatedAI/FATE/tree/master/doc/tutorial/pipeline_tutorial_hetero.ipynb),
-guest’s and host's data are read in through `DataWarehouseChannel`.
+guest’s and host's data are read in through `Reader`.
 `PSI` then finds overlapping ids between guest and host. Finally, `CoordinatedLR` is fit
-on the data. Each listed components run a small task with the data, and
+on the data. Each listed tasks run a small task with the data, and
 together they constitute a model training job.
 
 Beyond the given tutorial, a job may include multiple data sets and
@@ -45,21 +45,21 @@ pipeline init --help
 
 ### Component
 
-FATE components are wrapped into `component` in Pipeline API.
-When defining a component, user need to specify components' name,
+FATE tasks are wrapped into `component` in Pipeline API.
+When defining a task, user need to specify task's name,
 input data(may be named as `input_data` or `train_data`), parameters and, possibly, input model(s).
-Each component can take in and output `Data` and `Model`.
+Each task can take in and output `Data` and `Model`.
 Some may take multiple copies of `Data` or `Model`. Parameters of
-components can be set conveniently at the time of initialization.
-Unspecified parameters will take default values. All components have a
-`name`, which can be arbitrarily set. A component’s name is its
+tasks can be set conveniently at the time of initialization.
+Unspecified parameters will take default values. All tasks have a
+`name`, which can be arbitrarily set. A task’s name is its
 identifier, and so it must be unique within a pipeline. We suggest that
-each component name includes a numbering as suffix for easy tracking.
+each task name includes a numbering as suffix for easy tracking.
 
-An example of initializing a component:
+An example of initializing a task:
 
 ```python
-from fate_client.pipeline.components.fate import CoordinatedLR, PSI
+from fate_client.pipeline.components.fate import CoordinatedLR, PSI, Reader
 
 lr_0 = CoordinatedLR("lr_0",
                      epochs=10,
@@ -100,8 +100,9 @@ Below lists data input and output of all components:
 | Coordinated-LR           | CoordinatedLR          | train_data, validate_data, test_data, cv_data | train_output_data, validate_output_data, test_output_data, cv_output_datas |
 | Coordinated-LinR         | CoordinatedLinR        | train_data, validate_data, test_data, cv_data | train_output_data, validate_output_data, test_output_data, cv_output_datas |
 | Homo-LR                  | HomoLR                 | train_data, validate_data, test_data, cv_data | train_output_data, validate_output_data, test_output_data, cv_output_datas |
-| Homo-NN                  | HomoNN                 | train_data, validate_data, test_data, cv_data | train_output_data, validate_output_data, test_output_data, cv_output_datas |
-| Hetero Secure Boosting   | HeteroSecureBoost      | train_data, validate_data, test_data, cv_data | train_output_data, validate_output_data, test_output_data, cv_output_datas |
+| Homo-NN                  | HomoNN                 | train_data, validate_data, test_data | train_data_output, predict_data_output|
+| Hetero-NN   | HeteroNN    | train_data, validate_data, test_data | train_data_output, predict_data_output|
+| Hetero Secure Boosting   | HeteroSecureBoost      | train_data, validate_data, test_data, cv_data | train_data_output, test_output_data, cv_output_datas |
 | Evaluation               | Evaluation             | input_data                                    |                                                                            |
 | Union                    | Union                  | input_data_list                               | output_data                                                                |
 
@@ -125,8 +126,9 @@ Below lists model input and output of all components:
 | Coordinated-LR           | CoordinatedLR          | input_model, warm_start_model | output_model |
 | Coordinated-LinR         | CoordinatedLinR        | input_model, warm_start_model | output_model |
 | Homo-LR                  | HomoLR                 | input_model, warm_start_model | output_model |
-| Homo-NN                  | HomoNN                 | input_model, warm_start_model | output_model |
-| Hetero Secure Boosting   | HeteroSecureBoost      | input_model, warm_start_model | output_model |
+| Homo-NN                  | HomoNN                 | train_model_input, predict_model_input, train_model_output | train_model_output |
+| Hetero-NN|HeteroNN|train_model_input, predict_model_input, train_model_output| train_model_output|
+| Hetero Secure Boosting   | HeteroSecureBoost      | train_model_input, predict_model_input, train_model_output | train_model_output |
 | Evaluation               | Evaluation             |                               |              |
 | Union                    | Union                  |                               |              |
 
@@ -146,28 +148,26 @@ pipeline = FateFlowPipeline().set_roles(guest='9999', host='10000', arbiter='100
 User may also specify runtime configuration:
 
 ```python
-pipeline.conf.set("task_cores", 4)
-pipeline.conf.set("timeout", 3600)
+pipeline.conf.set("cores", 4)
+pipeline.conf.set("task", dict(timeout=3600))
 ```
 
-All pipeline components can be configured individually for different
-roles. For instance, `PSI`
-component can be configured specifically for each party like this:
+All pipeline tasks can be configured individually for different
+roles. For instance, `Reader`
+task can be configured specifically for each party like this:
 
 ```python
-psi_0 = PSI("psi_0")
-psi_0.guest.component_setting(input_data=DataWarehouseChannel(name="breast_hetero_guest",
-                                                              namespace="experiment"))
-psi_0.hosts[0].component_setting(input_data=DataWarehouseChannel(name="breast_hetero_host",
-                                                                 namespace="experiment"))
+reader_0 = Reader("reader_0", runtime_parties=dict(guest="9999", host="10000"))
+reader_0.guest.task_parameters(namespace="experiment", name="breast_hetero_guest")
+reader_0.hosts[0].task_parameters(namespace="experiment", name="breast_hetero_host")
 ```
 
-To include a component in a pipeline, use `add_task`. To add the
-`PSI` component to the previously created pipeline, try
+To include tasks in a pipeline, use `add_tasks`. To add the
+`Reader` component to the previously created pipeline, try
 this:
 
 ```python
-pipeline.add_task(psi_0)
+pipeline.add_tasks([reader_0])
 ```
 
 ## Run A Pipeline
@@ -183,7 +183,7 @@ pipeline.fit()
 
 ## Query on Tasks
 
-FATE Pipeline provides API to query component information, including
+FATE Pipeline provides API to query task information, including
 output data, model, and metrics.
 
 ```python
@@ -210,21 +210,19 @@ prediction.
 predict_pipeline = FateFlowPipeline()
 
 deployed_pipeline = pipeline.get_deployed_pipeline()
-deployed_pipeline.psi_0.guest.component_setting(
-    input_data=DataWarehouseChannel(name="breast_hetero_guest",
-                                    namespace=f"experiment{namespace}"))
-deployed_pipeline.psi_0.hosts[0].component_setting(
-    input_data=DataWarehouseChannel(name="breast_hetero_host",
-                                    namespace=f"experiment{namespace}"))
+reader_1 = Reader("reader_1", runtime_parties=dict(guest=guest, host=host))
+reader_1.guest.task_parameters(namespace=f"experiment", name="breast_hetero_guest")
+reader_1.hosts[0].task_parameters(namespace=f"experiment", name="breast_hetero_host")
+deployed_pipeline.psi_0.input_data = reader_1.outputs["output_data"]
 
-predict_pipeline.add_task(deployed_pipeline)
+predict_pipeline.add_tasks([reader_1, deployed_pipeline])
 predict_pipeline.compile()
 ```
 
 New pipeline can then initiate prediction.
 
 ```python
-    predict_pipeline.predict()
+predict_pipeline.predict()
 ```
 
 ## Local File to DataFrame
