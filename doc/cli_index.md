@@ -1,10 +1,10 @@
-# FATE CLIENT 
+# FLOW CLIENT 
 
 Description
 
 Introduces how to install and use the FATE Flow Client, which is usually
 included in the FATE Client, which contains several clients of the FATE 
-Project: Pipeline, FATE Flow Client and FATE Test.
+Project: Pipeline, FATE Flow Client.
 
 Introducing the command line provided by FATE Flow Client, all commands will
 have a common invocation entry, you can type flow in the command line to get all
@@ -39,13 +39,13 @@ the command categories and their subcommands.
       version     -description: Get fate flow client version -usage: flow...
 
 
-## Install FATE Client
+## Install Fate Client
 FATE Client will be distributed to pypi, you can install the corresponding version directly
 using tools such as pip, e.g.
 
     pip install fate-client
 
-## INIT FATE Client
+## Init Fate Client
 
     flow init   -h 
     Usage: flow init [OPTIONS]
@@ -65,7 +65,7 @@ using tools such as pip, e.g.
       -h, --help        Show this message and exit.
 
 
-### FLOW Client CLI
+### Flow Client Cli
 
 After successfully installed FATE Client,and init FATE Client. user needs to configure server
 information for Client. Client cli provides a command
@@ -101,7 +101,7 @@ Model Operations
 Task output Operations
 [examples] (https://github.com/FederatedAI/FATE-Client/blob/master/python/fate_client/flow_cli/build/doc/output.md)
 
-## perission
+## permission
 Permission Operations
 [examples] (https://github.com/FederatedAI/FATE-Client/blob/master/python/fate_client/flow_cli/build/doc/log.md)
 
