@@ -76,12 +76,12 @@ Run the following command for more information.
 
 ### Client
 Client operational.
-[examples] ../python/fate_client/flow_cli/build/doc/client.md
+[examples] (../python/fate_client/flow_cli/build/doc/client.md)
 
 
 ### data
 Provides numbers of data operational
-[examples] ../python/fate_client/flow_cli/build/doc/data.md
+[examples] (../python/fate_client/flow_cli/build/doc/data.md)
 
 
 ## job
