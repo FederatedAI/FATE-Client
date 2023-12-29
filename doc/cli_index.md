@@ -1,4 +1,4 @@
-# FLOW CLIENT 
+# CLIENT CLI
 
 Description
 
@@ -12,15 +12,15 @@ the command categories and their subcommands.
 
     [IN]
     flow
-
+    
     [OUT]
     Usage: flow [OPTIONS] COMMAND [ARGS]...
-
+    
       Fate Flow Client
-
+    
     Options.
       -h, --help Show this message and exit.
-
+    
     Commands: -h, --help
       client      -description: Client Operations
       data        -description: Provides numbers of data operational...
@@ -40,8 +40,8 @@ the command categories and their subcommands.
 
 
 ## Install Fate Client
-FATE Client will be distributed to pypi, you can install the corresponding version directly
-using tools such as pip, e.g.
+FATE Client will be distributed to pypi, you can install the corresponding version
+directly using tools such as pip, e.g.
 
     pip install fate-client
 
@@ -49,7 +49,7 @@ using tools such as pip, e.g.
 
     flow init   -h 
     Usage: flow init [OPTIONS]
-
+    
     -description: Flow CLI Init Command. provide ip and port of a valid fate flow server.
     If the server enables client authentication, you need to configure app-id and app-token
       
@@ -67,67 +67,66 @@ using tools such as pip, e.g.
 
 ### Flow Client Cli
 
-After successfully installed FATE Client,and init FATE Client. user needs to configure server
-information for Client. Client cli provides a command
-line tool for quick setup. Run the following command for more
-information.
+After successfully installed FATE Client,and init FATE Client. user needs to configure
+server information for Client. Client cli provides a command line tool for quick setup. 
+Run the following command for more information.
 
 
 ## Interface of Flow Client 
 
 ### Client
 Client operational.
-[examples] (https://github.com/FederatedAI/FATE-Client/blob/master/python/fate_client/flow_cli/build/doc/client.md)
+[examples] ../python/fate_client/flow_cli/build/doc/client.md
 
 
 ### data
 Provides numbers of data operational
-[examples] (https://github.com/FederatedAI/FATE-Client/blob/master/python/fate_client/flow_cli/build/doc/data.md)
+[examples] ../python/fate_client/flow_cli/build/doc/data.md
 
 
 ## job
 Provides numbers of job operational commands
-[examples] (https://github.com/FederatedAI/FATE-Client/blob/master/python/fate_client/flow_cli/build/doc/job.md)
+[examples] ../python/fate_client/flow_cli/build/doc/job.md
 
 ## log
 Operations related to job logs
-[examples] (https://github.com/FederatedAI/FATE-Client/blob/master/python/fate_client/flow_cli/build/doc/log.md)
+[examples] ../python/fate_client/flow_cli/build/doc/log.md
 
 ## model
 Model Operations
-[examples] (https://github.com/FederatedAI/FATE-Client/blob/master/python/fate_client/flow_cli/build/doc/model.md)
+[examples] ../python/fate_client/flow_cli/build/doc/model.md
 
 ## output
 Task output Operations
-[examples] (https://github.com/FederatedAI/FATE-Client/blob/master/python/fate_client/flow_cli/build/doc/output.md)
+[examples] ../python/fate_client/flow_cli/build/doc/output.md
 
 ## permission
 Permission Operations
-[examples] (https://github.com/FederatedAI/FATE-Client/blob/master/python/fate_client/flow_cli/build/doc/log.md)
+[examples] ../python/fate_client/flow_cli/build/doc/log.md
 
 ## provider
 Provider Operations
-[examples] (https://github.com/FederatedAI/FATE-Client/blob/master/python/fate_client/flow_cli/build/doc/perission.md)
+[examples] ../python/fate_client/flow_cli/build/doc/perission.md
 
 ## server
 Third-party Service Related Operations
-[examples] (https://github.com/FederatedAI/FATE-Client/blob/master/python/fate_client/flow_cli/build/doc/server.md)
+[examples] ../python/fate_client/flow_cli/build/doc/server.md
 
 ## site
 Site Operations
-[examples] (https://github.com/FederatedAI/FATE-Client/blob/master/python/fate_client/flow_cli/build/doc/site.md)
+[examples] ../python/fate_client/flow_cli/build/doc/site.md
 
 ## table
 Data Table Operations
-[examples] (https://github.com/FederatedAI/FATE-Client/blob/master/python/fate_client/flow_cli/build/doc/table.md)
+[examples] ../python/fate_client/flow_cli/build/doc/table.md
 
 ## task
 Provides numbers of task operational
-[examples] (https://github.com/FederatedAI/FATE-Client/blob/master/python/fate_client/flow_cli/build/doc/task.md)
+[examples] ../python/fate_client/flow_cli/build/doc/task.md
 
 ## test
 fate test
-[examples] (https://github.com/FederatedAI/FATE-Client/blob/master/python/fate_client/flow_cli/build/doc/test.md)
+[examples] ../python/fate_client/flow_cli/build/doc/test.md
 
 
 
