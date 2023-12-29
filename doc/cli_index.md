@@ -76,57 +76,57 @@ Run the following command for more information.
 
 ### Client
 Client operational.
-[examples] (../python/fate_client/flow_cli/build/doc/client.md)
+[examples](../python/fate_client/flow_cli/build/doc/client.md)
 
 
 ### data
 Provides numbers of data operational
-[examples] (../python/fate_client/flow_cli/build/doc/data.md)
+[examples](../python/fate_client/flow_cli/build/doc/data.md)
 
 
 ## job
 Provides numbers of job operational commands
-[examples] ../python/fate_client/flow_cli/build/doc/job.md
+[examples](../python/fate_client/flow_cli/build/doc/job.md)
 
 ## log
 Operations related to job logs
-[examples] ../python/fate_client/flow_cli/build/doc/log.md
+[examples](../python/fate_client/flow_cli/build/doc/log.md)
 
 ## model
 Model Operations
-[examples] ../python/fate_client/flow_cli/build/doc/model.md
+[examples](../python/fate_client/flow_cli/build/doc/model.md)
 
 ## output
 Task output Operations
-[examples] ../python/fate_client/flow_cli/build/doc/output.md
+[examples](../python/fate_client/flow_cli/build/doc/output.md)
 
 ## permission
 Permission Operations
-[examples] ../python/fate_client/flow_cli/build/doc/log.md
+[examples](../python/fate_client/flow_cli/build/doc/log.md)
 
 ## provider
 Provider Operations
-[examples] ../python/fate_client/flow_cli/build/doc/perission.md
+[examples](../python/fate_client/flow_cli/build/doc/perission.md)
 
 ## server
 Third-party Service Related Operations
-[examples] ../python/fate_client/flow_cli/build/doc/server.md
+[examples](../python/fate_client/flow_cli/build/doc/server.md)
 
 ## site
 Site Operations
-[examples] ../python/fate_client/flow_cli/build/doc/site.md
+[examples](../python/fate_client/flow_cli/build/doc/site.md)
 
 ## table
 Data Table Operations
-[examples] ../python/fate_client/flow_cli/build/doc/table.md
+[examples](../python/fate_client/flow_cli/build/doc/table.md)
 
 ## task
 Provides numbers of task operational
-[examples] ../python/fate_client/flow_cli/build/doc/task.md
+[examples](../python/fate_client/flow_cli/build/doc/task.md)
 
 ## test
 fate test
-[examples] ../python/fate_client/flow_cli/build/doc/test.md
+[examples](../python/fate_client/flow_cli/build/doc/test.md)
 
 
 
