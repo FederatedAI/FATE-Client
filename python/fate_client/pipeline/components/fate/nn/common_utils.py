@@ -12,6 +12,7 @@ from fate_client.pipeline.components.fate.nn.torch.base import (
 from typing import Union
 from fate_client.pipeline.components.fate.nn.algo_params import (
     TrainingArguments,
+    Seq2SeqTrainingArguments
 )
 from typing import Literal
 
@@ -23,7 +24,7 @@ def get_config_of_default_runner(
     dataset: DatasetLoader = None,
     data_collator: CustFuncLoader = None,
     tokenizer: CustFuncLoader = None,
-    task_type: Literal["binary", "multi", "regression", "others"] = "binary",
+    task_type: Literal["binary", "multi", "regression", "causal_lm", "others"] = "binary",
 ):
 
     if optimizer is not None and not isinstance(optimizer, (TorchOptimizer, Loader)):
@@ -36,9 +37,9 @@ def get_config_of_default_runner(
             f"The loss function is of type {type(loss)}, not TorchModule or CustFuncLoader."
         )
 
-    if training_args is not None and not isinstance(training_args, TrainingArguments):
+    if training_args is not None and not isinstance(training_args, (TrainingArguments, Seq2SeqTrainingArguments)):
         raise ValueError(
-            f"Training arguments are of type {type(training_args)}, not TrainingArguments."
+            f"Training arguments are of type {type(training_args)}, not TrainingArguments/Seq2SeqTrainingArguments."
         )
 
     if dataset is not None and not isinstance(dataset, DatasetLoader):
@@ -54,9 +55,9 @@ def get_config_of_default_runner(
             f"The tokenizer is of type {type(tokenizer)}, not CustFuncLoader."
         )
 
-    if task_type not in ["binary", "multi", "regression", "others"]:
+    if task_type not in ["binary", "multi", "regression", "causal_lm", "others"]:
         raise ValueError(
-            f"The task type is {task_type}, not 'binary', 'multi', 'regression', 'others'."
+            f"The task type is {task_type}, not 'binary', 'multi', 'regression', 'causal_lm', 'others'."
         )
 
     runner_conf = {
