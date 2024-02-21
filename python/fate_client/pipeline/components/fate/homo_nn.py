@@ -101,6 +101,36 @@ def get_config_of_seq2seq_runner(
     return runner_conf
 
 
+def get_conf_of_ot_runner(
+    model: Union[TorchModule, Sequential, ModelLoader] = None,
+    optimizer: Union[TorchOptimizer, Loader] = None,
+    training_args: TrainingArguments = None,
+    fed_args: FedArguments = None,
+    dataset: DatasetLoader = None,
+    data_collator: CustFuncLoader = None,
+    tokenizer: CustFuncLoader = None,
+    task_type: Literal["causal_lm", "others"] = "causal_lm",
+    save_trainable_weights_only: bool = False,  
+    aggregate_model: bool = False
+):
+    runner_conf = get_config_of_default_runner(
+        algo='ot',  # offsite-tuning
+        model=model,
+        optimizer=optimizer,
+        training_args=training_args,
+        fed_args=fed_args,
+        dataset=dataset,
+        data_collator=data_collator,
+        tokenizer=tokenizer,
+        task_type=task_type
+    )
+    runner_conf.pop("loss_conf")
+    runner_conf["save_trainable_weights_only"] = save_trainable_weights_only
+    runner_conf["aggregate_model"] = aggregate_model
+
+    return runner_conf
+
+
 class HomoNN(Component):
     yaml_define_path = "./component_define/fate/homo_nn.yaml"
 
