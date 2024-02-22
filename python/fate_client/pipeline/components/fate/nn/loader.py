@@ -32,7 +32,7 @@ class _Source(object):
 class _LLMSource(object):
     MODEL_ZOO = "fate_llm.model_zoo"
     DATASET = "fate_llm.dataset"
-    CUST_FUNC = "fate_llm.cust_func"
+    CUST_FUNC = "fate_llm.data"
 
 
 SOURCE_FILE = "source.yaml"
@@ -217,6 +217,6 @@ class LLMDatasetLoader(DatasetLoader):
     source_class = _LLMSource
 
 
-class LLMCustFuncLoader(CustFuncLoader):
+class LLMDataFuncLoader(CustFuncLoader):
 
     source_class = _LLMSource
