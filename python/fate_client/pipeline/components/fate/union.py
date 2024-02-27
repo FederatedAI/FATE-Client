@@ -26,11 +26,11 @@ class Union(Component):
         self,
         _name: str,
         runtime_parties: dict = None,
-        input_data_list: List[ArtifactType] = PlaceHolder(),
+            input_datas: List[ArtifactType] = PlaceHolder(),
     ):
         inputs = locals()
         self._process_init_inputs(inputs)
         super(Union, self).__init__()
         self._name = _name
         self.runtime_parties = runtime_parties
-        self.input_data_list = input_data_list
+        self.input_datas = input_datas
