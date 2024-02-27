@@ -29,14 +29,14 @@ class Evaluation(Component):
         metrics: List[str] = None,
         predict_column_name: str = None,
         label_column_name: str = None,
-        input_data: ArtifactType = PlaceHolder(),
+        input_datas: ArtifactType = PlaceHolder(),
     ):
         inputs = locals()
         self._process_init_inputs(inputs)
         super(Evaluation, self).__init__()
         self._name = _name
         self.runtime_parties = runtime_parties
-        self.input_data = input_data
+        self.input_datas = input_datas
         self.default_eval_setting = default_eval_setting
         self.metrics = metrics
         self.predict_column_name = predict_column_name
