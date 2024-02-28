@@ -100,11 +100,11 @@ Below lists data input and output of all components:
 | Coordinated-LR           | CoordinatedLR          | train_data, validate_data, test_data, cv_data | train_output_data, validate_output_data, test_output_data, cv_output_datas |
 | Coordinated-LinR         | CoordinatedLinR        | train_data, validate_data, test_data, cv_data | train_output_data, validate_output_data, test_output_data, cv_output_datas |
 | Homo-LR                  | HomoLR                 | train_data, validate_data, test_data, cv_data | train_output_data, validate_output_data, test_output_data, cv_output_datas |
-| Homo-NN                  | HomoNN                 | train_data, validate_data, test_data | train_data_output, predict_data_output|
-| Hetero-NN   | HeteroNN    | train_data, validate_data, test_data | train_data_output, predict_data_output|
-| Hetero Secure Boosting   | HeteroSecureBoost      | train_data, validate_data, test_data, cv_data | train_data_output, test_output_data, cv_output_datas |
-| Evaluation               | Evaluation             | input_data                                    |                                                                            |
-| Union                    | Union                  | input_data_list                               | output_data                                                                |
+| Homo-NN                  | HomoNN                 | train_data, validate_data, test_data          | train_output_data, test_output_data                                        |
+| Hetero-NN                | HeteroNN               | train_data, validate_data, test_data          | train_output_data, test_output_data                                        |
+| Hetero Secure Boosting   | HeteroSecureBoost      | train_data, validate_data, test_data, cv_data | train_output_data, test_output_data, cv_output_datas                       |
+| Evaluation               | Evaluation             | input_datas                                   |                                                                            |
+| Union                    | Union                  | input_datas                                   | output_data                                                                |
 
 ### Model
 
@@ -114,23 +114,23 @@ Model training components also may take `warm_start_model`, but note that only o
 
 Below lists model input and output of all components:
 
-| Algorithm                | Component Name         | Model Input                   | Model Output |
-|--------------------------|------------------------|-------------------------------|--------------|
-| PSI                      | PSI                    |                               |              |
-| Sampling                 | Sample                 |                               |              |
-| Data Split               | DataSplit              |                               |              |
-| Feature Scale            | FeatureScale           | input_model                   | output_model |
-| Data Statistics          | Statistics             |                               | output_model |
-| Hetero Feature Binning   | HeteroFeatureBinning   | input_model                   | output_model |
-| Hetero Feature Selection | HeteroFeatureSelection | input_models, input_model     | output_model |
-| Coordinated-LR           | CoordinatedLR          | input_model, warm_start_model | output_model |
-| Coordinated-LinR         | CoordinatedLinR        | input_model, warm_start_model | output_model |
-| Homo-LR                  | HomoLR                 | input_model, warm_start_model | output_model |
-| Homo-NN                  | HomoNN                 | train_model_input, predict_model_input, train_model_output | train_model_output |
-| Hetero-NN|HeteroNN|train_model_input, predict_model_input, train_model_output| train_model_output|
-| Hetero Secure Boosting   | HeteroSecureBoost      | train_model_input, predict_model_input, train_model_output | train_model_output |
-| Evaluation               | Evaluation             |                               |              |
-| Union                    | Union                  |                               |              |
+| Algorithm                | Component Name         | Model Input                    | Model Output |
+|--------------------------|------------------------|--------------------------------|--------------|
+| PSI                      | PSI                    |                                |              |
+| Sampling                 | Sample                 |                                |              |
+| Data Split               | DataSplit              |                                |              |
+| Feature Scale            | FeatureScale           | input_model                    | output_model |
+| Data Statistics          | Statistics             |                                | output_model |
+| Hetero Feature Binning   | HeteroFeatureBinning   | input_model                    | output_model |
+| Hetero Feature Selection | HeteroFeatureSelection | input_models, input_model      | output_model |
+| Coordinated-LR           | CoordinatedLR          | input_model, warm_start_model  | output_model |
+| Coordinated-LinR         | CoordinatedLinR        | input_model, warm_start_model  | output_model |
+| Homo-LR                  | HomoLR                 | input_model, warm_start_model  | output_model |
+| Homo-NN                  | HomoNN                 | input_model, warm_start_model  | output_model |
+| Hetero-NN                | HeteroNN               | input_model, warm_start_model  | output_model |
+| Hetero Secure Boosting   | HeteroSecureBoost      | input_model, warm_start_model  | output_model |
+| Evaluation               | Evaluation             |                                |              |
+| Union                    | Union                  |                                |              |
 
 ## Build A Pipeline
 
