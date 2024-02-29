@@ -1,3 +1,10 @@
+## Release 2.1.0
+### Major improvements
+* Pipeline: add supports for fate-llm 2.0
+  * newly added LLMModelLoader, LLMDatasetLoader, LLMDataFuncLoader
+  * newly added configuration parsing of seq2seq_runner and ot_runner
+* Pipeline: unified input interface of components
+
 ## Release 2.0.0
 ### Feature Highlights
 > FATE-Client 2.0: Building Scalable Federated DSL for Application Layer Interconnection
