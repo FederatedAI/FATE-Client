@@ -13,14 +13,13 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 from typing import List
-
 from ..component_base import Component
 from ...conf.types import PlaceHolder
 from ...interface import ArtifactType
 
 
 class HeteroSecureBoost(Component):
-    yaml_define_path = "./component_define/fate/hetero_sbt.yaml"
+    yaml_define_path = "./component_define/fate/hetero_secureboost.yaml"
 
     def __init__(
         self,
@@ -49,11 +48,11 @@ class HeteroSecureBoost(Component):
         hist_sub: bool = True,
         he_param: dict = PlaceHolder(),
         cv_param: dict = PlaceHolder(),
-        train_data_output: ArtifactType = PlaceHolder(),
-        train_model_output: ArtifactType = PlaceHolder(),
-        train_model_input: ArtifactType = PlaceHolder(),
+        train_output_data: ArtifactType = PlaceHolder(),
+        output_model: ArtifactType = PlaceHolder(),
+        warm_start_model: ArtifactType = PlaceHolder(),
         test_data: ArtifactType = PlaceHolder(),
-        predict_model_input: ArtifactType = PlaceHolder(),
+        input_model: ArtifactType = PlaceHolder(),
         cv_data: ArtifactType = PlaceHolder()
     ):
         inputs = locals()
@@ -63,7 +62,7 @@ class HeteroSecureBoost(Component):
         self.runtime_parties = runtime_parties
         self.train_data = train_data
         self.validate_data = validate_data
-        self.train_model_input = train_model_input
+        self.warm_start_model = warm_start_model
         self.num_trees = num_trees
         self.learning_rate = learning_rate
         self.max_depth = max_depth
@@ -86,9 +85,9 @@ class HeteroSecureBoost(Component):
         self.split_info_pack = split_info_pack
         self.hist_sub = hist_sub
         self.he_param = he_param
-        self.train_data_output = train_data_output
-        self.train_model_output = train_model_output
+        self.train_output_data = train_output_data
+        self.output_model = output_model
         self.test_data = test_data
-        self.predict_model_input = predict_model_input
+        self.input_model = input_model
         self.cv_param = cv_param
         self.cv_data = cv_data

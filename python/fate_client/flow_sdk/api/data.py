@@ -41,8 +41,8 @@ class Data(BaseFlowAPI):
             {'code': 0, 'message': 'success','data':{...}]}
         """
         kwargs = locals()
-        if not os.path.exists(file):
-            raise Exception(f"{file} is not exist, please check the file path")
+        # if not os.path.exists(file):
+        #     raise Exception(f"{file} is not exist, please check the file path")
         params = filter_invalid_params(**kwargs)
         return self._post(url='/data/component/upload', json=params)
 

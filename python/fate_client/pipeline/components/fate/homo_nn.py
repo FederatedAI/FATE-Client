@@ -47,7 +47,7 @@ def get_config_of_default_runner(
     dataset: DatasetLoader = None,
     data_collator: CustFuncLoader = None,
     tokenizer: CustFuncLoader = None,
-    task_type: Literal["binary", "multi", "regression", "others"] = "binary",
+    task_type: Literal["binary", "multi", "regression", "causal_lm", "others"] = "binary",
 ):
 
     if model is not None and not isinstance(
@@ -56,7 +56,6 @@ def get_config_of_default_runner(
         raise ValueError(
             f"The model is of type {type(model)}, not TorchModule, Sequential, or ModelLoader. Remember to use patched_torch_hook for passing NN Modules or Optimizers."
         )
-
 
     if fed_args is not None and not isinstance(fed_args, FedArguments):
         raise ValueError(
@@ -69,6 +68,65 @@ def get_config_of_default_runner(
     runner_conf['algo'] = algo
     runner_conf['model_conf'] = model.to_dict() if model is not None else None
     runner_conf['fed_args_conf'] = fed_args.to_dict() if fed_args is not None else None
+
+    return runner_conf
+
+
+def get_config_of_seq2seq_runner(
+    algo: str = "fedavg",
+    model: Union[TorchModule, Sequential, ModelLoader] = None,
+    optimizer: Union[TorchOptimizer, Loader] = None,
+    training_args: TrainingArguments = None,
+    fed_args: FedArguments = None,
+    dataset: DatasetLoader = None,
+    data_collator: CustFuncLoader = None,
+    tokenizer: CustFuncLoader = None,
+    task_type: Literal["causal_lm", "others"] = "causal_lm",
+    save_trainable_weights_only: bool = False,
+):
+    runner_conf = get_config_of_default_runner(
+        algo=algo,
+        model=model,
+        optimizer=optimizer,
+        training_args=training_args,
+        fed_args=fed_args,
+        dataset=dataset,
+        data_collator=data_collator,
+        tokenizer=tokenizer,
+        task_type=task_type
+    )
+    runner_conf.pop("loss_conf")
+    runner_conf["save_trainable_weights_only"] = save_trainable_weights_only
+
+    return runner_conf
+
+
+def get_conf_of_ot_runner(
+    model: Union[TorchModule, Sequential, ModelLoader] = None,
+    optimizer: Union[TorchOptimizer, Loader] = None,
+    training_args: TrainingArguments = None,
+    fed_args: FedArguments = None,
+    dataset: DatasetLoader = None,
+    data_collator: CustFuncLoader = None,
+    tokenizer: CustFuncLoader = None,
+    task_type: Literal["causal_lm", "others"] = "causal_lm",
+    save_trainable_weights_only: bool = False,  
+    aggregate_model: bool = False
+):
+    runner_conf = get_config_of_default_runner(
+        algo='ot',  # offsite-tuning
+        model=model,
+        optimizer=optimizer,
+        training_args=training_args,
+        fed_args=fed_args,
+        dataset=dataset,
+        data_collator=data_collator,
+        tokenizer=tokenizer,
+        task_type=task_type
+    )
+    runner_conf.pop("loss_conf")
+    runner_conf["save_trainable_weights_only"] = save_trainable_weights_only
+    runner_conf["aggregate_model"] = aggregate_model
 
     return runner_conf
 
@@ -87,8 +145,8 @@ class HomoNN(Component):
         train_data: ArtifactType = PlaceHolder(),
         validate_data: ArtifactType = PlaceHolder(),
         test_data: ArtifactType = PlaceHolder(),
-        train_model_input: ArtifactType = PlaceHolder(),
-        predict_model_input: ArtifactType = PlaceHolder(),
+        warm_start_model: ArtifactType = PlaceHolder(),
+        input_model: ArtifactType = PlaceHolder(),
     ):
         inputs = locals()
         self._process_init_inputs(inputs)
@@ -102,5 +160,5 @@ class HomoNN(Component):
         self.train_data = train_data
         self.validate_data = validate_data
         self.test_data = test_data
-        self.train_model_input = train_model_input
-        self.predict_model_input = predict_model_input
+        self.warm_start_model = warm_start_model
+        self.input_model = input_model

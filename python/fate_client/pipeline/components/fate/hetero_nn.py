@@ -96,8 +96,8 @@ class HeteroNN(Component):
         train_data: ArtifactType = PlaceHolder(),
         validate_data: ArtifactType = PlaceHolder(),
         test_data: ArtifactType = PlaceHolder(),
-        train_model_input: ArtifactType = PlaceHolder(),
-        predict_model_input: ArtifactType = PlaceHolder(),
+        warm_start_model: ArtifactType = PlaceHolder(),
+        input_model: ArtifactType = PlaceHolder(),
     ):
 
         inputs = locals()
@@ -112,5 +112,5 @@ class HeteroNN(Component):
         self.train_data = train_data
         self.validate_data = validate_data
         self.test_data = test_data
-        self.train_model_input = train_model_input
-        self.predict_model_input = predict_model_input
+        self.warm_start_model = warm_start_model
+        self.input_model = input_model

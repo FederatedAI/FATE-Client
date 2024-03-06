@@ -39,8 +39,8 @@ class HomoLR(Component):
         train_data: ArtifactType = PlaceHolder(),
         validate_data: ArtifactType = PlaceHolder(),
         test_data: ArtifactType = PlaceHolder(),
-        train_input_model: ArtifactType = PlaceHolder(),
-        predict_input_model: ArtifactType = PlaceHolder(),
+        warm_start_model: ArtifactType = PlaceHolder(),
+        input_model: ArtifactType = PlaceHolder(),
     ):
         inputs = locals()
         self._process_init_inputs(inputs)
@@ -58,7 +58,7 @@ class HomoLR(Component):
         self.train_data = train_data
         self.validate_data = validate_data
         self.test_data = test_data
-        self.train_input_model = train_input_model
-        self.predict_input_model = predict_input_model
+        self.warm_start_model = warm_start_model
+        self.input_model = input_model
         self.ovr = ovr
         self.label_num = label_num

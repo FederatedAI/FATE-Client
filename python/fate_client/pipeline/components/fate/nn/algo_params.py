@@ -1,4 +1,5 @@
 from transformers import TrainingArguments as _hf_TrainingArguments
+from transformers import Seq2SeqTrainingArguments as _hf_Seq2SeqTrainingArguments
 from dataclasses import dataclass, field, fields
 from typing import Union, Literal
 from enum import Enum
@@ -70,7 +71,6 @@ class _TrainingArguments(_hf_TrainingArguments):
     save_safetensors: bool = field(default=False)
     use_cpu: bool = field(default=True)
 
-
     def __post_init__(self):
         self.push_to_hub = False
         self.hub_model_id = None
@@ -82,7 +82,6 @@ class _TrainingArguments(_hf_TrainingArguments):
         self.push_to_hub_token = None
 
         super().__post_init__()
-
 
 
 @dataclass
@@ -98,6 +97,54 @@ class TrainingArguments(_TrainingArguments):
         # Filter out args that are equal to their default values
         set_args = {name: value for name, value in all_args.items() if value != default_args.get(name)}
         return set_args
+
+
+@dataclass
+class _S2STrainingArguments(_hf_Seq2SeqTrainingArguments):
+    # in fate-2.0, we will control the output dir when using pipeline
+    output_dir: str = field(default="./")
+    disable_tqdm: bool = field(default=True)
+    save_strategy: str = field(default="no")
+    logging_strategy: str = field(default="epoch")
+    logging_steps: int = field(default=1)
+    evaluation_strategy: str = field(default="no")
+    logging_dir: str = field(default=None)
+    checkpoint_idx: int = field(default=None)
+    # by default, we use constant learning rate, the same as FATE-1.X
+    lr_scheduler_type: str = field(default="constant")
+    log_level: str = field(default="info")
+    deepspeed: Optional[str] = field(default=None)
+    save_safetensors: bool = field(default=False)
+    use_cpu: bool = field(default=True)
+    remove_unused_columns: bool = field(default=True)
+
+    def __post_init__(self):
+        self.push_to_hub = False
+        self.hub_model_id = None
+        self.hub_strategy = "every_save"
+        self.hub_token = None
+        self.hub_private_repo = False
+        self.push_to_hub_model_id = None
+        self.push_to_hub_organization = None
+        self.push_to_hub_token = None
+
+        super().__post_init__()
+
+
+@dataclass
+class Seq2SeqTrainingArguments(_S2STrainingArguments):
+    # To simplify the to dict result(to_dict only return non-default args)
+
+    def to_dict(self):
+        # Call the superclass's to_dict method
+        all_args = super().to_dict()
+        # Get a dict with default values for all fields
+        default_args = _S2STrainingArguments().to_dict()
+        # Filter out args that are equal to their default values
+        set_args = {name: value for name, value in all_args.items() if value != default_args.get(name)}
+        return set_args
+
+
 
 @dataclass
 class FedAVGArguments(FedArguments):
@@ -165,6 +212,7 @@ class SSHEArgument(Args):
         d['agg_type'] = 'hess'
         return d
 
+
 def parse_agglayer_conf(agglayer_arg_conf):
 
     import copy
@@ -183,6 +231,7 @@ def parse_agglayer_conf(agglayer_arg_conf):
 """
 Top & Bottom Model Strategy
 """
+
 
 @dataclass
 class TopModelStrategyArguments(Args):
