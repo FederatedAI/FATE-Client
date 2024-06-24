@@ -184,6 +184,11 @@ class FedMKTTrainingArguments(Seq2SeqTrainingArguments):
     """
     post_fedavg: bool = field(default=False)
 
+    """
+    slm training only
+    """
+    llm_training: bool = field(default=True)
+
     def to_dict(self):
         return super(FedMKTTrainingArguments, self).to_dict()
 
