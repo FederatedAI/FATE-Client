@@ -1,7 +1,7 @@
 from transformers import TrainingArguments as _hf_TrainingArguments
 from transformers import Seq2SeqTrainingArguments as _hf_Seq2SeqTrainingArguments
 from dataclasses import dataclass, field, fields
-from typing import Union, Literal
+from typing import Union, Literal, List
 from enum import Enum
 from typing import Optional
 
@@ -144,6 +144,53 @@ class Seq2SeqTrainingArguments(_S2STrainingArguments):
         set_args = {name: value for name, value in all_args.items() if value != default_args.get(name)}
         return set_args
 
+
+@dataclass
+class FedMKTTrainingArguments(Seq2SeqTrainingArguments):
+    """
+    selection metric type
+    """
+    metric_type: str = field(default="ce")
+
+    """
+    top-k logits select params
+    """
+    top_k_logits_keep: int = field(default=128)
+    top_k_strategy: str = field(default="highest")
+
+    """
+    distillation params
+    """
+    distill_loss_type: str = field(default="ce")
+    kd_alpha: float = field(default=0.0)
+    distill_greater_as_gt_type: str = field(default="hard")
+    distill_temperature: float = field(default=1.0)
+    server_public_data_local_epoch: int = field(default=1)
+    client_public_data_local_epoch: int = field(default=1)
+    client_priv_data_local_epoch: int = field(default=1)
+    distill_strategy: str = field(default="greater")
+    global_epochs: int = field(default=1)
+
+    """
+    token-alignment params
+    """
+    skip_align: bool = field(default=False)
+    token_align_strategy: str = field(default="dtw")
+    vocab_mapping_paths: Union[str, List[str]] = field(default=None)
+    vocab_size: int = field(default=None)
+
+    """
+    homo training params
+    """
+    post_fedavg: bool = field(default=False)
+
+    """
+    slm training only
+    """
+    llm_training: bool = field(default=True)
+
+    def to_dict(self):
+        return super(FedMKTTrainingArguments, self).to_dict()
 
 
 @dataclass
