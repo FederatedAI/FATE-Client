@@ -1,3 +1,8 @@
+## Release 2.1.1
+### Major improvements
+* Pipeline: add dump and load interface
+* Pipeline: Support FATE-LLM 2.1.0, add FedMKT support
+
 ## Release 2.1.0
 ### Major improvements
 * Pipeline: add supports for fate-llm 2.0
