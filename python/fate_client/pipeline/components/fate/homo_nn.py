@@ -131,6 +131,50 @@ def get_conf_of_ot_runner(
     return runner_conf
 
 
+def get_config_of_fedmkt_runner(
+    model: Union[TorchModule, Sequential, ModelLoader] = None,
+    optimizer: Union[TorchOptimizer, Loader] = None,
+    training_args: TrainingArguments = None,
+    fed_args: FedArguments = None,
+    pub_dataset: DatasetLoader = None,
+    priv_dataset: DatasetLoader = None,
+    data_collator: CustFuncLoader = None,
+    tokenizer: CustFuncLoader = None,
+    llm_tokenizer: CustFuncLoader = None,
+    slm_tokenizers: List[CustFuncLoader] = None,
+    llm_to_slm_vocab_mapping_path: str = None,
+    slm_to_llm_vocab_mapping_paths: List[str] = None,
+    task_type: Literal["causal_lm", "others"] = "causal_lm",
+    save_trainable_weights_only: bool = False,
+    pub_dataset_path: str = None,
+):
+    runner_conf = {
+        "algo": "fedmkt",
+        "model_conf": model.to_dict() if model is not None else None,
+        "optimizer_conf": optimizer.to_dict() if optimizer is not None else None,
+        "training_args_conf": training_args.to_dict() if training_args is not None else None,
+        "fed_args_conf": fed_args.to_dict() if fed_args is not None else None,
+        "pub_dataset_conf": pub_dataset.to_dict() if pub_dataset is not None else None,
+        "priv_dataset_conf": priv_dataset.to_dict() if priv_dataset is not None else None,
+        "data_collator_conf": data_collator.to_dict() if data_collator is not None else None,
+        "tokenizer_conf": tokenizer.to_dict() if tokenizer is not None else None,
+        "llm_tokenizer_conf": llm_tokenizer.to_dict() if llm_tokenizer is not None else None,
+        "llm_to_slm_vocab_mapping_path": llm_to_slm_vocab_mapping_path,
+        "slm_to_llm_vocab_mapping_paths": slm_to_llm_vocab_mapping_paths,
+        "task_type": task_type,
+        "save_trainable_weights_only": save_trainable_weights_only,
+        "pub_dataset_path": pub_dataset_path
+    }
+
+    slm_tokenizers_conf = None
+    if slm_tokenizers:
+        slm_tokenizers_conf = [slm_tokenizer.to_dict() for slm_tokenizer in slm_tokenizers]
+
+    runner_conf["slm_tokenizers_conf"] = slm_tokenizers_conf
+
+    return runner_conf
+
+
 class HomoNN(Component):
     yaml_define_path = "./component_define/fate/homo_nn.yaml"
 

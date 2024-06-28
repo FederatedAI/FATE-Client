@@ -190,6 +190,22 @@ output data, model, and metrics.
 output_model = pipeline.get_task_info("lr_0").get_output_model()
 ```
 
+## Save pipeline 
+After training with pipeline, the trained pipeline may need to be saved for later using like prediction. 
+
+```python
+pipeline.dump_model("./pipeline.pkl")
+```
+
+## Load saved pipeline
+To use a trained pipeline for prediction, user can load it from previous saved files.
+
+```python
+from fate_client.pipeline import FateFlowPipeline
+
+pipeline = FateFlowPipeline.load_model("./pipeline.pkl")
+```
+
 ## Deploy Components
 
 Once fitting pipeline completes, prediction can be run on new data set.
