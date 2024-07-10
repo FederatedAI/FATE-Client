@@ -31,6 +31,7 @@ install_requires = [
     "setuptools",
     "networkx",
     "pydantic",
+    "torch"
 ]
 
 extras_require = {
