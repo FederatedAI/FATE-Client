@@ -39,4 +39,4 @@ try:
     from .homo_nn import HomoNN
     from .hetero_nn import HeteroNN
 except (ImportError, ModuleNotFoundError):
-    print("torch does not install yet, so HeteroNN and HomoNN does not support")
+    print("torch/transformers/accelerate does not install yet, so HeteroNN and HomoNN does not support")
