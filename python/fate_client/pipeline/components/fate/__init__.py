@@ -33,6 +33,10 @@ from .statistics import Statistics
 from .union import Union
 from .homo_lr import HomoLR
 from .hetero_secureboost import HeteroSecureBoost
-from .homo_nn import HomoNN
-from .hetero_nn import HeteroNN
 from .evaluation import Evaluation
+
+try:
+    from .homo_nn import HomoNN
+    from .hetero_nn import HeteroNN
+except (ImportError, ModuleNotFoundError):
+    print("torch/transformers/accelerate does not install yet, so HeteroNN and HomoNN does not support")

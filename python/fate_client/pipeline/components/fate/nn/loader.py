@@ -18,7 +18,7 @@ import sys
 import importlib.util
 from abc import ABC, abstractmethod
 import json
-import yaml
+from ruamel import yaml
 import difflib
 import torch as t
 

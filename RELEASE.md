@@ -1,3 +1,9 @@
+## Release 2.1.2
+### Major improvements
+* Resolve the issue of missing certain dependency packages during standalone deployment without FATE installation.
+* Enable lightweight installation and usage without neural network-related algorithms.
+
+
 ## Release 2.1.1
 ### Major improvements
 * Pipeline: add dump and load interface
