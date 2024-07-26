@@ -194,6 +194,47 @@ class FedMKTTrainingArguments(Seq2SeqTrainingArguments):
 
 
 @dataclass
+class FDKTTrainingArguments(Seq2SeqTrainingArguments):
+    """
+    slm parameters
+    """
+    dp_training: bool = field(default=True)
+    target_epsilon: float = field(default=3)
+    target_delta: float = field(default=1e-5)
+    freeze_embedding: bool = field(default=False)
+    device_id: int = field(default=0)
+    slm_generation_config: dict = field(default=None)
+    slm_generation_batch_size: dict = field(default=None)
+
+    """
+    slm generation config
+    """
+    seq_num_for_single_category: int = field(default=None)
+
+    """
+    dp loss params
+    """
+    label_smoothing_factor = 0.02
+    loss_reduce = True
+
+    """
+    llm parameters
+    """
+    sample_num_per_cluster: int = field(default=None)
+    filter_data_batch_size: int = field(default=2)
+    filter_prompt_max_length: int = field(default=2048)
+    filter_generation_config: dict = field(default=None)
+
+    aug_generation_config: dict = field(default=None)
+    aug_prompt_num: int = field(default=None)
+    aug_data_batch_size: int = field(default=2)
+    aug_prompt_max_length: int = field(default=2048)
+
+    def to_dict(self):
+        return super(FDKTTrainingArguments, self).to_dict()
+
+
+@dataclass
 class FedAVGArguments(FedArguments):
     pass
 
