@@ -1,3 +1,7 @@
+# Release 2.2.0
+### Major improvements
+* Pipeline: support FATE-LLM 2.2.0, add FDKT support
+
 ## Release 2.1.2
 ### Major improvements
 * Resolve the issue of missing certain dependency packages during standalone deployment without FATE installation.
