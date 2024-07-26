@@ -382,6 +382,29 @@ class Pipeline(object):
         else:
             return NotImplementedError(f"Not support get item={item}")
 
+    def __getstate__(self):
+        return vars(self)
+
+    def __setstate__(self, state):
+        vars(self).update(state)
+
+    def dump_model(self, file_path):
+        import pickle
+        pkl = pickle.dumps(self)
+
+        if file_path is not None:
+            with open(file_path, "wb") as fout:
+                fout.write(pkl)
+
+        return pkl
+
+    @classmethod
+    def load_model(cls, file_path):
+        import pickle
+        with open(file_path, "rb") as fin:
+            pipeline_obj = pickle.loads(fin.read())
+            return pipeline_obj
+
 
 class FateFlowPipeline(Pipeline):
     def __init__(self, *args):

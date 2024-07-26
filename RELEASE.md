@@ -1,3 +1,14 @@
+## Release 2.1.2
+### Major improvements
+* Resolve the issue of missing certain dependency packages during standalone deployment without FATE installation.
+* Enable lightweight installation and usage without neural network-related algorithms.
+
+
+## Release 2.1.1
+### Major improvements
+* Pipeline: add dump and load interface
+* Pipeline: Support FATE-LLM 2.1.0, add FedMKT support
+
 ## Release 2.1.0
 ### Major improvements
 * Pipeline: add supports for fate-llm 2.0

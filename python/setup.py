@@ -31,10 +31,13 @@ install_requires = [
     "setuptools",
     "networkx",
     "pydantic",
+    "torch",
+    "transformers",
+    "accelerate"
 ]
 
 extras_require = {
-    "fate": ["pyfate==2.1.0"],
+    "fate": ["pyfate==2.1.1"],
     "fate_flow": ["fate_flow==2.1.0"]
 }
 entry_points = {"console_scripts": ["flow = fate_client.flow_cli.flow:flow_cli",
