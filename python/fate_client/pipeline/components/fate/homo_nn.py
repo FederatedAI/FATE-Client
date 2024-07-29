@@ -175,6 +175,35 @@ def get_config_of_fedmkt_runner(
     return runner_conf
 
 
+def get_config_of_fdkt_runner(
+    inference_inst_conf: dict = None,
+    model: Union[TorchModule, Sequential, ModelLoader] = None,
+    embedding_model: Union[TorchModule, Sequential, ModelLoader] = None,
+    optimizer: Union[TorchOptimizer, Loader] = None,
+    training_args: TrainingArguments = None,
+    dataset: DatasetLoader = None,
+    data_collator: CustFuncLoader = None,
+    tokenizer: CustFuncLoader = None,
+    task_type: Literal["causal_lm", "others"] = "causal_lm",
+    save_dp_model: bool = False,
+):
+    runner_conf = {
+        "algo": "fdkt",
+        "inference_inst_conf": inference_inst_conf,
+        "model_conf": model.to_dict() if model is not None else None,
+        "embedding_model_conf": embedding_model.to_dict() if embedding_model is not None else None,
+        "optimizer_conf": optimizer.to_dict() if optimizer is not None else None,
+        "training_args_conf": training_args.to_dict() if training_args is not None else None,
+        "dataset_conf": dataset.to_dict(),
+        "data_collator_conf": data_collator.to_dict() if data_collator is not None else None,
+        "tokenizer_conf": tokenizer.to_dict() if tokenizer is not None else None,
+        "task_type": task_type,
+        "save_dp_model": save_dp_model,
+    }
+
+    return runner_conf
+
+
 class HomoNN(Component):
     yaml_define_path = "./component_define/fate/homo_nn.yaml"
 
