@@ -201,10 +201,12 @@ class FDKTTrainingArguments(Seq2SeqTrainingArguments):
     dp_training: bool = field(default=True)
     target_epsilon: float = field(default=3)
     target_delta: float = field(default=1e-5)
-    freeze_embedding: bool = field(default=False)
+    freeze_embedding: bool = field(default=True)
     device_id: int = field(default=0)
     slm_generation_config: dict = field(default=None)
     slm_generation_batch_size: dict = field(default=None)
+    inference_method: str = field(default="native")
+    inference_inst_init_conf: dict = field(default=None)
 
     """
     slm generation config
