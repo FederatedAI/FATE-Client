@@ -37,8 +37,8 @@ install_requires = [
 ]
 
 extras_require = {
-    "fate": ["pyfate==2.1.1"],
-    "fate_flow": ["fate_flow==2.1.0"]
+    "fate": ["pyfate==2.2.0"],
+    "fate_flow": ["fate_flow==2.2.0"]
 }
 entry_points = {"console_scripts": ["flow = fate_client.flow_cli.flow:flow_cli",
                                     "pipeline = fate_client.pipeline.pipeline_cli:pipeline_group"]}

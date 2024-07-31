@@ -1,6 +1,6 @@
 pip>=21
 click
-pandas==2.0.3
+pandas
 psutil==5.9.5
 requests<2.26.0
 requests_toolbelt==0.9.1
@@ -8,7 +8,7 @@ ruamel-yaml==0.16
 setuptools
 networkx
 pydantic==1.10.12
-torch==1.13.1
+torch==2.3.1
 transformers==4.37.2
 accelerate==0.27.2
 
